@@ -1,0 +1,63 @@
+[package]
+name = "noya-cli"
+version = "0.0.1"
+edition = "2021"
+# clap 4.5 transitively pulls clap_builder 4.6 (edition 2024),
+# which requires rustc 1.85+. Library users still build the
+# noyalib core on 1.75; only the CLI binaries need the bump.
+rust-version = "1.85.0"
+license = "MIT OR Apache-2.0"
+description = "Command-line tools for noyalib (noyafmt, noyavalidate)"
+repository = "https://github.com/sebastienrousseau/noyalib"
+homepage = "https://github.com/sebastienrousseau/noyalib"
+documentation = "https://docs.rs/noya-cli"
+readme = "README.md"
+keywords = ["yaml", "cli", "formatter", "validator", "schema"]
+categories = ["command-line-utilities", "encoding"]
+authors = ["Sebastien Rousseau <sebastian.rousseau@gmail.com>"]
+# Published to crates.io so end users can run
+# `cargo install noya-cli` to get the `noyafmt` and `noyavalidate`
+# binaries without cloning the repo. The `noyalib` library crate
+# is published independently — keeping the binary crate distinct
+# from the lib lets users embed `noyalib` without pulling clap +
+# miette + the `validate-schema` chain into their own dep graph.
+publish = true
+
+[lib]
+name = "noya_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "noyafmt"
+path = "src/bin/noyafmt.rs"
+required-features = ["noyafmt"]
+
+[[bin]]
+name = "noyavalidate"
+path = "src/bin/noyavalidate.rs"
+required-features = ["noyavalidate"]
+
+[dependencies]
+noyalib = { path = "../noyalib", version = "0.0.1", default-features = false }
+clap    = { version = "4.5", features = ["derive", "wrap_help"] }
+miette  = { version = "7", optional = true, features = ["fancy"] }
+
+[build-dependencies]
+clap          = { version = "4.5", features = ["derive"] }
+clap_complete = "4.5"
+clap_mangen   = "0.2"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "cli_dispatch"
+harness = false
+
+[features]
+# `noyavalidate` is the default so `cargo build` produces both
+# binaries out of the box. Users who only want `noyafmt` opt in
+# via `--no-default-features --features noyafmt`.
+default = ["noyavalidate"]
+noyafmt = ["noyalib/std"]
+noyavalidate = ["noyafmt", "noyalib/noyavalidate", "dep:miette"]
