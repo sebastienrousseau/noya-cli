@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+version: 2
+
+updates:
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    labels: ["dependencies", "cargo"]
+    ignore:
+      # noyalib bumps coordinated with parent release, not Dependabot
+      # (ADR-0005 strict lockstep).
+      - dependency-name: "noyalib"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    labels: ["ci", "dependencies"]
