@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cargo-deny:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-deny.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  cargo-vet:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-vet.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  cargo-machete:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-machete.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  reuse-lint:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-reuse.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  docs-strict:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-rustdoc-strict.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  verify-signatures:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-verify-signatures.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  test-matrix:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-test-matrix.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b

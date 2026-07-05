@@ -8,8 +8,8 @@ edition = "2024"
 rust-version = "1.85.0"
 license = "MIT OR Apache-2.0"
 description = "Command-line tools for noyalib (noyafmt, noyavalidate)"
-repository = "https://github.com/sebastienrousseau/noyalib"
-homepage = "https://github.com/sebastienrousseau/noyalib"
+repository = "https://github.com/sebastienrousseau/noya-cli"
+homepage = "https://github.com/sebastienrousseau/noya-cli"
 documentation = "https://docs.rs/noya-cli"
 readme = "README.md"
 keywords = ["yaml", "cli", "formatter", "validator", "schema"]
@@ -38,7 +38,7 @@ path = "src/bin/noyavalidate.rs"
 required-features = ["noyavalidate"]
 
 [dependencies]
-noyalib = { path = "../noyalib", version = "0.0.13", default-features = false }
+noyalib = { version = "=0.0.13", default-features = false }
 clap    = { version = "4.5", features = ["derive", "wrap_help"] }
 miette  = { version = "7", optional = true, features = ["fancy"] }
 
