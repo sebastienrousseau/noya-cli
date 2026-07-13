@@ -30,6 +30,6 @@ jobs:
   docs-strict:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-rustdoc-strict.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   verify-signatures:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-verify-signatures.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-verify-signatures.yml@346a9b0a79fe5d1397dd499e66fc5c234570779a
   test-matrix:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-test-matrix.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
