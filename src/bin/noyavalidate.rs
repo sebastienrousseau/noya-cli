@@ -59,26 +59,13 @@ fn read_schema(path: &Path) -> io::Result<String> {
 /// per failing document so the user sees all issues in one pass.
 fn run_schema_validation(
     docs: &[noyalib::Value],
-    schema_text: &str,
-    schema_path_label: &str,
+    schema: &noyalib::Value,
     source_label: &str,
     full_source: &str,
 ) -> usize {
-    // Parse the schema once.
-    let schema: noyalib::Value = match noyalib::from_str(schema_text) {
-        Ok(v) => v,
-        Err(e) => {
-            let report = Report::new(e)
-                .with_source_code(NamedSource::new(schema_path_label, schema_text.to_owned()));
-            eprintln!("error: parsing schema:");
-            eprintln!("{report:?}");
-            return 1;
-        }
-    };
-
     let mut violations = 0;
     for (i, doc) in docs.iter().enumerate() {
-        if let Err(e) = noyalib::validate_against_schema(doc, &schema) {
+        if let Err(e) = noyalib::validate_against_schema(doc, schema) {
             violations += 1;
             // For multi-document streams, prefix every diagnostic
             // with the doc number so the user knows which document
@@ -337,13 +324,11 @@ fn run() -> ExitCode {
                 // schema-compliance — surface the remaining
                 // violations and exit 1 without having modified
                 // the file.
-                let label = schema_path.display().to_string();
-                let _ = run_schema_validation(&docs, &schema_text, &label, &name, &source);
+                let _ = run_schema_validation(&docs, &schema, &name, &source);
                 return ExitCode::from(1);
             }
         } else {
-            let label = schema_path.display().to_string();
-            let violations = run_schema_validation(&docs, &schema_text, &label, &name, &source);
+            let violations = run_schema_validation(&docs, &schema, &name, &source);
             if violations > 0 {
                 return ExitCode::from(1);
             }
