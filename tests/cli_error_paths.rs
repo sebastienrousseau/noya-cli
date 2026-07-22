@@ -287,3 +287,39 @@ fn noyavalidate_schema_validation_passes_on_conforming_doc() {
     );
     assert_eq!(code, 0, "stderr: {stderr}");
 }
+
+/// `noyafmt FILE` with neither `--check` nor `--write` falls through to
+/// the default arm: the formatted source goes to stdout and the file on
+/// disk is left untouched.
+#[test]
+fn noyafmt_default_prints_to_stdout_without_touching_file() {
+    let d = scratch("fmt-default");
+    let f = write_file(&d, "plain.yaml", "a:    1\n");
+    let (code, stdout, stderr) = run(fmt_bin(), &[f.to_str().unwrap()]);
+    assert_eq!(code, 0, "stderr: {stderr}");
+    assert_eq!(stdout, "a: 1\n", "formatted source should go to stdout");
+    assert_eq!(
+        fs::read_to_string(&f).unwrap(),
+        "a:    1\n",
+        "default mode must not modify the file"
+    );
+}
+
+/// `noyavalidate --fix` with no FILE reads stdin and takes the
+/// `path: None` arm, writing the fixed document to stdout.
+#[test]
+fn noyavalidate_fix_from_stdin_writes_to_stdout() {
+    let (code, stdout, stderr) = run_stdin(validate_bin(), &["--fix"], "a:    1\nb:    2\n");
+    assert_eq!(code, 0, "stderr: {stderr}");
+    assert!(
+        stdout.contains("a: 1"),
+        "fixed output should reach stdout: {stdout:?}"
+    );
+}
+
+/// Plain syntax check from stdin with no flags — the Phase-1-only path.
+#[test]
+fn noyavalidate_plain_stdin_check_succeeds() {
+    let (code, _, stderr) = run_stdin(validate_bin(), &[], "a: 1\n");
+    assert_eq!(code, 0, "stderr: {stderr}");
+}
