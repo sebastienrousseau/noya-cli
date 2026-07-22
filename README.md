@@ -59,7 +59,7 @@ attestation — see
 [`pkg/VERIFY.md`](https://github.com/sebastienrousseau/noyalib/blob/main/pkg/VERIFY.md)
 for the full cookbook.
 
-**MSRV: Rust 1.85.0.** The `clap` dep tree pulls
+**MSRV: Rust 1.86.0.** The `clap` dep tree pulls
 `clap_builder 4.6` (edition 2024); the noyalib core library
 itself stays at 1.75.
 
