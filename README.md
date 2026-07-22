@@ -60,8 +60,8 @@ attestation — see
 for the full cookbook.
 
 **MSRV: Rust 1.86.0.** The `clap` dep tree pulls
-`clap_builder 4.6` (edition 2024); the noyalib core library
-itself stays at 1.75.
+`clap_builder 4.6` (edition 2024). The whole lockstep set,
+including the noyalib core library, shares this floor.
 
 ---
 
