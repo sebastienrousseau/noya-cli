@@ -240,10 +240,6 @@ version = "2.7.1"
 criteria = "safe-to-run"
 
 [[exemptions.hashbrown]]
-version = "0.16.1"
-criteria = "safe-to-deploy"
-
-[[exemptions.hashbrown]]
 version = "0.17.1"
 criteria = "safe-to-deploy"
 
@@ -312,11 +308,15 @@ version = "0.3.103"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema]]
-version = "0.46.9"
+version = "0.48.5"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema-regex]]
-version = "0.46.9"
+version = "0.48.5"
+criteria = "safe-to-deploy"
+
+[[exemptions.jsonschema-value]]
+version = "0.48.5"
 criteria = "safe-to-deploy"
 
 [[exemptions.lazy_static]]
@@ -360,11 +360,11 @@ version = "0.8.9"
 criteria = "safe-to-deploy"
 
 [[exemptions.noya-cli]]
-version = "0.0.13"
+version = "0.0.16"
 criteria = "safe-to-deploy"
 
 [[exemptions.noyalib]]
-version = "0.0.13"
+version = "0.0.16"
 criteria = "safe-to-deploy"
 
 [[exemptions.num]]
@@ -492,7 +492,7 @@ version = "1.0.25"
 criteria = "safe-to-deploy"
 
 [[exemptions.referencing]]
-version = "0.46.9"
+version = "0.48.5"
 criteria = "safe-to-deploy"
 
 [[exemptions.regex]]
@@ -581,6 +581,14 @@ criteria = "safe-to-deploy"
 
 [[exemptions.strsim]]
 version = "0.11.1"
+criteria = "safe-to-deploy"
+
+[[exemptions.strum]]
+version = "0.28.0"
+criteria = "safe-to-deploy"
+
+[[exemptions.strum_macros]]
+version = "0.28.0"
 criteria = "safe-to-deploy"
 
 [[exemptions.supports-color]]
