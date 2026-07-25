@@ -410,6 +410,41 @@ fn schema_and_fix_coerces_quoted_integer() {
 }
 
 #[test]
+fn schema_file_with_invalid_yaml_exits_1() {
+    // The schema file exists (so it is not the exit-3 "reading schema"
+    // path) but is not parseable YAML → the main schema-parse arm
+    // reports "parsing schema" and exits 1.
+    let schema = tmp("bad_schema", "type: object\n  bad: [indent\n");
+    let yaml = tmp("data_bs", "port: 1\n");
+    let output = bin()
+        .arg("--schema")
+        .arg(&schema)
+        .arg(&yaml)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code().unwrap(), 1);
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert!(stderr.contains("parsing schema"), "stderr: {stderr}");
+}
+
+#[test]
+fn fix_schema_via_stdin_writes_to_stdout() {
+    // `--fix --schema` reading from stdin coerces and writes the
+    // result to stdout (run_fix_with_schema's `None` path), with no
+    // success chatter so the bytes pipe cleanly.
+    let schema = tmp(
+        "stdin_coerce_s",
+        "type: object\nrequired: [port]\nproperties:\n  port: { type: integer }\n",
+    );
+    let (code, stdout, stderr) = run_with_stdin(
+        "port: \"8080\"\n",
+        &["--fix", "--schema", &schema.display().to_string(), "-"],
+    );
+    assert_eq!(code, 0, "stderr: {stderr}");
+    assert_eq!(stdout, "port: 8080\n");
+}
+
+#[test]
 fn fix_skipped_when_schema_violates() {
     // Schema check happens before --fix. If the data is rejected,
     // the file must NOT be rewritten — that would silently wipe the

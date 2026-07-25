@@ -42,7 +42,7 @@ fn main() -> ExitCode {
             Err(e) => {
                 eprintln!("{}: {}", file.display(), e);
                 had_error = true;
-            }
+            },
         }
     }
 
@@ -68,11 +68,11 @@ fn run_stdin(cfg: &FormatConfig) -> ExitCode {
                 return ExitCode::from(1);
             }
             ExitCode::SUCCESS
-        }
+        },
         Err(e) => {
             eprintln!("error: {e}");
             ExitCode::from(1)
-        }
+        },
     }
 }
 
@@ -92,7 +92,7 @@ fn run_file(
                 io::ErrorKind::InvalidData,
                 format!("parse: {e}"),
             ));
-        }
+        },
     };
     let changed = formatted != input;
     if check {

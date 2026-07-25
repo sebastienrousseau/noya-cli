@@ -151,6 +151,79 @@ fn version_prints_crate_version() {
     assert!(stdout.starts_with("noyafmt "));
 }
 
+#[test]
+fn missing_file_errors_and_exits_one() {
+    // run_file's `fs::read_to_string` fails → the per-file Err arm
+    // prints "<path>: <err>" to stderr and main() exits 1.
+    let out = Command::new(bin())
+        .arg("/no/such/noyafmt-file.yaml")
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(1));
+    let stderr = String::from_utf8(out.stderr).unwrap();
+    assert!(
+        stderr.contains("noyafmt-file.yaml"),
+        "stderr should name the failing file; got {stderr:?}"
+    );
+}
+
+#[test]
+fn unparseable_file_reports_parse_error() {
+    // run_file's `format_with_config` Err arm wraps the parse failure
+    // as InvalidData("parse: …").
+    let dir = tempdir();
+    let path = dir.join("broken.yaml");
+    std::fs::write(&path, "a: [unterminated\n").unwrap();
+    let out = Command::new(bin()).arg(&path).output().unwrap();
+    assert_eq!(out.status.code(), Some(1));
+    let stderr = String::from_utf8(out.stderr).unwrap();
+    assert!(
+        stderr.contains("parse:"),
+        "expected a parse error; got {stderr:?}"
+    );
+}
+
+#[test]
+fn stdin_unparseable_errors() {
+    // run_stdin's `format_with_config` Err arm → exit 1.
+    let (code, _out, stderr) = fmt_stdin("a: [unterminated\n", &[]);
+    assert_eq!(code, 1);
+    assert!(
+        stderr.contains("error:"),
+        "expected an error on stderr; got {stderr:?}"
+    );
+}
+
+#[test]
+fn default_mode_prints_formatted_to_stdout() {
+    // Neither --check nor --write: the file is formatted and the
+    // result written to stdout (run_file's final arm).
+    let dir = tempdir();
+    let path = dir.join("messy.yaml");
+    std::fs::write(&path, "a:    1\nb:  2\n").unwrap();
+    let out = Command::new(bin()).arg(&path).output().unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    assert_eq!(String::from_utf8(out.stdout).unwrap(), "a: 1\nb: 2\n");
+    // The file on disk is untouched (only --write rewrites).
+    assert_eq!(std::fs::read_to_string(&path).unwrap(), "a:    1\nb:  2\n");
+}
+
+#[test]
+fn write_already_clean_file_is_a_noop() {
+    // --write on a canonical file takes the `changed == false` arm:
+    // no fs::write, exit 0, file byte-identical.
+    let dir = tempdir();
+    let path = dir.join("clean.yaml");
+    std::fs::write(&path, "a: 1\n").unwrap();
+    let out = Command::new(bin())
+        .arg("--write")
+        .arg(&path)
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    assert_eq!(std::fs::read_to_string(&path).unwrap(), "a: 1\n");
+}
+
 // ── helpers ──────────────────────────────────────────────────────────
 
 fn tempdir() -> std::path::PathBuf {
