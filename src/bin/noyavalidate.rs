@@ -42,11 +42,11 @@ fn read_input(path: Option<&Path>) -> io::Result<(String, String)> {
             let mut buf = String::new();
             let _ = io::stdin().read_to_string(&mut buf)?;
             Ok(("<stdin>".to_string(), buf))
-        },
+        }
         Some(p) => {
             let source = fs::read_to_string(p)?;
             Ok((p.display().to_string(), source))
-        },
+        }
     }
 }
 
@@ -73,7 +73,7 @@ fn run_schema_validation(
             eprintln!("error: parsing schema:");
             eprintln!("{report:?}");
             return 1;
-        },
+        }
     };
 
     let mut violations = 0;
@@ -109,13 +109,13 @@ fn run_fix(path: Option<&Path>, source: &str) -> io::Result<()> {
                 io::ErrorKind::InvalidData,
                 format!("--fix: formatter rejected the input: {e}"),
             ));
-        },
+        }
     };
     match path {
         None => {
             let mut stdout = io::stdout().lock();
             stdout.write_all(formatted.as_bytes())?;
-        },
+        }
         Some(p) => fs::write(p, formatted.as_bytes())?,
     }
     Ok(())
@@ -171,7 +171,7 @@ fn run_fix_with_schema(
                 io::ErrorKind::InvalidData,
                 format!("--fix: parse stream: {e}"),
             ));
-        },
+        }
     };
 
     let mut applied = 0usize;
@@ -183,7 +183,7 @@ fn run_fix_with_schema(
                     io::ErrorKind::InvalidData,
                     format!("--fix: cst::coerce_to_schema failed: {e}"),
                 ));
-            },
+            }
         }
     }
 
@@ -226,7 +226,7 @@ fn run_fix_with_schema(
         None => {
             let mut stdout = io::stdout().lock();
             stdout.write_all(final_output.as_bytes())?;
-        },
+        }
         Some(p) => fs::write(p, final_output.as_bytes())?,
     }
     Ok(FixOutcome {
@@ -251,7 +251,7 @@ fn run() -> ExitCode {
         Err(e) => {
             eprintln!("error: reading input: {e}");
             return ExitCode::from(3);
-        },
+        }
     };
 
     // Phase 1: syntax check. The CST-aware --fix path takes the
@@ -263,7 +263,7 @@ fn run() -> ExitCode {
             let report = Report::new(e).with_source_code(NamedSource::new(name, source.clone()));
             eprintln!("{report:?}");
             return ExitCode::from(1);
-        },
+        }
     };
 
     // Phase 2: schema check + optional autofix.
@@ -292,7 +292,7 @@ fn run() -> ExitCode {
             Err(e) => {
                 eprintln!("error: reading schema {}: {e}", schema_path.display());
                 return ExitCode::from(3);
-            },
+            }
         };
         let schema: noyalib::Value = match noyalib::from_str(&schema_text) {
             Ok(s) => s,
@@ -304,7 +304,7 @@ fn run() -> ExitCode {
                 eprintln!("error: parsing schema:");
                 eprintln!("{report:?}");
                 return ExitCode::from(1);
-            },
+            }
         };
 
         if args.fix {
@@ -324,7 +324,7 @@ fn run() -> ExitCode {
                         3
                     };
                     return ExitCode::from(code);
-                },
+                }
             };
             total_fixes_via_coerce = outcome.applied;
             fix_handled_via_schema_path = true;
@@ -374,7 +374,7 @@ fn run() -> ExitCode {
                 } else {
                     format!(" (schema-checked, {total_fixes_via_coerce} fix(es) applied)")
                 }
-            },
+            }
             (true, false) => " (schema-checked)".to_string(),
             (false, true) => " (fixed)".to_string(),
             (false, false) => String::new(),
