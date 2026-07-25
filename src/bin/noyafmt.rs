@@ -11,12 +11,13 @@
 //! the same Command tree feeds the binary, the build-time codegen,
 //! and the `cargo xtask` runner.
 
-use clap::Parser;
-use noya_cli::NoyafmtCli;
-use noyalib::cst::{FormatConfig, format_with_config};
 use std::fs;
 use std::io::{self, Read, Write};
 use std::process::ExitCode;
+
+use clap::Parser;
+use noya_cli::NoyafmtCli;
+use noyalib::cst::{FormatConfig, format_with_config};
 
 fn main() -> ExitCode {
     let args = NoyafmtCli::parse();

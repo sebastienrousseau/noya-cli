@@ -146,19 +146,16 @@ struct FixOutcome {
 ///
 /// Behaviour:
 ///
-/// 1. Parse the source via [`noyalib::cst::parse_stream`]
-///    (multi-doc-aware).
-/// 2. For each document, run [`noyalib::cst::coerce_to_schema`]
-///    in-place — only string scalars whose schema-declared type
-///    is integer / number / boolean are coerced; everything else
-///    is preserved.
-/// 3. Re-validate via [`noyalib::validate_against_schema`] on the
-///    parsed [`noyalib::Value`] tree. If any violation remains, return
-///    without writing — the caller surfaces the residue and
-///    exits 1 with the user's original source intact.
-/// 4. If validation passes, write the concatenated CST sources
-///    back to `path` (or stdout). Comments and formatting
-///    survive byte-faithfully.
+/// 1. Parse the source via [`noyalib::cst::parse_stream`] (multi-doc-aware).
+/// 2. For each document, run [`noyalib::cst::coerce_to_schema`] in-place — only
+///    string scalars whose schema-declared type is integer / number / boolean
+///    are coerced; everything else is preserved.
+/// 3. Re-validate via [`noyalib::validate_against_schema`] on the parsed
+///    [`noyalib::Value`] tree. If any violation remains, return without writing
+///    — the caller surfaces the residue and exits 1 with the user's original
+///    source intact.
+/// 4. If validation passes, write the concatenated CST sources back to `path`
+///    (or stdout). Comments and formatting survive byte-faithfully.
 fn run_fix_with_schema(
     path: Option<&Path>,
     source: &str,

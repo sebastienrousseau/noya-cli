@@ -10,13 +10,12 @@
 //!
 //! # Surface
 //!
-//! - [`NoyafmtCli`] / [`NoyavalidateCli`] — the parsed-args structs
-//!   produced by `clap`'s derive macros. `main()` in each binary
-//!   matches against fields of these.
-//! - [`noyafmt_command`] / [`noyavalidate_command`] — the
-//!   underlying [`clap::Command`] tree. Used by `clap_complete` and
-//!   `clap_mangen` to generate completions and man pages
-//!   respectively.
+//! - [`NoyafmtCli`] / [`NoyavalidateCli`] — the parsed-args structs produced by
+//!   `clap`'s derive macros. `main()` in each binary matches against fields of
+//!   these.
+//! - [`noyafmt_command`] / [`noyavalidate_command`] — the underlying
+//!   [`clap::Command`] tree. Used by `clap_complete` and `clap_mangen` to
+//!   generate completions and man pages respectively.
 //!
 //! # Cargo features
 //!
@@ -109,19 +108,18 @@
 //!
 //! # Documentation
 //!
-//! - **Engineering policies** — workspace
-//!   [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/POLICIES.md)
-//!   covers MSRV, SemVer, security, performance, concurrency,
-//!   platform support, feature flags.
-//! - **CLI flag reference**:
-//!   [`doc/cli-reference.md`](https://github.com/sebastienrousseau/noyalib/blob/main/crates/noya-cli/doc/cli-reference.md).
+//! - **Engineering policies** — workspace [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/POLICIES.md)
+//!   covers MSRV, SemVer, security, performance, concurrency, platform support,
+//!   feature flags.
+//! - **CLI flag reference**: [`doc/cli-reference.md`](https://github.com/sebastienrousseau/noyalib/blob/main/crates/noya-cli/doc/cli-reference.md).
 //! - **Recipes** (pre-commit, CI gate, schema validation, k8s,
 //!   Helm, Compose, GitHub Actions): the
 //!   [`examples/`](https://github.com/sebastienrousseau/noyalib/tree/main/crates/noya-cli/examples)
 //!   directory.
 
-use clap::{CommandFactory, Parser};
 use std::path::PathBuf;
+
+use clap::{CommandFactory, Parser};
 
 /// CLI surface for `noyafmt` — the YAML formatter.
 ///
