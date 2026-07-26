@@ -20,16 +20,40 @@ concurrency:
 
 jobs:
   cargo-deny:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-deny.yml@346a9b0a79fe5d1397dd499e66fc5c234570779a
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-deny.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   cargo-vet:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-vet.yml@346a9b0a79fe5d1397dd499e66fc5c234570779a
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-vet.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   cargo-machete:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-machete.yml@346a9b0a79fe5d1397dd499e66fc5c234570779a
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-machete.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   reuse-lint:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-reuse.yml@346a9b0a79fe5d1397dd499e66fc5c234570779a
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-reuse.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   docs-strict:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-rustdoc-strict.yml@346a9b0a79fe5d1397dd499e66fc5c234570779a
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-rustdoc-strict.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   verify-signatures:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-verify-signatures.yml@346a9b0a79fe5d1397dd499e66fc5c234570779a
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-verify-signatures.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   test-matrix:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-test-matrix.yml@346a9b0a79fe5d1397dd499e66fc5c234570779a
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-test-matrix.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+
+  # ── A+ rigor parity with the core ──────────────────────────────────
+  coverage-gate:
+    # The reusable logic in `src/lib.rs` is at 100 %. Coverage is
+    # measured at regions 91.4 / functions 100 / lines 89.6; the
+    # residual gap is entirely defensive `Err(e) =>` arms in the two
+    # binaries (parse/format failures that are unreachable because
+    # Phase-1 `load_all_as` already validated syntax, plus stdin/stdout
+    # I/O-failure arms). Forcing coverage on those is the assert-free-
+    # test anti-pattern the project forbids, so the floor is set at the
+    # honest testable ceiling — high enough to catch a real regression,
+    # not so high it demands covering unreachable code.
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-coverage.yml@00ee7b90ca45138ad331387dae0d846799b8ab91
+    with:
+      ignore-filename-regex: ''
+      fail-under-functions: 96
+      fail-under-lines: 88
+      fail-under-regions: 90
+
+  msrv-core:
+    # Verifies the declared 1.86.0 floor actually builds.
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-msrv-core.yml@00ee7b90ca45138ad331387dae0d846799b8ab91
+    with:
+      toolchain: "1.86.0"
