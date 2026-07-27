@@ -26,7 +26,7 @@ jobs:
 
 ```yaml
 yaml-fmt:
-  image: rust:1.85-bookworm
+  image: rust:1.86-bookworm
   before_script:
     - cargo install noya-cli --locked
   script:
