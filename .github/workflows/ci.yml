@@ -28,7 +28,7 @@ jobs:
   reuse-lint:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-reuse.yml@c98a9451a7349913f83668d83c0149443e6f1216
   docs-strict:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-rustdoc-strict.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-rustdoc-strict.yml@05d8856df421bfdec5f96c61f9b76700655fe7b1
   verify-signatures:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-verify-signatures.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   test-matrix:
