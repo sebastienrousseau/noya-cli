@@ -47,7 +47,7 @@ jobs:
     # not so high it demands covering unreachable code.
     uses: sebastienrousseau/noyalib/.github/workflows/shared-coverage.yml@00ee7b90ca45138ad331387dae0d846799b8ab91
     with:
-      ignore-filename-regex: ''
+      ignore-filename-regex: 'build\.rs$'
       fail-under-functions: 96
       fail-under-lines: 88
       fail-under-regions: 90
