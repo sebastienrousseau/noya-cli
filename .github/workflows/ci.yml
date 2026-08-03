@@ -45,7 +45,7 @@ jobs:
     # test anti-pattern the project forbids, so the floor is set at the
     # honest testable ceiling — high enough to catch a real regression,
     # not so high it demands covering unreachable code.
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-coverage.yml@00ee7b90ca45138ad331387dae0d846799b8ab91
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-coverage.yml@76235c1a4306a2bbee8ece3c1147a9245da91abf
     with:
       ignore-filename-regex: 'build\.rs$'
       fail-under-functions: 96
