@@ -22,7 +22,7 @@ jobs:
   cargo-deny:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-deny.yml@05d8856df421bfdec5f96c61f9b76700655fe7b1
   cargo-vet:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-vet.yml@05d8856df421bfdec5f96c61f9b76700655fe7b1
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-vet.yml@99fd03e4113923d15704969315ab0a44cacd71d3
   cargo-machete:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-machete.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   reuse-lint:
