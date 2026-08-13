@@ -27,3 +27,7 @@ updates:
       timezone: "Etc/UTC"
     open-pull-requests-limit: 10
     labels: ["ci", "dependencies"]
+    groups:
+      github-actions:
+        patterns:
+          - "*"
