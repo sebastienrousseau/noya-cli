@@ -26,7 +26,7 @@ jobs:
   cargo-machete:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-machete.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
   reuse-lint:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-reuse.yml@76235c1a4306a2bbee8ece3c1147a9245da91abf
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-reuse.yml@cbb6194143bd8bea396e6223cdd34072b6d6ecf9
   docs-strict:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-rustdoc-strict.yml@05d8856df421bfdec5f96c61f9b76700655fe7b1
   verify-signatures:
@@ -45,7 +45,7 @@ jobs:
     # test anti-pattern the project forbids, so the floor is set at the
     # honest testable ceiling — high enough to catch a real regression,
     # not so high it demands covering unreachable code.
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-coverage.yml@76235c1a4306a2bbee8ece3c1147a9245da91abf
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-coverage.yml@cbb6194143bd8bea396e6223cdd34072b6d6ecf9
     with:
       ignore-filename-regex: 'build\.rs$'
       fail-under-functions: 96
@@ -54,6 +54,6 @@ jobs:
 
   msrv-core:
     # Verifies the declared 1.86.0 floor actually builds.
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-msrv-core.yml@76235c1a4306a2bbee8ece3c1147a9245da91abf
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-msrv-core.yml@cbb6194143bd8bea396e6223cdd34072b6d6ecf9
     with:
       toolchain: "1.86.0"
