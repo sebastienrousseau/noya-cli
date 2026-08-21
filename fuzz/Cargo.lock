@@ -716,6 +716,7 @@ dependencies = [
 name = "noya-cli-fuzz"
 version = "0.0.0"
 dependencies = [
+ "clap",
  "libfuzzer-sys",
  "noya-cli",
 ]
