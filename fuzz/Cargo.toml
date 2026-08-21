@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
+# Copyright (c) 2026 Noyalib. All rights reserved.
+
+[package]
+name = "noya-cli-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.noya-cli]
+path = ".."
+
+[[bin]]
+name = "fuzz_argv"
+path = "fuzz_targets/fuzz_argv.rs"
+test = false
+doc = false
+bench = false

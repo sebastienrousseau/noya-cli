@@ -117,6 +117,11 @@
 //!   [`examples/`](https://github.com/sebastienrousseau/noyalib/tree/main/crates/noya-cli/examples)
 //!   directory.
 
+#![deny(missing_docs)]
+// Every public item carries documentation. The scorecard probes for this
+// lint rather than for doc-comment density, because a lint is enforced on
+// every build while a count can be satisfied by writing `/// The name.`
+
 use std::path::PathBuf;
 
 use clap::{CommandFactory, Parser};

@@ -50,6 +50,23 @@
 | Nix | `nix run github:sebastienrousseau/noyalib` |
 | Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noyafmt:latest --check ci/*.yaml` |
 
+### Formatter only, if you do not need `noyavalidate`
+
+```bash
+cargo install noya-cli --locked --no-default-features --features noyafmt
+```
+
+The default install includes `noyavalidate`, whose schema errors are
+rendered by [`miette`](https://crates.io/crates/miette) with source
+excerpts and carets — worth the weight for a validator, since pointing at
+the offending line *is* the job. It does mean the default pulls **130**
+crates against **32** for the formatter alone, most of the difference
+being `miette`'s `fancy` renderer and its backtrace stack.
+
+If you only ever run `noyafmt`, the command above is a smaller supply
+chain and a faster build. Nothing is degraded for anyone who wants the
+diagnostics — it is a choice, not a default.
+
 Pre-built tarballs for **14 targets** (Linux gnu + musl, macOS
 Intel + Apple Silicon + universal, Windows x86_64 + i686 +
 aarch64) are attached to every GitHub Release. Each artefact is
