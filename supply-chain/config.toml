@@ -189,7 +189,7 @@ version = "0.0.27"
 criteria = "safe-to-deploy"
 
 [[exemptions.noyalib]]
-version = "0.0.27"
+version = "0.0.28"
 criteria = "safe-to-deploy"
 
 [[exemptions.num-cmp]]
