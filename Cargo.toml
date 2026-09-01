@@ -1,6 +1,6 @@
 [package]
 name = "noya-cli"
-version = "0.0.28"
+version = "0.0.29"
 edition = "2024"
 # Lockstep floor with the noyalib core (1.86.0 as of v0.0.16).
 # Also required independently here: clap 4.5 transitively pulls
@@ -38,7 +38,7 @@ path = "src/bin/noyavalidate.rs"
 required-features = ["noyavalidate"]
 
 [dependencies]
-noyalib = { version = "=0.0.28", default-features = false }
+noyalib = { version = "=0.0.29", default-features = false }
 clap    = { version = "4.5", features = ["derive", "wrap_help"] }
 miette  = { version = "7", optional = true, features = ["fancy"] }
 
