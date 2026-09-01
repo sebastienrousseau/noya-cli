@@ -2,28 +2,12 @@
 # cargo-vet imports lock
 
 [[unpublished.noya-cli]]
-version = "0.0.18"
-audited_as = "0.0.17"
-
-[[unpublished.noya-cli]]
-version = "0.0.19"
-audited_as = "0.0.18"
-
-[[unpublished.noya-cli]]
-version = "0.0.22"
-audited_as = "0.0.18"
-
-[[unpublished.noya-cli]]
-version = "0.0.23"
-audited_as = "0.0.22"
-
-[[unpublished.noya-cli]]
-version = "0.0.24"
-audited_as = "0.0.23"
-
-[[unpublished.noya-cli]]
 version = "0.0.28"
 audited_as = "0.0.27"
+
+[[unpublished.noya-cli]]
+version = "0.0.29"
+audited_as = "0.0.28"
 
 [[publisher.bumpalo]]
 version = "3.20.3"
@@ -771,27 +755,6 @@ who = "Daniel Cheng <dcheng@chromium.org>"
 criteria = "safe-to-deploy"
 delta = "1.0.14 -> 1.0.15"
 notes = "Only minor rustdoc changes."
-aggregated-from = "https://chromium.googlesource.com/chromium/src/+/main/third_party/rust/chromium_crates_io/supply-chain/audits.toml?format=TEXT"
-
-[[audits.google.audits.lazy_static]]
-who = "Lukasz Anforowicz <lukasza@chromium.org>"
-criteria = "safe-to-deploy"
-version = "1.4.0"
-notes = '''
-I grepped for \"crypt\", \"cipher\", \"fs\", \"net\" - there were no hits.
-
-There are two places where `unsafe` is used.  Unsafe review notes can be found
-in https://crrev.com/c/5347418.
-
-This crate has been added to Chromium in https://crrev.com/c/3321895.
-'''
-aggregated-from = "https://chromium.googlesource.com/chromium/src/+/main/third_party/rust/chromium_crates_io/supply-chain/audits.toml?format=TEXT"
-
-[[audits.google.audits.lazy_static]]
-who = "Lukasz Anforowicz <lukasza@chromium.org>"
-criteria = "safe-to-deploy"
-delta = "1.4.0 -> 1.5.0"
-notes = "Unsafe review notes: https://crrev.com/c/5650836"
 aggregated-from = "https://chromium.googlesource.com/chromium/src/+/main/third_party/rust/chromium_crates_io/supply-chain/audits.toml?format=TEXT"
 
 [[audits.google.audits.litemap]]
