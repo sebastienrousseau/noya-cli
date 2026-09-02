@@ -23,7 +23,7 @@ _noyafmt() {
 
     case "${cmd}" in
         noyafmt)
-            opts="-h -V --check --write --stdin --indent --help --version [FILE]..."
+            opts="-h -V --check --write --stdin --indent --help --version"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

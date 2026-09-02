@@ -19,6 +19,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  make-install:
+    # Phase-2 install contract: the GNUmakefile must stage a correct
+    # FHS tree under DESTDIR, the manpage must render, uninstall must
+    # leave nothing behind, and the tracked manpages/completions must
+    # be bit-identical to what the clap definitions generate
+    # (check-assets), so the docs can never drift from --help again.
+    name: make-install
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: make-install
+      - name: Stage install and verify the tree
+        run: |
+          set -euo pipefail
+          make DESTDIR="$PWD/stage" install
+          for f in bin/noyafmt bin/noyavalidate                    share/man/man1/noyafmt.1 share/man/man1/noyavalidate.1                    share/bash-completion/completions/noyafmt                    share/zsh/site-functions/_noyafmt                    share/fish/vendor_completions.d/noyafmt.fish; do
+            test -e "stage/usr/local/$f" || { echo "missing: $f" >&2; exit 1; }
+          done
+          stage/usr/local/bin/noyafmt --version
+          man --local-file stage/usr/local/share/man/man1/noyafmt.1 | head -3
+      - name: Uninstall leaves nothing
+        run: |
+          set -euo pipefail
+          make DESTDIR="$PWD/stage" uninstall
+          leftover=$(find stage -type f | wc -l)
+          test "$leftover" = 0 || { find stage -type f; exit 1; }
+      - name: Tracked assets match the clap definitions
+        run: make check-assets
   docs-lint:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-docs-lint.yml@a74001c96bed9c22510ae67f55d319040a192cf4
   cargo-deny:

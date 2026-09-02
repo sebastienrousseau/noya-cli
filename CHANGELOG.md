@@ -13,6 +13,17 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ## [Unreleased]
 
+### Added
+
+- **Phase 2: the Unix install contract.** `GNUmakefile` with
+  `make install` / `make uninstall` honoring `PREFIX` and `DESTDIR`
+  (binaries, manpages, bash/zsh/fish completions to FHS paths);
+  `make assets` regenerates `docs/*.1` and `complete/*` from the
+  clap definitions, `make check-assets` + the new `make-install` CI
+  job keep the tracked copies bit-identical (the committed manpages
+  had drifted to claiming version 0.0.1); the release version gate
+  now checks the manpage `.TH` version.
+
 ### Changed
 
 - **Repository layout, Phase 1 of the family structure plan**:

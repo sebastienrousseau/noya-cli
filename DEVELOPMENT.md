@@ -38,6 +38,13 @@ locally with the commands in the core DEVELOPMENT.md; the
 version-bearing files are checked by
 `scripts/verify-release-versions.sh vX.Y.Z`.
 
+## Release prep note
+
+The generated manpages embed the crate version; run `make assets`
+after every version bump (verify-release-versions.sh refuses to tag
+otherwise, and CI's make-install job runs `make check-assets` per
+push).
+
 ## House rules
 
 - CI green in the same session that turned it red.

@@ -163,6 +163,19 @@ for rel in ("README.md", f"crates/{name}/README.md"):
     else:
         ok(rel, "install snippets current")
 
+# Generated manpages embed the crate version in their .TH line, so a
+# release prep that skips `make assets` ships stale manpages — the
+# committed v0.0.29 pages still claimed 0.0.1 when this check was
+# written. check-assets in CI catches content drift; this catches the
+# version specifically at tag time.
+for page in sorted((root / "docs").glob("*.1")):
+    text = page.read_text(encoding="utf-8", errors="ignore")
+    m = re.search(r'\.TH\s+\S+\s+1\s+"[^"]*?(\d+\.\d+\.\d+)"', text)
+    if m and m.group(1) == version:
+        ok(f"docs/{page.name}", f"manpage version {m.group(1)}")
+    else:
+        bad(f"docs/{page.name}", f"manpage says {m.group(1) if m else 'nothing'} — run 'make assets'")
+
 print()
 if failed:
     print("Version mismatch. Fix these before tagging — a tag that fails the")

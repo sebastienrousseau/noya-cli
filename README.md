@@ -44,11 +44,12 @@
 |---|---|
 | Cargo (crates.io) | `cargo install noya-cli --locked` |
 | Cargo (from source) | `cargo install --locked --path .` |
-| Homebrew (personal tap) | `brew tap sebastienrousseau/tap && brew install noyalib` |
-| Arch (AUR) | `yay -S noyalib-bin` (binary) or `yay -S noyalib` (source) |
-| Scoop (Windows) | `scoop bucket add sebastienrousseau https://github.com/sebastienrousseau/scoop-bucket && scoop install noyalib` |
-| Nix | `nix run github:sebastienrousseau/noyalib` |
+| GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |
 | Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noyafmt:latest --check ci/*.yaml` |
+
+Homebrew, AUR, Scoop, and Nix packages land with the distribution
+phase of the repository plan; a channel is only listed here once it
+actually exists.
 
 ### Formatter only, if you do not need `noyavalidate`
 
@@ -211,14 +212,20 @@ into the standard system locations
 (`/usr/share/bash-completion/completions/`,
 `/usr/share/man/man1/`, …).
 
-If installing via `cargo install`, regenerate locally:
+`make install` places all of them in the standard locations. If
+installing via `cargo install`, the pre-built copies live in this
+repository (`complete/`, `docs/*.1`) — or regenerate them from the
+clap definitions:
 
 ```bash
-git clone https://github.com/sebastienrousseau/noyalib
-cd noyalib
-cargo xtask completions    # writes complete/{noyafmt,noyavalidate}.{bash,fish,zsh,ps1}
-cargo xtask manpages       # writes docs/{noyafmt,noyavalidate}.1
+git clone https://github.com/sebastienrousseau/noya-cli
+cd noya-cli
+make assets    # regenerates complete/* and docs/*.1 via build.rs
 ```
+
+CI enforces that the committed copies are bit-identical to what the
+clap definitions generate (`make check-assets`), so they cannot
+drift from `--help`.
 
 ---
 

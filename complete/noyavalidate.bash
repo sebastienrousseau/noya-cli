@@ -23,7 +23,7 @@ _noyavalidate() {
 
     case "${cmd}" in
         noyavalidate)
-            opts="-s -q -h -V --schema --fix --quiet --help --version [FILE]"
+            opts="-s -q -h -V --schema --fix --quiet --help --version"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
