@@ -15,6 +15,19 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ### Added
 
+- **Phase 4: pre-built release binaries.** Every tag (and every
+  dry-run dispatch) builds an 8-target matrix — Linux gnu + musl on
+  x86_64/aarch64, macOS both architectures, Windows x86_64/aarch64 —
+  with `cargo auditable` (the dependency tree is embedded in each
+  binary), packaged with the generated manpages, completions and
+  licenses, per-archive SHA-256, and SLSA build-provenance
+  attestations, attached to the GitHub Release.
+- **Phase-5 groundwork: .deb and .rpm release assets** built from
+  the same auditable binaries via `[package.metadata.deb]` (new) and
+  the existing `generate-rpm` layout.
+
+### Added
+
 - **Phase 2: the Unix install contract.** `GNUmakefile` with
   `make install` / `make uninstall` honoring `PREFIX` and `DESTDIR`
   (binaries, manpages, bash/zsh/fish completions to FHS paths);
