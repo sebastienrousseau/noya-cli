@@ -108,6 +108,17 @@ jobs:
             sha256sum "$f" >> SHA256SUMS.txt
             sha512sum "$f" >> SHA512SUMS.txt
           done
+      - name: Bare-container smoke (the runs-anywhere proof)
+        # The musl static build must run on a distro-less userland —
+        # adapted from zfb's node-free smoke. Only the natively
+        # executable leg can prove it in-place.
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD/target/${{ matrix.target }}/release:/b:ro" alpine:3 \
+            /b/noyafmt --version
+          printf 'a: 1\n' | docker run --rm -i -v "$PWD/target/${{ matrix.target }}/release:/b:ro" alpine:3 \
+            /b/noyafmt --stdin
       - name: Attest build provenance (SLSA L3)
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
