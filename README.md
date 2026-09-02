@@ -230,10 +230,9 @@ before trusting a download:
 
 ```bash
 COSIGN_EXPERIMENTAL=1 cosign verify-blob \
-  --certificate-identity-regexp 'https://github.com/sebastienrousseau/noyalib/' \
+  --certificate-identity-regexp 'https://github.com/sebastienrousseau/noya-cli/' \
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
-  --certificate <artefact>.pem \
-  --signature   <artefact>.sig \
+  --bundle <artefact>.bundle \
   <artefact>
 
 gh attestation verify --owner sebastienrousseau <artefact>
