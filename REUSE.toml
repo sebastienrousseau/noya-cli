@@ -30,7 +30,7 @@ SPDX-FileCopyrightText = "2026 Noyalib"
 SPDX-License-Identifier = "MIT OR Apache-2.0"
 
 [[annotations]]
-path = ["README.md", "CHANGELOG.md", "SECURITY.md", "doc/**"]
+path = ["README.md", "CHANGELOG.md", "SECURITY.md", "docs/**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Noyalib"
 SPDX-License-Identifier = "MIT OR Apache-2.0"
@@ -73,6 +73,24 @@ path = [
     "fuzz/Cargo.lock",
     "fuzz/corpus/**",
 ]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Noyalib"
+SPDX-License-Identifier = "MIT OR Apache-2.0"
+
+# ── Generated CLI artefacts ───────────────────────────────────────
+# `complete/*` and `docs/*.1` are regenerated from the clap Command
+# tree by the build script when NOYA_GEN_ASSETS=1. Tracked because
+# distro packagers prefer pre-built artefacts; bit-reproducible
+# from source.
+[[annotations]]
+path = ["complete/**", "docs/noyafmt.1", "docs/noyavalidate.1"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Noyalib"
+SPDX-License-Identifier = "MIT OR Apache-2.0"
+
+# ── Family layout files (Phase 1, docs/ECOSYSTEM.md in the core) ──
+[[annotations]]
+path = ["DEVELOPMENT.md", ".editorconfig", ".markdownlint.yaml", ".codespellrc"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Noyalib"
 SPDX-License-Identifier = "MIT OR Apache-2.0"

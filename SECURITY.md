@@ -7,7 +7,7 @@
 | 0.0.x   | Yes       |
 
 `noya-cli` follows the [ADR-0005 strict-lockstep versioning
-contract](https://github.com/sebastienrousseau/noyalib/blob/main/doc/adr/0005-workspace-split.md).
+contract](https://github.com/sebastienrousseau/noyalib/blob/main/docs/adr/0005-workspace-split.md).
 Every release is coordinated with `noyalib` at the same
 version.
 

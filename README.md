@@ -217,7 +217,7 @@ If installing via `cargo install`, regenerate locally:
 git clone https://github.com/sebastienrousseau/noyalib
 cd noyalib
 cargo xtask completions    # writes complete/{noyafmt,noyavalidate}.{bash,fish,zsh,ps1}
-cargo xtask manpages       # writes doc/{noyafmt,noyavalidate}.1
+cargo xtask manpages       # writes docs/{noyafmt,noyavalidate}.1
 ```
 
 ---
@@ -268,13 +268,13 @@ Full cookbook including the offline / FIPS-bound flow:
 ## Documentation
 
 - **Engineering policies** (MSRV, SemVer, security, performance, concurrency, platform support, feature flags):
-  [`doc/POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/POLICIES.md)
+  [`doc/POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/POLICIES.md)
 - **Security policy**:
   [`SECURITY.md`](https://github.com/sebastienrousseau/noyalib/blob/main/SECURITY.md)
 - **CLI flag reference**:
-  [`doc/cli-reference.md`](https://github.com/sebastienrousseau/noyalib/blob/main/crates/noya-cli/doc/cli-reference.md)
+  [`docs/cli-reference.md`](docs/cli-reference.md)
 - **Recipes (CI gates, pre-commit, editor integration)**:
-  [`doc/recipes.md`](https://github.com/sebastienrousseau/noyalib/blob/main/crates/noya-cli/doc/recipes.md)
+  [`docs/recipes.md`](docs/recipes.md)
 - **Workspace README**:
   <https://github.com/sebastienrousseau/noyalib#readme>
 - **Per-channel install + verify**:

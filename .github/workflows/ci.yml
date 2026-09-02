@@ -19,6 +19,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  docs-lint:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-docs-lint.yml@7eab99a87e0a24e34990a93a7ef988b29ee54628
   cargo-deny:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-deny.yml@ae86a20b764905c8332652b28d8989f7ddde0376
   cargo-vet:
