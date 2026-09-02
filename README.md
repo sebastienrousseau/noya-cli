@@ -4,19 +4,19 @@
   <img src="https://cloudcdn.pro/noyalib/v1/logos/noyalib.svg" alt="Noyalib logo" width="128" />
 </p>
 
-<h1 align="center">noyalib-cli</h1>
+<h1 align="center">noya-cli</h1>
 
 <p align="center">
   <strong><code>noyafmt</code> and <code>noyavalidate</code> —
-  the YAML formatter and validator that ship as the CLI half of
-  the noyalib workspace.</strong>
+  the YAML formatter and validator built on the noyalib
+  library.</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/sebastienrousseau/noyalib/actions"><img src="https://img.shields.io/github/actions/workflow/status/sebastienrousseau/noyalib/ci.yml?style=for-the-badge&logo=github" alt="Build" /></a>
-  <a href="https://crates.io/crates/noyalib"><img src="https://img.shields.io/crates/v/noyalib.svg?style=for-the-badge&color=fc8d62&logo=rust" alt="Crates.io" /></a>
+  <a href="https://github.com/sebastienrousseau/noya-cli/actions"><img src="https://img.shields.io/github/actions/workflow/status/sebastienrousseau/noya-cli/ci.yml?style=for-the-badge&logo=github" alt="Build" /></a>
+  <a href="https://crates.io/crates/noya-cli"><img src="https://img.shields.io/crates/v/noya-cli.svg?style=for-the-badge&color=fc8d62&logo=rust" alt="Crates.io" /></a>
   <a href="https://docs.rs/noyalib"><img src="https://img.shields.io/badge/docs.rs-noyalib-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs.rs" /></a>
-  <a href="https://github.com/sebastienrousseau/noyalib/releases"><img src="https://img.shields.io/github/v/release/sebastienrousseau/noyalib?style=for-the-badge&label=release&color=blueviolet" alt="GitHub Release" /></a>
+  <a href="https://github.com/sebastienrousseau/noya-cli/releases"><img src="https://img.shields.io/github/v/release/sebastienrousseau/noya-cli?style=for-the-badge&label=release&color=blueviolet" alt="GitHub Release" /></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noyalib"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noyalib?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
 </p>
 
@@ -47,10 +47,6 @@
 | GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |
 | Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noyafmt:latest --check ci/*.yaml` |
 
-Homebrew, AUR, Scoop, and Nix packages land with the distribution
-phase of the repository plan; a channel is only listed here once it
-actually exists.
-
 ### Formatter only, if you do not need `noyavalidate`
 
 ```bash
@@ -68,14 +64,11 @@ If you only ever run `noyafmt`, the command above is a smaller supply
 chain and a faster build. Nothing is degraded for anyone who wants the
 diagnostics — it is a choice, not a default.
 
-Pre-built tarballs for **14 targets** (Linux gnu + musl, macOS
-Intel + Apple Silicon + universal, Windows x86_64 + i686 +
-aarch64) are attached to every GitHub Release. Each artefact is
-signed with cosign keyless and carries a SLSA L3 build provenance
-attestation — see
-[Verification](#verification) for the verify commands or
-[`pkg/VERIFY.md`](https://github.com/sebastienrousseau/noyalib/blob/main/pkg/VERIFY.md)
-for the full cookbook.
+Releases ship the crate archive with a CycloneDX SBOM, sigstore
+bundles, and a SLSA build-provenance attestation — see
+[Verification](#verification). Pre-built binary tarballs are not
+published yet; install via Cargo, `make install`, or the container
+image above.
 
 **MSRV: Rust 1.86.0** — the lowest toolchain this crate can be
 **built and tested** on, matching the noyalib core floor.
@@ -189,7 +182,7 @@ rustc-style source pointers:
 ## Examples
 
 End-to-end runnable demos under
-[`crates/noya-cli/examples/`](examples/):
+[`examples/`](examples/):
 
 | Script | What it shows |
 |---|---|
@@ -231,10 +224,9 @@ drift from `--help`.
 
 ## Verification
 
-Every release artefact ships with a cosign keyless signature
-(`<artefact>.sig` + `<artefact>.pem`) and a SLSA L3 build
-provenance attestation. Verify before trusting a downloaded
-binary:
+Every release artefact (crate archive, SBOM) ships with a cosign
+keyless signature and a SLSA build-provenance attestation. Verify
+before trusting a download:
 
 ```bash
 COSIGN_EXPERIMENTAL=1 cosign verify-blob \
