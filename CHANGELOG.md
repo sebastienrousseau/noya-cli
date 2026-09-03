@@ -26,8 +26,6 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
   the same auditable binaries via `[package.metadata.deb]` (new) and
   the existing `generate-rpm` layout.
 
-### Added
-
 - **Phase 2: the Unix install contract.** `GNUmakefile` with
   `make install` / `make uninstall` honoring `PREFIX` and `DESTDIR`
   (binaries, manpages, bash/zsh/fish completions to FHS paths);
