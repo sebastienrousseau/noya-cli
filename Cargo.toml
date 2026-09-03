@@ -97,3 +97,12 @@ assets = [
     { source = "complete/noyafmt.fish", dest = "/usr/share/fish/vendor_completions.d/noyafmt.fish", mode = "0644" },
     { source = "complete/noyavalidate.fish", dest = "/usr/share/fish/vendor_completions.d/noyavalidate.fish", mode = "0644" },
 ]
+
+# ── Pre-release resolution ─────────────────────────────────────────
+# The `=0.0.32` lockstep pin resolves only against the *published*
+# core. Until that release lands on crates.io, resolve it from the
+# core's release branch so CI and local builds work. REMOVE at the
+# v0.0.32 cut — the release validation must refuse to tag while this
+# section is present (same contract as noyalib-serde-yaml's).
+[patch.crates-io]
+noyalib = { git = "https://github.com/sebastienrousseau/noyalib", branch = "feat/v0.0.32" }
