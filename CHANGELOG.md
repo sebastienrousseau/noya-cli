@@ -13,6 +13,15 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ## [Unreleased]
 
+## [v0.0.32] - 2026-09-03
+
+### Changed
+
+- Lockstep release with noyalib 0.0.32: block sequence spans report
+  their full extent (core #375). The README install table now lists
+  the live Homebrew, Scoop, and AUR channels; the AUR pair
+  (PKGBUILD + .SRCINFO) is committed under `pkg/aur/`.
+
 ## [v0.0.31] - 2026-09-03
 
 ### Added
