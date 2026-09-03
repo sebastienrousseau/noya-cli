@@ -13,6 +13,8 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ## [Unreleased]
 
+## [v0.0.31] - 2026-09-03
+
 ### Added
 
 - **Phase 4: pre-built release binaries.** Every tag (and every
