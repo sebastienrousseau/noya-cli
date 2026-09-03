@@ -44,6 +44,9 @@
 |---|---|
 | Pre-built binaries | download for 8 targets (Linux gnu/musl, macOS, Windows on x86_64/aarch64) from the [latest release](https://github.com/sebastienrousseau/noya-cli/releases/latest) — each with manpages, completions, SHA-256, and SLSA provenance |
 | Linux packages | `.deb` and `.rpm` on the [latest release](https://github.com/sebastienrousseau/noya-cli/releases/latest) |
+| Homebrew (macOS/Linux) | `brew install sebastienrousseau/tap/noya-cli` |
+| Scoop (Windows) | `scoop bucket add sebastienrousseau https://github.com/sebastienrousseau/scoop-bucket` then `scoop install noya-cli` |
+| AUR (Arch) | [`noyalib-bin`](https://aur.archlinux.org/packages/noyalib-bin), e.g. `yay -S noyalib-bin` |
 | Cargo (crates.io) | `cargo install noya-cli --locked` |
 | Cargo (from source) | `cargo install --locked --path .` |
 | GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |

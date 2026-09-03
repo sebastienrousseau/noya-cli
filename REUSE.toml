@@ -83,7 +83,7 @@ SPDX-License-Identifier = "MIT OR Apache-2.0"
 # distro packagers prefer pre-built artefacts; bit-reproducible
 # from source.
 [[annotations]]
-path = ["complete/**", "docs/noyafmt.1", "docs/noyavalidate.1"]
+path = ["complete/**", "docs/noyafmt.1", "docs/noyavalidate.1", "pkg/**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Noyalib"
 SPDX-License-Identifier = "MIT OR Apache-2.0"
