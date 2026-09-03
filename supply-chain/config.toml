@@ -125,7 +125,7 @@ version = "0.4.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.fraction]]
-version = "0.16.0"
+version = "0.17.0"
 criteria = "safe-to-deploy"
 
 [[exemptions.futures-task]]
@@ -149,15 +149,15 @@ version = "0.3.103"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema]]
-version = "0.50.1"
+version = "0.52.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema-regex]]
-version = "0.50.1"
+version = "0.52.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema-value]]
-version = "0.50.1"
+version = "0.52.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.libc]]
@@ -189,7 +189,7 @@ version = "0.0.27"
 criteria = "safe-to-deploy"
 
 [[exemptions.noyalib]]
-version = "0.0.29"
+version = "0.0.30"
 criteria = "safe-to-deploy"
 
 [[exemptions.num-cmp]]
@@ -249,7 +249,7 @@ version = "1.0.26"
 criteria = "safe-to-deploy"
 
 [[exemptions.referencing]]
-version = "0.50.1"
+version = "0.52.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.regex]]
