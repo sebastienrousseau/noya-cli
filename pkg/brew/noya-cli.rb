@@ -3,8 +3,7 @@
 class NoyaCli < Formula
   desc "YAML formatter and JSON-Schema validator built on noyalib"
   homepage "https://github.com/sebastienrousseau/noya-cli"
-  version "0.0.32"
-  license "MIT OR Apache-2.0"
+  license any_of: ["MIT", "Apache-2.0"]
 
   on_macos do
     if Hardware::CPU.arm?
