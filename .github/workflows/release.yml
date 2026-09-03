@@ -108,6 +108,17 @@ jobs:
             sha256sum "$f" >> SHA256SUMS.txt
             sha512sum "$f" >> SHA512SUMS.txt
           done
+      - name: Bare-container smoke (the runs-anywhere proof)
+        # The musl static build must run on a distro-less userland —
+        # adapted from zfb's node-free smoke. Only the natively
+        # executable leg can prove it in-place.
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD/target/${{ matrix.target }}/release:/b:ro" alpine:3 \
+            /b/noyafmt --version
+          printf 'a: 1\n' | docker run --rm -i -v "$PWD/target/${{ matrix.target }}/release:/b:ro" alpine:3 \
+            /b/noyafmt --stdin
       - name: Attest build provenance (SLSA L3)
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
@@ -232,6 +243,126 @@ jobs:
             SBOM.cdx.json.asc
           retention-days: 5
 
+  binaries:
+    # Phase 4 of the repository plan: pre-built binaries for every
+    # release across the practical target matrix. Built with
+    # cargo-auditable so the dependency tree is embedded in each
+    # binary (`cargo audit bin`), packaged with the generated
+    # manpages, completions, and licenses, and provenance-attested.
+    # Runs on tags and on workflow_dispatch so the dry-run exercises
+    # the whole matrix before a real cut.
+    name: binaries (${{ matrix.target }})
+    needs: validate
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { target: x86_64-unknown-linux-gnu,  os: ubuntu-latest }
+          - { target: x86_64-unknown-linux-musl, os: ubuntu-latest }
+          - { target: aarch64-unknown-linux-gnu, os: ubuntu-latest }
+          - { target: aarch64-unknown-linux-musl, os: ubuntu-latest }
+          - { target: x86_64-apple-darwin,       os: macos-latest }
+          - { target: aarch64-apple-darwin,      os: macos-latest }
+          - { target: x86_64-pc-windows-msvc,    os: windows-latest }
+          - { target: aarch64-pc-windows-msvc,   os: windows-latest }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master
+        with:
+          toolchain: stable
+          targets: ${{ matrix.target }}
+      - uses: taiki-e/setup-cross-toolchain-action@12b7ad4acfa95a1476779d6c06699b96ec1691f8 # v1.42.0
+        if: runner.os == 'Linux'
+        with:
+          target: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: binaries-${{ matrix.target }}
+      - uses: taiki-e/install-action@742a3317eac7bd62f91cd888b4eead5e784ba833 # v2.87.1
+        with:
+          tool: cargo-auditable
+      - name: Build (auditable)
+        run: cargo auditable build --release --locked --target ${{ matrix.target }}
+      - name: Package
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          [ "${GITHUB_REF_NAME}" = "${GITHUB_REF}" ] || true
+          case "${GITHUB_REF}" in refs/tags/v*) ;; *) VERSION="dry-run";; esac
+          NAME="noya-cli-${VERSION}-${{ matrix.target }}"
+          STAGE="dist/${NAME}"
+          mkdir -p "${STAGE}"
+          EXT=""
+          [ "${RUNNER_OS}" = "Windows" ] && EXT=".exe"
+          cp "target/${{ matrix.target }}/release/noyafmt${EXT}"              "target/${{ matrix.target }}/release/noyavalidate${EXT}" "${STAGE}/"
+          cp docs/noyafmt.1 docs/noyavalidate.1 "${STAGE}/"
+          cp -R complete "${STAGE}/complete"
+          cp LICENSE-APACHE LICENSE-MIT README.md "${STAGE}/"
+          cd dist
+          if [ "${RUNNER_OS}" = "Windows" ]; then
+            7z a "${NAME}.zip" "${NAME}" > /dev/null
+            OUT="${NAME}.zip"
+          else
+            tar czf "${NAME}.tar.gz" "${NAME}"
+            OUT="${NAME}.tar.gz"
+          fi
+          shasum -a 256 "${OUT}" > "${OUT}.sha256" 2>/dev/null || sha256sum "${OUT}" > "${OUT}.sha256"
+          rm -rf "${NAME}"
+          echo "OUT=${OUT}" >> "${GITHUB_ENV}"
+      - name: Attest build provenance
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: dist/${{ env.OUT }}
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: binaries-${{ matrix.target }}
+          path: dist/
+          if-no-files-found: error
+
+  linux-packages:
+    # Phase-5 groundwork: .deb and .rpm built from the same auditable
+    # x86_64 binaries, using the [package.metadata.deb] and
+    # [package.metadata.generate-rpm] layouts in Cargo.toml. These are
+    # release assets for direct download; distro submissions proper
+    # (Debian rust team, Fedora SIG) build from source.
+    name: linux packages (deb + rpm)
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # master
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: linux-packages
+      - uses: taiki-e/install-action@742a3317eac7bd62f91cd888b4eead5e784ba833 # v2.87.1
+        with:
+          tool: cargo-auditable,cargo-deb,cargo-generate-rpm
+      - name: Build (auditable)
+        run: cargo auditable build --release --locked
+      - name: Package deb + rpm
+        run: |
+          set -euo pipefail
+          cargo deb --no-build --no-strip -o dist/
+          cargo generate-rpm -o dist/
+          for f in dist/*.deb dist/*.rpm; do
+            sha256sum "$f" > "$f.sha256"
+          done
+          ls -l dist/
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: binaries-linux-packages
+          path: dist/
+          if-no-files-found: error
+
   cross-verify:
     name: Verify (${{ matrix.os }})
     needs: validate
@@ -257,7 +388,7 @@ jobs:
 
   github-release:
     name: GitHub Release
-    needs: [artifacts, cross-verify]
+    needs: [artifacts, cross-verify, binaries, linux-packages]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -271,6 +402,12 @@ jobs:
         with:
           name: release-artifacts
           path: artifacts
+      - name: Download binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: binaries-*
+          merge-multiple: true
+          path: binaries
       - name: Generate release notes
         run: |
           TAG="${GITHUB_REF_NAME}"
@@ -324,6 +461,11 @@ jobs:
             artifacts/SBOM.cdx.json
             artifacts/SBOM.cdx.json.bundle
             artifacts/SBOM.cdx.json.as[c]
+            binaries/*.tar.gz
+            binaries/*.zip
+            binaries/*.sha256
+            binaries/*.deb
+            binaries/*.rpm
           )
           shopt -u nullglob
           printf 'attaching %s\n' "${assets[@]}"

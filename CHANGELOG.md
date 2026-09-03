@@ -13,6 +13,36 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ## [Unreleased]
 
+### Added
+
+- **Phase 4: pre-built release binaries.** Every tag (and every
+  dry-run dispatch) builds an 8-target matrix — Linux gnu + musl on
+  x86_64/aarch64, macOS both architectures, Windows x86_64/aarch64 —
+  with `cargo auditable` (the dependency tree is embedded in each
+  binary), packaged with the generated manpages, completions and
+  licenses, per-archive SHA-256, and SLSA build-provenance
+  attestations, attached to the GitHub Release.
+- **Phase-5 groundwork: .deb and .rpm release assets** built from
+  the same auditable binaries via `[package.metadata.deb]` (new) and
+  the existing `generate-rpm` layout.
+
+- **Phase 2: the Unix install contract.** `GNUmakefile` with
+  `make install` / `make uninstall` honoring `PREFIX` and `DESTDIR`
+  (binaries, manpages, bash/zsh/fish completions to FHS paths);
+  `make assets` regenerates `docs/*.1` and `complete/*` from the
+  clap definitions, `make check-assets` + the new `make-install` CI
+  job keep the tracked copies bit-identical (the committed manpages
+  had drifted to claiming version 0.0.1); the release version gate
+  now checks the manpage `.TH` version.
+
+### Changed
+
+- **Repository layout, Phase 1 of the family structure plan**:
+  `doc/` renamed to `docs/`, `DEVELOPMENT.md` added as the developer
+  entry point, `.editorconfig` / `.markdownlint.yaml` /
+  `.codespellrc` land with a per-push `docs-lint` CI gate consuming
+  the core repo's shared-docs-lint.yml.
+
 ## [v0.0.30] - 2026-09-02
 
 ### Changed
@@ -169,7 +199,7 @@ the satellites did not follow. Lockstep resumes here.
 ## Earlier releases
 
 This file starts at `v0.0.22`. `noya-cli` split out of the `noyalib`
-monorepo at **v0.0.13** ([ADR-0005](https://github.com/sebastienrousseau/noyalib/blob/main/doc/adr/0005-workspace-split.md))
+monorepo at **v0.0.13** ([ADR-0005](https://github.com/sebastienrousseau/noyalib/blob/main/docs/adr/0005-workspace-split.md))
 and released `v0.0.13` through `v0.0.18` without a crate-local changelog.
 Those releases are documented in:
 

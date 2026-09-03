@@ -13,7 +13,7 @@ which `cargo install noya-cli` arranges).
 | [`fix-quoted-numbers.sh`](fix-quoted-numbers.sh) | Walkthrough of the `--fix` autofix flow: quoted scalar → schema-typed integer, with the surrounding comment preserved. |
 | [`ci-pipeline.sh`](ci-pipeline.sh) | Combined `noyafmt --check` + `noyavalidate --schema` gate for `.github/workflows/*.yml` (or any other CI runner). |
 
-### Ecosystem-specific schema gates
+## Ecosystem-specific schema gates
 
 Each script fetches its respective schema from
 [schemastore.org](https://www.schemastore.org/) (cached
