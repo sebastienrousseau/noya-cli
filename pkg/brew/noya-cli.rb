@@ -3,26 +3,26 @@
 class NoyaCli < Formula
   desc "YAML formatter and JSON-Schema validator built on noyalib"
   homepage "https://github.com/sebastienrousseau/noya-cli"
-  version "0.0.31"
+  version "0.0.32"
   license "MIT OR Apache-2.0"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.31/noya-cli-0.0.31-aarch64-apple-darwin.tar.gz"
-      sha256 "41fcc43f2b32d0651f6916cb13e7f896fcda63ae630f6358ad66e06f1cb705a9"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.32/noya-cli-0.0.32-aarch64-apple-darwin.tar.gz"
+      sha256 "3663c7d81ed8d7bea8c39858a9c40e588dc05c376c7294a0f0a322fd98ee8862"
     else
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.31/noya-cli-0.0.31-x86_64-apple-darwin.tar.gz"
-      sha256 "5c8ae0760d951d9cb4b350d6867abb22f7a303c61c296499c2440f620e5fac3e"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.32/noya-cli-0.0.32-x86_64-apple-darwin.tar.gz"
+      sha256 "7fe5c6b052772f45bdab7432348cc6c334da014a5f33fb908118e65457568cec"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.31/noya-cli-0.0.31-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "3330c272eb5afc1eaef83952b4629cae1ebb11dd6ecd9b116fa5a3c9db098efe"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.32/noya-cli-0.0.32-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "cbb545c926e77cc575224c6ca7a5cdcffac6cd251da1305f4514bdf25741f551"
     else
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.31/noya-cli-0.0.31-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "fcb74e4bde36ac7b897414aece695ebdb713fc8c5904fbb5f09c9796d00e29de"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.32/noya-cli-0.0.32-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "6b976df707f31508c8d25f586c95eaa5d43652f07e5b6889c024d6bb1168c836"
     end
   end
 
