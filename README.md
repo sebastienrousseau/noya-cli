@@ -42,6 +42,8 @@
 
 | Channel | Command |
 |---|---|
+| Pre-built binaries | download for 8 targets (Linux gnu/musl, macOS, Windows on x86_64/aarch64) from the [latest release](https://github.com/sebastienrousseau/noya-cli/releases/latest) — each with manpages, completions, SHA-256, and SLSA provenance |
+| Linux packages | `.deb` and `.rpm` on the [latest release](https://github.com/sebastienrousseau/noya-cli/releases/latest) |
 | Cargo (crates.io) | `cargo install noya-cli --locked` |
 | Cargo (from source) | `cargo install --locked --path .` |
 | GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |
@@ -64,11 +66,10 @@ If you only ever run `noyafmt`, the command above is a smaller supply
 chain and a faster build. Nothing is degraded for anyone who wants the
 diagnostics — it is a choice, not a default.
 
-Releases ship the crate archive with a CycloneDX SBOM, sigstore
-bundles, and a SLSA build-provenance attestation — see
-[Verification](#verification). Pre-built binary tarballs are not
-published yet; install via Cargo, `make install`, or the container
-image above.
+Releases ship the crate archive with a CycloneDX SBOM and sigstore
+bundles, plus the pre-built binary archives and Linux packages
+above, each with SHA-256 and a SLSA build-provenance attestation —
+see [Verification](#verification).
 
 **MSRV: Rust 1.86.0** — the lowest toolchain this crate can be
 **built and tested** on, matching the noyalib core floor.
