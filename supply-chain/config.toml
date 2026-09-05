@@ -188,6 +188,10 @@ criteria = "safe-to-deploy"
 version = "0.0.27"
 criteria = "safe-to-deploy"
 
+[[exemptions.noyalib]]
+version = "0.0.33"
+criteria = "safe-to-deploy"
+
 [[exemptions.num-cmp]]
 version = "0.1.0"
 criteria = "safe-to-deploy"
