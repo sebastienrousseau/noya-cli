@@ -22,7 +22,7 @@
       packages = forAllSystems (pkgs: rec {
         noya-cli = pkgs.rustPlatform.buildRustPackage {
           pname = "noya-cli";
-          version = "0.0.32";
+          version = "0.0.33";
           src = self;
           cargoLock.lockFile = ./Cargo.lock;
           # The pre-release [patch.crates-io] entry resolves the core

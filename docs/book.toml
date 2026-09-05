@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+[book]
+title = "The noya-cli Manual"
+description = "noyafmt and noyavalidate: format and validate YAML from the command line."
+authors = ["Sebastien Rousseau"]
+language = "en"
+src = "."
+
+[build]
+build-dir = "../target-book"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/sebastienrousseau/noya-cli"
+edit-url-template = "https://github.com/sebastienrousseau/noya-cli/edit/main/docs/{path}"
+site-url = "/noya-cli/manual/"

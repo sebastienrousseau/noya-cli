@@ -25,6 +25,7 @@
 ## Contents
 
 - [Install](#install) — every channel mapped
+- [Requirements](#requirements) — toolchain floor, platforms, the core pin
 - [Quick Start](#quick-start) — common workflows
 - [`noyafmt`](#noyafmt) — formatter reference
 - [`noyavalidate`](#noyavalidate) — validator + autofix reference
@@ -83,6 +84,19 @@ though `cargo check --lib` still builds. `clap_builder 4.6` in the
 CLI dep tree is edition-2024. We publish the number we verify.
 
 ---
+
+## Requirements
+
+- **Rust 1.86.0 or newer** to build from source: `rust-version` in
+  the manifest, enforced by the `msrv-core` CI job on every push.
+- **Any tier-1 platform.** CI runs the tests on Linux, macOS, and
+  Windows with the stable, beta, and nightly toolchains; stable is the
+  gate, beta and nightly are early warning.
+- **The matching core.** This crate pins `noyalib` at the identical
+  `=0.0.X` and releases in lockstep with it; Cargo resolves that pin
+  for you.
+- **Nothing at runtime**: the binaries are static where the platform
+  allows (musl on Linux) and link only the C runtime elsewhere.
 
 ## Quick Start
 
@@ -271,7 +285,7 @@ Full cookbook including the offline / FIPS-bound flow:
 
 The four entry points, identical across every repo in the family:
 
-- **[User Manual](https://sebastienrousseau.github.io/noyalib/manual/)** — the rendered book: user guide, migrations, architecture, policies, ADRs
+- **[User Manual](https://sebastienrousseau.github.io/noya-cli/manual/)** — this crate's rendered book: its guides, architecture, and release notes; the family manual for the core library is at [https://sebastienrousseau.github.io/noyalib/manual/](https://sebastienrousseau.github.io/noyalib/manual/)
 - **[API reference](https://docs.rs/noya-cli)** — rustdoc on docs.rs
 - **[Developer docs](DEVELOPMENT.md)** — this repo's dev entry point, pointing at the family guide
 - **[Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)** — the six crates, the lockstep model, the scorecard
