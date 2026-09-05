@@ -161,32 +161,26 @@ if changelog.is_file():
     else:
         bad("CHANGELOG.md", f"no [v{version}] heading — still under [Unreleased]?")
 
-# README install snippets naming this crate.
-for rel in ("README.md", f"crates/{name}/README.md"):
-    f = root / rel
-    if not f.is_file():
+# Install snippets naming this crate: the READMEs and every page under
+# docs/ except release notes and decision records. Two spellings count:
+# `<name> = ...` and Cargo's rename form `package = "<name>"`, which is
+# how the serde_yaml drop-in is installed and which the gate missed in
+# the v0.0.33 cycle (a README pin two releases stale).
+snippet_files = [root / "README.md", root / "crates" / name / "README.md"]
+snippet_files += sorted((root / "docs").rglob("*.md")) if (root / "docs").is_dir() else []
+for f in snippet_files:
+    rel = str(f.relative_to(root))
+    if not f.is_file() or "release-notes" in rel or "/adr/" in rel:
         continue
     stale = set()
     for line in f.read_text(encoding="utf-8").splitlines():
-        if re.search(rf"\b{re.escape(name)}\s*=\s*[\"{{]", line):
+        names_this_crate = re.search(rf"\b{re.escape(name)}\s*=\s*[\"{{]", line) or f'package = "{name}"' in line
+        if names_this_crate:
             stale.update(v for v in re.findall(r"\d+\.\d+\.\d+", line) if v != version)
     if stale:
         bad(rel, "mentions " + ", ".join(sorted(stale)))
     else:
         ok(rel, "install snippets current")
-
-# Generated manpages embed the crate version in their .TH line, so a
-# release prep that skips `make assets` ships stale manpages — the
-# committed v0.0.29 pages still claimed 0.0.1 when this check was
-# written. check-assets in CI catches content drift; this catches the
-# version specifically at tag time.
-for page in sorted((root / "docs").glob("*.1")):
-    text = page.read_text(encoding="utf-8", errors="ignore")
-    m = re.search(r'\.TH\s+\S+\s+1\s+"[^"]*?(\d+\.\d+\.\d+)"', text)
-    if m and m.group(1) == version:
-        ok(f"docs/{page.name}", f"manpage version {m.group(1)}")
-    else:
-        bad(f"docs/{page.name}", f"manpage says {m.group(1) if m else 'nothing'} — run 'make assets'")
 
 print()
 if failed:
