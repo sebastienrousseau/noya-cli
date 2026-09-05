@@ -710,6 +710,7 @@ dependencies = [
  "criterion",
  "miette",
  "noyalib",
+ "serde_json",
 ]
 
 [[package]]
