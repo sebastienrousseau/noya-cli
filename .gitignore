@@ -31,3 +31,5 @@ tarpaulin-report.html
 /scratch.*
 crates/noyalib-wasm/Cargo.lock
 .corral-state.json
+# mdBook output (docs/book.toml)
+target-book/

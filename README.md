@@ -271,7 +271,7 @@ Full cookbook including the offline / FIPS-bound flow:
 
 The four entry points, identical across every repo in the family:
 
-- **[User Manual](https://sebastienrousseau.github.io/noyalib/manual/)** — the rendered book: user guide, migrations, architecture, policies, ADRs
+- **[User Manual](https://sebastienrousseau.github.io/noya-cli/manual/)** — this crate's rendered book: its guides, architecture, and release notes; the family manual for the core library is at [https://sebastienrousseau.github.io/noyalib/manual/](https://sebastienrousseau.github.io/noyalib/manual/)
 - **[API reference](https://docs.rs/noya-cli)** — rustdoc on docs.rs
 - **[Developer docs](DEVELOPMENT.md)** — this repo's dev entry point, pointing at the family guide
 - **[Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)** — the six crates, the lockstep model, the scorecard
