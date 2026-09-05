@@ -22,7 +22,7 @@ ENV SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH:-0}
 ENV RUSTFLAGS="--remap-path-prefix=/src=/build --remap-path-prefix=/usr/local/cargo=/cargo"
 RUN cargo build --release --locked --bin noyafmt --bin noyavalidate
 
-FROM debian:bookworm-slim@sha256:96e378d7e6531ac9a15ad505478fcc2e69f371b10f5cdf87857c4b8188404716
+FROM debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171
 LABEL org.opencontainers.image.title="noya-cli"
 LABEL org.opencontainers.image.description="noyafmt and noyavalidate: format and validate YAML with the noyalib parser, full miette diagnostics."
 LABEL org.opencontainers.image.source="https://github.com/sebastienrousseau/noya-cli"
