@@ -1,6 +1,6 @@
 [package]
 name = "noya-cli"
-version = "0.0.32"
+version = "0.0.33"
 edition = "2024"
 # Lockstep floor with the noyalib core (1.86.0 as of v0.0.16).
 # Also required independently here: clap 4.5 transitively pulls
@@ -38,7 +38,7 @@ path = "src/bin/noyavalidate.rs"
 required-features = ["noyavalidate"]
 
 [dependencies]
-noyalib = { version = "=0.0.32", default-features = false }
+noyalib = { version = "=0.0.33", default-features = false }
 clap    = { version = "4.5", features = ["derive", "wrap_help"] }
 miette  = { version = "7", optional = true, features = ["fancy"] }
 
@@ -98,3 +98,12 @@ assets = [
     { source = "complete/noyavalidate.fish", dest = "/usr/share/fish/vendor_completions.d/noyavalidate.fish", mode = "0644" },
 ]
 
+
+# ── Pre-release resolution ─────────────────────────────────────────
+# The `=0.0.33` lockstep pin resolves only against the *published*
+# core. Until that release lands on crates.io, resolve it from the
+# core's release branch so CI and local builds work. REMOVE at the
+# v0.0.33 cut — the release validation must refuse to tag while this
+# section is present.
+[patch.crates-io]
+noyalib = { git = "https://github.com/sebastienrousseau/noyalib", branch = "feat/v0.0.33" }
