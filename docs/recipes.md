@@ -74,7 +74,7 @@ jobs:
 ### VS Code on save
 
 Pair noyafmt with VS Code's `editor.formatOnSave`. The recommended
-path is the dedicated [noyalib-lsp](../../noyalib-lsp/README.md)
+path is the dedicated [noyalib-lsp](https://github.com/sebastienrousseau/noyalib-lsp#readme)
 extension, which provides format-on-save, diagnostics, and hover.
 For lighter-weight integration:
 
@@ -106,7 +106,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 ```
 
 For the richer experience (diagnostics, hover, code actions) use
-[noyalib-lsp](../../noyalib-lsp/README.md) via `nvim-lspconfig`.
+[noyalib-lsp](https://github.com/sebastienrousseau/noyalib-lsp#readme) via `nvim-lspconfig`.
 
 ## Bulk operations
 
