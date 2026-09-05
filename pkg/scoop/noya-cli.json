@@ -1,18 +1,18 @@
 {
-    "version": "0.0.32",
+    "version": "0.0.33",
     "description": "YAML formatter (noyafmt) and JSON-Schema validator (noyavalidate) built on the noyalib library",
     "homepage": "https://github.com/sebastienrousseau/noya-cli",
     "license": "MIT OR Apache-2.0",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.32/noya-cli-0.0.32-x86_64-pc-windows-msvc.zip",
-            "hash": "5626283391e99e032092ab70d20668d41a9667644ec269bd3ca20c70f4498be3",
-            "extract_dir": "noya-cli-0.0.32-x86_64-pc-windows-msvc"
+            "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.33/noya-cli-0.0.33-x86_64-pc-windows-msvc.zip",
+            "hash": "e6156d1720f52a13821dee219d697ed2d12049ef2fb99965e51f1494e2c6adb9",
+            "extract_dir": "noya-cli-0.0.33-x86_64-pc-windows-msvc"
         },
         "arm64": {
-            "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.32/noya-cli-0.0.32-aarch64-pc-windows-msvc.zip",
-            "hash": "850184325766a84d082afa06692ede53a051874920966f526ce9eb8f6bc6a287",
-            "extract_dir": "noya-cli-0.0.32-aarch64-pc-windows-msvc"
+            "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.33/noya-cli-0.0.33-aarch64-pc-windows-msvc.zip",
+            "hash": "b40f2d0b9f25c08bc91fae3c4f4a44bf17ece84deae5a968261e2ee5a33bd355",
+            "extract_dir": "noya-cli-0.0.33-aarch64-pc-windows-msvc"
         }
     },
     "bin": ["noyafmt.exe", "noyavalidate.exe"],
