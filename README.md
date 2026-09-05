@@ -25,6 +25,7 @@
 ## Contents
 
 - [Install](#install) — every channel mapped
+- [Requirements](#requirements) — toolchain floor, platforms, the core pin
 - [Quick Start](#quick-start) — common workflows
 - [`noyafmt`](#noyafmt) — formatter reference
 - [`noyavalidate`](#noyavalidate) — validator + autofix reference
@@ -83,6 +84,19 @@ though `cargo check --lib` still builds. `clap_builder 4.6` in the
 CLI dep tree is edition-2024. We publish the number we verify.
 
 ---
+
+## Requirements
+
+- **Rust 1.86.0 or newer** to build from source: `rust-version` in
+  the manifest, enforced by the `msrv-core` CI job on every push.
+- **Any tier-1 platform.** CI runs the tests on Linux, macOS, and
+  Windows with the stable, beta, and nightly toolchains; stable is the
+  gate, beta and nightly are early warning.
+- **The matching core.** This crate pins `noyalib` at the identical
+  `=0.0.X` and releases in lockstep with it; Cargo resolves that pin
+  for you.
+- **Nothing at runtime**: the binaries are static where the platform
+  allows (musl on Linux) and link only the C runtime elsewhere.
 
 ## Quick Start
 
