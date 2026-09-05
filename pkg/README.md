@@ -15,3 +15,7 @@ in the downstream channel:
 | AUR | `aur/PKGBUILD` | `noyalib-bin` on aur.archlinux.org — push with the maintainer's AUR SSH key: `git clone ssh://aur@aur.archlinux.org/noyalib-bin.git`, copy PKGBUILD, `makepkg --printsrcinfo > .SRCINFO`, commit, push |
 | deb / rpm | built by release.yml | attached to every GitHub Release |
 | Debian / Fedora proper | `docs/packaging.md` in the core repo | rust-team / SIG submission, from source |
+
+## Container image
+
+`pkg/docker/Dockerfile` builds `ghcr.io/sebastienrousseau/noya-cli`, Debian-slim with both binaries, their manpages, and the full miette renderer. The release workflow publishes it for linux/amd64 and linux/arm64 with SLSA provenance and a keyless cosign signature; a `workflow_dispatch` dry run builds it without pushing.
