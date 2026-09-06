@@ -15,6 +15,14 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ## [v0.0.38] - 2026-09-06
 
+### Added
+
+- **The ultra-complex fixture through both binaries**
+  (`tests/fixtures/ultra-complex/`): `noyavalidate` accepts it and
+  `noyafmt`'s output projects onto the same JSON, which needs the core's
+  0.0.38 formatter fix for explicit keys and lone properties. The README
+  names and links the official yaml-test-suite.
+
 ### Changed
 
 - Lockstep release with noyalib 0.0.38: the Scorecard pinned-dependency

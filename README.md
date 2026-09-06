@@ -337,6 +337,16 @@ The four entry points, identical across every repo in the family:
 
 ---
 
+## Conformance
+
+Every push runs the official [yaml-test-suite](https://github.com/yaml/yaml-test-suite)
+through `noyavalidate`'s exit code, from the same vendored suite and the same
+core commit as the `noyalib` core: 406 of 406 (valid cases exit 0, invalid
+cases exit non-zero). A two-document configuration that uses most of YAML at
+once (`tests/fixtures/ultra-complex/`) validates, and `noyafmt`'s output
+parses to exactly the same JSON. Details and the family table:
+[noyalib.com/conformance](https://noyalib.com/conformance/).
+
 ## License
 
 Dual-licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
