@@ -29,6 +29,7 @@
 - [Quick Start](#quick-start) — common workflows
 - [`noyafmt`](#noyafmt) — formatter reference
 - [`noyavalidate`](#noyavalidate) — validator + autofix reference
+- [GitHub Action and pre-commit](#github-action-and-pre-commit)
 - [Exit codes](#exit-codes) — for shell pipelines and CI gates
 - [Examples](#examples) — runnable demo scripts
 - [Shell completions and man pages](#shell-completions-and-man-pages)
@@ -51,7 +52,7 @@
 | Cargo (crates.io) | `cargo install noya-cli --locked` |
 | Cargo (from source) | `cargo install --locked --path .` |
 | GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |
-| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.34. |
+| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.35. |
 
 ### Formatter only, if you do not need `noyavalidate`
 
@@ -185,6 +186,35 @@ rustc-style source pointers:
 | `-q, --quiet` | Suppress success output. |
 
 ---
+
+## GitHub Action and pre-commit
+
+One step in CI, no toolchain on the runner:
+
+```yaml
+- uses: sebastienrousseau/noya-cli@v0.0.35
+  with:
+    paths: config/ deploy.yaml
+    schema: schema.json   # optional
+```
+
+The action downloads the signed release binaries for the runner's
+platform, verifies the published SHA-256, then runs `noyafmt --check` and
+`noyavalidate` (with the schema when given). Either failure fails the step.
+
+The same checks as hosted pre-commit hooks:
+
+```yaml
+repos:
+  - repo: https://github.com/sebastienrousseau/noya-cli
+    rev: v0.0.35
+    hooks:
+      - id: noyafmt-check
+      - id: noyavalidate
+```
+
+`noyafmt` (format in place), `noyafmt-check` and `noyavalidate` are the
+three hook ids; pass `--schema schema.json` through `args` to validate.
 
 ## Exit codes
 

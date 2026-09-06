@@ -13,6 +13,22 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ## [Unreleased]
 
+## [v0.0.35] - 2026-09-06
+
+### Changed
+
+- Lockstep release with noyalib 0.0.35: the 10/10 programme (formal
+  budget proofs, a wasip2 build, scorecard hardening, the cookbook) and
+  the family gaps closed in this cycle. No local code change unless
+  listed below.
+
+### Added
+
+- A composite GitHub Action (`sebastienrousseau/noya-cli@v0.0.35`) that
+  installs the signed release binaries, verifies their SHA-256, and runs
+  `noyafmt --check` and `noyavalidate` on the given paths.
+- Hosted pre-commit hooks: `noyafmt`, `noyafmt-check` and `noyavalidate`.
+
 ## [v0.0.34] - 2026-09-05
 
 ### Changed
