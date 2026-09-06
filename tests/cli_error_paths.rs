@@ -323,3 +323,20 @@ fn noyavalidate_plain_stdin_check_succeeds() {
     let (code, _, stderr) = run_stdin(validate_bin(), &[], "a: 1\n");
     assert_eq!(code, 0, "stderr: {stderr}");
 }
+
+/// `--fix` on a multi-document stream reports the failing position
+/// counted from the start of the file, not from the document that
+/// failed (noyalib #407). The bad alias sits on line 5 of the stream
+/// and on line 2 of its own document; the message must say line 5.
+#[test]
+fn noyavalidate_fix_locates_stream_errors_in_the_file() {
+    let d = scratch("val-fix-stream");
+    let f = write_file(&d, "stream.yaml", "a: 1\n---\nb: 2\n---\nc: *nope\n");
+    let (code, _, stderr) = run(validate_bin(), &["--fix", f.to_str().unwrap()]);
+    assert_eq!(code, 1, "stderr: {stderr}");
+    assert!(
+        stderr.contains("line 5, column 4"),
+        "expected the stream position, got: {stderr}"
+    );
+    assert!(!stderr.contains("line 2, column 4"), "stderr: {stderr}");
+}
