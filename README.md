@@ -52,7 +52,7 @@
 | Cargo (crates.io) | `cargo install noya-cli --locked` |
 | Cargo (from source) | `cargo install --locked --path .` |
 | GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |
-| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.37. |
+| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.38. |
 
 ### Formatter only, if you do not need `noyavalidate`
 
@@ -192,7 +192,7 @@ rustc-style source pointers:
 One step in CI, no toolchain on the runner:
 
 ```yaml
-- uses: sebastienrousseau/noya-cli@v0.0.37
+- uses: sebastienrousseau/noya-cli@v0.0.38
   with:
     paths: config/ deploy.yaml
     schema: schema.json   # optional
@@ -207,7 +207,7 @@ The same checks as hosted pre-commit hooks:
 ```yaml
 repos:
   - repo: https://github.com/sebastienrousseau/noya-cli
-    rev: v0.0.37
+    rev: v0.0.38
     hooks:
       - id: noyafmt-check
       - id: noyavalidate
@@ -336,6 +336,16 @@ The four entry points, identical across every repo in the family:
   <https://docs.rs/noyalib>
 
 ---
+
+## Conformance
+
+Every push runs the official [yaml-test-suite](https://github.com/yaml/yaml-test-suite)
+through `noyavalidate`'s exit code, from the same vendored suite and the same
+core commit as the `noyalib` core: 406 of 406 (valid cases exit 0, invalid
+cases exit non-zero). A two-document configuration that uses most of YAML at
+once (`tests/fixtures/ultra-complex/`) validates, and `noyafmt`'s output
+parses to exactly the same JSON. Details and the family table:
+[noyalib.com/conformance](https://noyalib.com/conformance/).
 
 ## License
 
