@@ -52,7 +52,7 @@
 | Cargo (crates.io) | `cargo install noya-cli --locked` |
 | Cargo (from source) | `cargo install --locked --path .` |
 | GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |
-| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.34. |
+| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.35. |
 
 ### Formatter only, if you do not need `noyavalidate`
 
