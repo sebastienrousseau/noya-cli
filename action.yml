@@ -1,0 +1,101 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+#
+# noyalib YAML check: format and schema-validate YAML in one step.
+#
+#   - uses: sebastienrousseau/noya-cli@v0.0.35
+#     with:
+#       paths: config/ deploy.yaml
+#       schema: schema.json          # optional
+#
+# Downloads the signed release binaries for the runner's platform, verifies
+# the SHA-256 the release publishes, then runs `noyafmt --check` and, when a
+# schema is given, `noyavalidate --schema`. Either failure fails the step.
+
+name: noyalib YAML check
+description: Format-check and schema-validate YAML with noyafmt and noyavalidate.
+author: Sebastien Rousseau
+branding:
+  icon: check-circle
+  color: purple
+
+inputs:
+  paths:
+    description: Files or directories to check, space separated.
+    required: false
+    default: .
+  schema:
+    description: A JSON Schema to validate every file against (optional).
+    required: false
+    default: ""
+  version:
+    description: The noya-cli release to use. Defaults to the version this action was tagged with.
+    required: false
+    default: "0.0.35"
+  format:
+    description: Run noyafmt --check (true or false).
+    required: false
+    default: "true"
+  validate:
+    description: Run noyavalidate, with the schema when one is given (true or false).
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Install noya-cli
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        case "$(uname -s)-$(uname -m)" in
+          Linux-x86_64)   target=x86_64-unknown-linux-musl ;;
+          Linux-aarch64)  target=aarch64-unknown-linux-musl ;;
+          Darwin-x86_64)  target=x86_64-apple-darwin ;;
+          Darwin-arm64)   target=aarch64-apple-darwin ;;
+          *) echo "unsupported runner: $(uname -s)-$(uname -m)"; exit 1 ;;
+        esac
+        name="noya-cli-${VERSION}-${target}"
+        base="https://github.com/sebastienrousseau/noya-cli/releases/download/v${VERSION}"
+        curl -sSfL -o "${name}.tar.gz" "${base}/${name}.tar.gz"
+        curl -sSfL -o "${name}.tar.gz.sha256" "${base}/${name}.tar.gz.sha256"
+        # The published digest is "<hex>  <file>"; compare the hex only so
+        # the file name the release chose does not matter.
+        expected=$(awk '{print $1}' "${name}.tar.gz.sha256")
+        actual=$(sha256sum "${name}.tar.gz" 2>/dev/null | awk '{print $1}' || shasum -a 256 "${name}.tar.gz" | awk '{print $1}')
+        [ "$expected" = "$actual" ] || { echo "checksum mismatch for ${name}.tar.gz"; exit 1; }
+        tar xzf "${name}.tar.gz"
+        mkdir -p "$HOME/.noya-cli/bin"
+        cp "${name}/noyafmt" "${name}/noyavalidate" "$HOME/.noya-cli/bin/"
+        chmod +x "$HOME/.noya-cli/bin/noyafmt" "$HOME/.noya-cli/bin/noyavalidate"
+        echo "$HOME/.noya-cli/bin" >> "$GITHUB_PATH"
+        rm -rf "${name}" "${name}.tar.gz" "${name}.tar.gz.sha256"
+    - name: noyafmt --check
+      if: ${{ inputs.format == 'true' }}
+      shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+      run: |
+        set -euo pipefail
+        # shellcheck disable=SC2086
+        noyafmt --check $PATHS
+    - name: noyavalidate
+      if: ${{ inputs.validate == 'true' }}
+      shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+        SCHEMA: ${{ inputs.schema }}
+      run: |
+        set -euo pipefail
+        status=0
+        # shellcheck disable=SC2086
+        for f in $(find $PATHS -type f \( -name '*.yaml' -o -name '*.yml' \) | sort); do
+          if [ -n "$SCHEMA" ]; then
+            noyavalidate "$f" --schema "$SCHEMA" || status=1
+          else
+            noyavalidate "$f" || status=1
+          fi
+        done
+        exit $status

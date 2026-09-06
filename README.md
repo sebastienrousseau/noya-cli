@@ -29,6 +29,7 @@
 - [Quick Start](#quick-start) — common workflows
 - [`noyafmt`](#noyafmt) — formatter reference
 - [`noyavalidate`](#noyavalidate) — validator + autofix reference
+- [GitHub Action and pre-commit](#github-action-and-pre-commit)
 - [Exit codes](#exit-codes) — for shell pipelines and CI gates
 - [Examples](#examples) — runnable demo scripts
 - [Shell completions and man pages](#shell-completions-and-man-pages)
@@ -185,6 +186,35 @@ rustc-style source pointers:
 | `-q, --quiet` | Suppress success output. |
 
 ---
+
+## GitHub Action and pre-commit
+
+One step in CI, no toolchain on the runner:
+
+```yaml
+- uses: sebastienrousseau/noya-cli@v0.0.35
+  with:
+    paths: config/ deploy.yaml
+    schema: schema.json   # optional
+```
+
+The action downloads the signed release binaries for the runner's
+platform, verifies the published SHA-256, then runs `noyafmt --check` and
+`noyavalidate` (with the schema when given). Either failure fails the step.
+
+The same checks as hosted pre-commit hooks:
+
+```yaml
+repos:
+  - repo: https://github.com/sebastienrousseau/noya-cli
+    rev: v0.0.35
+    hooks:
+      - id: noyafmt-check
+      - id: noyavalidate
+```
+
+`noyafmt` (format in place), `noyafmt-check` and `noyavalidate` are the
+three hook ids; pass `--schema schema.json` through `args` to validate.
 
 ## Exit codes
 

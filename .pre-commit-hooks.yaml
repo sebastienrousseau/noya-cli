@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+#
+# Hosted pre-commit hooks. In .pre-commit-config.yaml:
+#
+#   repos:
+#     - repo: https://github.com/sebastienrousseau/noya-cli
+#       rev: v0.0.35
+#       hooks:
+#         - id: noyafmt
+#         - id: noyavalidate
+#
+# Both hooks build the binaries with cargo on first use (pre-commit's
+# Rust language support), then run on the staged YAML files.
+- id: noyafmt
+  name: noyafmt (format YAML)
+  description: Format YAML files in place with noyafmt.
+  entry: noyafmt
+  language: rust
+  types: [yaml]
+  minimum_pre_commit_version: "2.9.2"
+- id: noyafmt-check
+  name: noyafmt --check
+  description: Fail if a YAML file is not already formatted.
+  entry: noyafmt --check
+  language: rust
+  types: [yaml]
+  minimum_pre_commit_version: "2.9.2"
+- id: noyavalidate
+  name: noyavalidate (parse YAML)
+  description: Fail on any YAML file the parser refuses; pass --schema in args to validate against a JSON Schema.
+  entry: noyavalidate
+  language: rust
+  types: [yaml]
+  minimum_pre_commit_version: "2.9.2"
