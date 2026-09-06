@@ -703,7 +703,7 @@ dependencies = [
 
 [[package]]
 name = "noya-cli"
-version = "0.0.36"
+version = "0.0.37"
 dependencies = [
  "clap",
  "clap_complete",
@@ -716,9 +716,8 @@ dependencies = [
 
 [[package]]
 name = "noyalib"
-version = "0.0.36"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd03c1156bf9e1db6dbccd703cccbc61814c6de482508eae36236a97bf26c6cc"
+version = "0.0.37"
+source = "git+https://github.com/sebastienrousseau/noyalib?branch=feat%2Fv0.0.37#a9bc6e18dee2db300b77bb5fa181b01807877d7d"
 dependencies = [
  "hashbrown",
  "indexmap",
