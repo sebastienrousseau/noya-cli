@@ -15,9 +15,10 @@
 <p align="center">
   <a href="https://github.com/sebastienrousseau/noya-cli/actions"><img src="https://img.shields.io/github/actions/workflow/status/sebastienrousseau/noya-cli/ci.yml?style=for-the-badge&logo=github" alt="Build" /></a>
   <a href="https://crates.io/crates/noya-cli"><img src="https://img.shields.io/crates/v/noya-cli.svg?style=for-the-badge&color=fc8d62&logo=rust" alt="Crates.io" /></a>
-  <a href="https://docs.rs/noyalib"><img src="https://img.shields.io/badge/docs.rs-noyalib-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs.rs" /></a>
+  <a href="https://docs.rs/noya-cli"><img src="https://img.shields.io/badge/docs.rs-noya--cli-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs.rs" /></a>
   <a href="https://github.com/sebastienrousseau/noya-cli/releases"><img src="https://img.shields.io/github/v/release/sebastienrousseau/noya-cli?style=for-the-badge&label=release&color=blueviolet" alt="GitHub Release" /></a>
-  <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noyalib"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noyalib?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noya-cli"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noya-cli?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
+  <a href="https://www.bestpractices.dev/projects/14498"><img src="https://img.shields.io/cii/level/14498?style=for-the-badge&label=OpenSSF%20Best%20Practices&logo=openssf" alt="OpenSSF Best Practices" /></a>
 </p>
 
 ---
@@ -52,7 +53,7 @@
 | Cargo (crates.io) | `cargo install noya-cli --locked` |
 | Cargo (from source) | `cargo install --locked --path .` |
 | GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |
-| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.39. |
+| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.40. |
 
 ### Formatter only, if you do not need `noyavalidate`
 
@@ -192,7 +193,7 @@ rustc-style source pointers:
 One step in CI, no toolchain on the runner:
 
 ```yaml
-- uses: sebastienrousseau/noya-cli@v0.0.39
+- uses: sebastienrousseau/noya-cli@v0.0.40
   with:
     paths: config/ deploy.yaml
     schema: schema.json   # optional
@@ -207,7 +208,7 @@ The same checks as hosted pre-commit hooks:
 ```yaml
 repos:
   - repo: https://github.com/sebastienrousseau/noya-cli
-    rev: v0.0.39
+    rev: v0.0.40
     hooks:
       - id: noyafmt-check
       - id: noyavalidate
