@@ -193,7 +193,7 @@ rustc-style source pointers:
 One step in CI, no toolchain on the runner:
 
 ```yaml
-- uses: sebastienrousseau/noya-cli@v0.0.41
+- uses: sebastienrousseau/noya-cli@v0.0.42
   with:
     paths: config/ deploy.yaml
     schema: schema.json   # optional
@@ -208,7 +208,7 @@ The same checks as hosted pre-commit hooks:
 ```yaml
 repos:
   - repo: https://github.com/sebastienrousseau/noya-cli
-    rev: v0.0.41
+    rev: v0.0.42
     hooks:
       - id: noyafmt-check
       - id: noyavalidate
