@@ -11,6 +11,19 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
+## [v0.0.45] - 2026-09-18
+
+### Changed
+
+- Tracks `noyalib` 0.0.45. The core release fixes five defects, four
+  found by a new differential suite: `cst::Document::set` accepted a
+  fragment that shadowed a sibling through a duplicate key, and a
+  leading comment anchored on the value line rather than the key.
+  `noyafmt` and `noyavalidate` edit through the CST, so both reach
+  users here. The fixes arrive via the version pin; no source change.
+
+  See the core crate's `CHANGELOG.md` for the full release notes.
+
 ## [v0.0.44] - 2026-09-17
 
 ### Changed
