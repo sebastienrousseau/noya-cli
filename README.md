@@ -1,354 +1,271 @@
 <!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->
 
 <p align="center">
-  <img src="https://cloudcdn.pro/noyalib/v1/logos/noyalib.svg" alt="Noyalib logo" width="128" />
+  <img src="https://cloudcdn.pro/noyalib/v1/logos/noyalib.svg" alt="noya-cli logo" width="128" />
 </p>
 
 <h1 align="center">noya-cli</h1>
 
 <p align="center">
-  <strong><code>noyafmt</code> and <code>noyavalidate</code> —
-  the YAML formatter and validator built on the noyalib
-  library.</strong>
+  <code>noyafmt</code> and <code>noyavalidate</code>: comment-preserving YAML formatting, validation, and schema-driven repair.
 </p>
 
 <p align="center">
   <a href="https://github.com/sebastienrousseau/noya-cli/actions"><img src="https://img.shields.io/github/actions/workflow/status/sebastienrousseau/noya-cli/ci.yml?style=for-the-badge&logo=github" alt="Build" /></a>
-  <a href="https://crates.io/crates/noya-cli"><img src="https://img.shields.io/crates/v/noya-cli.svg?style=for-the-badge&color=fc8d62&logo=rust" alt="Crates.io" /></a>
-  <a href="https://docs.rs/noya-cli"><img src="https://img.shields.io/badge/docs.rs-noya--cli-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs.rs" /></a>
-  <a href="https://github.com/sebastienrousseau/noya-cli/releases"><img src="https://img.shields.io/github/v/release/sebastienrousseau/noya-cli?style=for-the-badge&label=release&color=blueviolet" alt="GitHub Release" /></a>
+  <a href="https://crates.io/crates/noya-cli"><img src="https://img.shields.io/crates/v/noya-cli.svg?style=for-the-badge&color=fc8d62&logo=rust" alt="Registry" /></a>
+  <a href="https://docs.rs/noya-cli"><img src="https://img.shields.io/badge/docs.rs-noya--cli-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs" /></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noya-cli"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noya-cli?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
-  <a href="https://www.bestpractices.dev/projects/14498"><img src="https://img.shields.io/cii/level/14498?style=for-the-badge&label=OpenSSF%20Best%20Practices&logo=openssf" alt="OpenSSF Best Practices" /></a>
+  <a href="LICENSE-APACHE"><img src="https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg?style=for-the-badge" alt="License: Apache-2.0 OR MIT" /></a>
+  <a href="https://github.com/sebastienrousseau/noya-cli/blob/main/docs/POLICIES.md"><img src="https://img.shields.io/badge/MSRV-1.86.0-93450a.svg?style=for-the-badge&logo=rust" alt="MSRV 1.86.0" /></a>
 </p>
 
 ---
 
 ## Contents
 
-- [Install](#install) — every channel mapped
-- [Requirements](#requirements) — toolchain floor, platforms, the core pin
-- [Quick Start](#quick-start) — common workflows
-- [`noyafmt`](#noyafmt) — formatter reference
-- [`noyavalidate`](#noyavalidate) — validator + autofix reference
-- [GitHub Action and pre-commit](#github-action-and-pre-commit)
-- [Exit codes](#exit-codes) — for shell pipelines and CI gates
-- [Examples](#examples) — runnable demo scripts
-- [Shell completions and man pages](#shell-completions-and-man-pages)
-- [Verification](#verification) — cosign + SLSA cookbook
-- [When not to use these tools](#when-not-to-use-these-tools)
-- [Documentation](#documentation)
+**Getting started**
+
+- [Install](#install) — binaries, packages, Cargo, and containers
+- [Requirements](#requirements) — toolchain floor, platforms
+- [Quick Start](#quick-start) — format and validate YAML
+
+**The noya-cli ecosystem**
+
+- [The noya-cli ecosystem](#the-noya-cli-ecosystem) — command-line tools and companion surfaces
+
+**Library reference**
+
+- [Capabilities at a glance](#capabilities-at-a-glance) — the current surface by theme
+- [Ecosystem comparison](#ecosystem-comparison) — short matrix; full table at [`docs/COMPARISON.md`](docs/COMPARISON.md)
+- [Benchmarks](#benchmarks) — headline numbers; full table at [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md)
+- [Features](#features) — module-level capability list
+- [Configuration](#configuration) — core options
+- [Examples](#examples) — runnable example index
+
+**Operational**
+
+- [When not to use noya-cli](#when-not-to-use-noya-cli) — limitations
+- [Development](#development) — make targets, fuzzing, CI
+- [Security](#security) — guarantees and compliance
+- [Documentation](#documentation) — all reference docs
+- [Stability guarantees](#stability-guarantees) — SemVer axis, output stability, minimum toolchain discipline
 - [License](#license)
 
 ---
 
 ## Install
 
-| Channel | Command |
-|---|---|
-| Pre-built binaries | download for 8 targets (Linux gnu/musl, macOS, Windows on x86_64/aarch64) from the [latest release](https://github.com/sebastienrousseau/noya-cli/releases/latest) — each with manpages, completions, SHA-256, and SLSA provenance |
-| Linux packages | `.deb` and `.rpm` on the [latest release](https://github.com/sebastienrousseau/noya-cli/releases/latest) |
-| Homebrew (macOS/Linux) | `brew install sebastienrousseau/tap/noya-cli` |
-| Scoop (Windows) | `scoop bucket add sebastienrousseau https://github.com/sebastienrousseau/scoop-bucket` then `scoop install noya-cli` |
-| AUR (Arch) | [`noyalib-bin`](https://aur.archlinux.org/packages/noyalib-bin), e.g. `yay -S noyalib-bin` |
-| Cargo (crates.io) | `cargo install noya-cli --locked` |
-| Cargo (from source) | `cargo install --locked --path .` |
-| GNU Make (binaries + manpages + completions) | `make install` — honors `PREFIX` (default `/usr/local`) and `DESTDIR`; `make uninstall` reverses it |
-| Container (GHCR) | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` validates; add `--entrypoint noyafmt` to format. Multi-arch, SLSA-attested, cosign-signed; first published with v0.0.41. |
+### As a Rust library
 
-### Formatter only, if you do not need `noyavalidate`
-
-```bash
-cargo install noya-cli --locked --no-default-features --features noyafmt
+```toml
+[dependencies]
+noya-cli = "0.0.46"
 ```
 
-The default install includes `noyavalidate`, whose schema errors are
-rendered by [`miette`](https://crates.io/crates/miette) with source
-excerpts and carets — worth the weight for a validator, since pointing at
-the offending line *is* the job. It does mean the default pulls **130**
-crates against **32** for the formatter alone, most of the difference
-being `miette`'s `fancy` renderer and its backtrace stack.
+Most users install the binaries directly:
 
-If you only ever run `noyafmt`, the command above is a smaller supply
-chain and a faster build. Nothing is degraded for anyone who wants the
-diagnostics — it is a choice, not a default.
+| Channel | Command |
+| :--- | :--- |
+| Cargo | `cargo install noya-cli --locked` |
+| Formatter only | `cargo install noya-cli --locked --no-default-features --features noyafmt` |
+| Homebrew | `brew install sebastienrousseau/tap/noya-cli` |
+| Scoop | `scoop install noya-cli` after adding the Sebastien Rousseau bucket |
+| Container | `docker run --rm -v "$(pwd):/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml` |
+| Release archive | Download the signed archive for the target from [GitHub Releases](https://github.com/sebastienrousseau/noya-cli/releases/latest) |
 
-Releases ship the crate archive with a CycloneDX SBOM and sigstore
-bundles, plus the pre-built binary archives and Linux packages
-above, each with SHA-256 and a SLSA build-provenance attestation —
-see [Verification](#verification).
-
-**MSRV: Rust 1.86.0** — the lowest toolchain this crate can be
-**built and tested** on, matching the noyalib core floor.
-`criterion 0.8` (the benchmark dev-dependency) declares
-`rust-version = 1.86`, so `cargo check --all-targets` and the
-bench suite fail on 1.85 (`criterion@0.8.2 requires rustc 1.86`),
-though `cargo check --lib` still builds. `clap_builder 4.6` in the
-CLI dep tree is edition-2024. We publish the number we verify.
+Release archives include the binaries, manpages, completions, checksums, and
+provenance. Linux releases include GNU and static musl builds.
 
 ---
 
 ## Requirements
 
-- **Rust 1.86.0 or newer** to build from source: `rust-version` in
-  the manifest, enforced by the `msrv-core` CI job on every push.
-- **Any tier-1 platform.** CI runs the tests on Linux, macOS, and
-  Windows with the stable, beta, and nightly toolchains; stable is the
-  gate, beta and nightly are early warning.
-- **The matching core.** This crate pins `noyalib` at the identical
-  `=0.0.X` and releases in lockstep with it; Cargo resolves that pin
-  for you.
-- **Nothing at runtime**: the binaries are static where the platform
-  allows (musl on Linux) and link only the C runtime elsewhere.
+- Rust **1.86.0 or newer** when building from source.
+- Linux, macOS, and Windows are tested on stable, beta, and nightly Rust.
+- The crate pins `noyalib` at exactly `=0.0.46` under the lockstep release
+  contract.
+
+| Surface | Minimum toolchain | Enforcement |
+| :--- | :---: | :--- |
+| Binaries and library | Rust 1.86.0 | manifest and MSRV CI |
+| Complete test and benchmark surface | Rust 1.86.0 | all-target CI |
+
+---
 
 ## Quick Start
 
 ```bash
-# Format a file in-place; comments + indentation preserved.
 noyafmt --write config.yaml
-
-# CI gate — exits 1 if any file would change.
-noyafmt --check ci/*.yaml
-
-# Validate syntax + JSON Schema 2020-12.
+noyafmt --check config/ deploy.yaml
 noyavalidate --schema schema.yaml deploy.yaml
-
-# Validate + auto-fix obvious type slips (port: "8080" → 8080).
 noyavalidate --schema schema.yaml --fix deploy.yaml
 ```
 
----
-
-## `noyafmt`
-
-YAML formatter mirroring the `rustfmt` / `prettier` ergonomics:
-
-```bash
-noyafmt config.yaml                # print formatted source to stdout (default)
-noyafmt --write config.yaml        # rewrite in place
-noyafmt --check ci/*.yaml          # CI gate
-noyafmt --indent 4 config.yaml     # override default 2-space indent
-cat foo.yaml | noyafmt --stdin     # editor pipe (Vim, Emacs, …)
-git ls-files '*.yaml' | xargs noyafmt --check
-```
-
-The formatter runs through noyalib's lossless CST: comments,
-anchor positions, and document structure are preserved
-byte-for-byte; only whitespace and quoting are normalised.
-
-| Flag | Effect |
-|---|---|
-| `--check` | Verify each FILE is formatted; print files that need formatting; exit 1 if any do. Non-destructive. |
-| `--write` | Rewrite each FILE in place. Default is to print to stdout. Mutually exclusive with `--check`. |
-| `--stdin` | Read from stdin, write to stdout. Mutually exclusive with FILE arguments. |
-| `--indent N` | Indentation width in spaces (default: 2). |
+`noyafmt` edits through noyalib's CST so untouched comments and document
+structure survive. `noyavalidate` supports syntax checks, JSON Schema 2020-12,
+and conservative coercion of string-shaped scalar values.
 
 ---
 
-## `noyavalidate`
+## The noya-cli ecosystem
 
-YAML syntax checker with optional **JSON Schema 2020-12**
-enforcement and **schema-driven autofix**.
+`noya-cli` is the command-line delivery surface in the lockstep noyalib family.
 
-```bash
-noyavalidate manifest.yaml                          # syntax only
-noyavalidate --schema schema.yaml deploy.yaml       # + schema check
-noyavalidate --schema schema.yaml --fix deploy.yaml # + autofix
-cat manifest.yaml | noyavalidate                    # stdin
-```
-
-The autofix engine
-([`coerce_to_schema`](https://docs.rs/noyalib/latest/noyalib/fn.coerce_to_schema.html))
-rewrites string-shaped scalars into the schema's expected type
-when the parse succeeds. Loops until convergence; unparseable
-inputs (`port: "abc"` against `type: integer`) are left in place
-so a follow-up `validate_against_schema` call surfaces the
-residue.
-
-Diagnostics use [`miette`](https://crates.io/crates/miette) for
-rustc-style source pointers:
-
-```text
-× schema violation: "8080" is not of type "integer"
-   ╭─[deploy.yaml:3:7]
- 2 │ replicas: 3
- 3 │ port: "8080"
-   ·       ─┬───
-   ·        ╰── here
- 4 │ host: api
-   ╰────
-   help: pass --fix to coerce string-shaped scalars to the
-         schema's declared type.
-```
-
-| Flag | Effect |
-|---|---|
-| `-s, --schema PATH` | Validate each document against JSON Schema 2020-12 at PATH (the schema may itself be YAML or JSON). |
-| `--fix` | Rewrite FILE in place via the CST formatter (lossless: byte-faithful for everything except normalised whitespace / line endings). With stdin input, the formatted bytes go to stdout. |
-| `-q, --quiet` | Suppress success output. |
+| Component | Purpose | Use case |
+| :--- | :--- | :--- |
+| `noyafmt` | Lossless YAML formatter | Local edits, pre-commit, and CI formatting gates |
+| `noyavalidate` | YAML and JSON Schema validator | Deployment and configuration validation |
+| [`noyalib`](https://github.com/sebastienrousseau/noyalib) | Core library | Embed the same parser and editing engine |
+| [`noyalib-lsp`](https://github.com/sebastienrousseau/noyalib-lsp) | Editor server | Format and diagnose on save |
 
 ---
 
-## GitHub Action and pre-commit
+## Capabilities at a glance
 
-One step in CI, no toolchain on the runner:
+| Area | Capability | Status |
+| :--- | :--- | :--- |
+| Formatting | Check, stdout, stdin, and in-place modes | Stable |
+| Validation | YAML syntax and JSON Schema 2020-12 | Stable |
+| Repair | Schema-driven scalar coercion | Stable |
+| Distribution | Archives, Cargo, Homebrew, Scoop, packages, container | Automated |
+| Shell integration | Bash, fish, zsh, and PowerShell completions | Generated |
+| Documentation | Generated manpages from the Clap definitions | CI-gated |
 
-```yaml
-- uses: sebastienrousseau/noya-cli@v0.0.44
-  with:
-    paths: config/ deploy.yaml
-    schema: schema.json   # optional
-```
+---
 
-The action downloads the signed release binaries for the runner's
-platform, verifies the published SHA-256, then runs `noyafmt --check` and
-`noyavalidate` (with the schema when given). Either failure fails the step.
+## Ecosystem comparison
 
-The same checks as hosted pre-commit hooks:
+The command-line tools use the same parser and lossless editor as the core
+library. The comparison focuses on operational behaviour rather than syntax
+coverage alone.
 
-```yaml
-repos:
-  - repo: https://github.com/sebastienrousseau/noya-cli
-    rev: v0.0.44
-    hooks:
-      - id: noyafmt-check
-      - id: noyavalidate
-```
+| Project | Comment-preserving format | JSON Schema | Signed binaries |
+| :--- | :---: | :---: | :---: |
+| **noya-cli** | Yes | Yes | Yes |
+| `yq` | Tool-dependent | No | Project-dependent |
+| `yamllint` | Lint only | No | Project-dependent |
+| `prettier` YAML | Reprints documents | No | npm package |
 
-`noyafmt` (format in place), `noyafmt-check` and `noyavalidate` are the
-three hook ids; pass `--schema schema.json` through `args` to validate.
+See [`docs/COMPARISON.md`](docs/COMPARISON.md) for the evidence and complete matrix.
 
-## Exit codes
+---
 
-| Code | `noyafmt` | `noyavalidate` |
-|---|---|---|
-| 0 | success (or no changes if `--check`) | all valid |
-| 1 | parse / I/O error, or `--check` found unformatted file(s) | parse error or schema violation |
-| 2 | invalid usage (bad arg combination) | invalid usage |
-| 3 | — | I/O error (read / write) |
+## Benchmarks
+
+Benchmark claims remain tied to checked-in Criterion harnesses and documented
+hardware. CI smoke-runs the harnesses without asserting noisy wall-clock values.
+
+| Scenario | Result | Environment |
+| :--- | ---: | :--- |
+| CLI dispatch | Measured by `cli_dispatch` | Criterion release build |
+| Format 1 MiB YAML | Approximately 10 ms | Published project reference machine |
+| Benchmark compilation | Per push | CI smoke gate |
+
+See [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) for methodology and full results.
+
+---
+
+## Features
+
+- `noyafmt --check`, `--write`, `--stdin`, and configurable indentation.
+- `noyavalidate` syntax, schema, quiet, and `--fix` modes.
+- Stable exit codes for shell pipelines and CI.
+- Hosted GitHub Action and pre-commit hooks.
+- FHS-aware `make install` and `make uninstall` using `PREFIX` and `DESTDIR`.
+- Generated manpages and shell completions from one Clap command definition.
+
+---
+
+## Configuration
+
+| Option | Effect |
+| :--- | :--- |
+| `noyafmt --check` | Exit 1 when a file would change |
+| `noyafmt --write` | Rewrite files in place |
+| `noyafmt --indent N` | Set indentation width |
+| `noyavalidate --schema PATH` | Apply a YAML or JSON schema |
+| `noyavalidate --fix` | Coerce repairable values before validation |
+| `noyavalidate --quiet` | Suppress successful output |
+
+The generated [`CLI reference`](docs/cli-reference.md) is authoritative for the
+complete option surface.
 
 ---
 
 ## Examples
 
-End-to-end runnable demos under
-[`examples/`](examples/):
+- [`format-precommit.sh`](examples/format-precommit.sh): formatting gate for commits.
+- [`validate-k8s.sh`](examples/validate-k8s.sh): schema validation over manifests.
+- [`fix-quoted-numbers.sh`](examples/fix-quoted-numbers.sh): schema-driven repair.
 
-| Script | What it shows |
-|---|---|
-| [`format-precommit.sh`](examples/format-precommit.sh) | Drop-in `git pre-commit` hook gating commits on `noyafmt --check`. |
-| [`validate-k8s.sh`](examples/validate-k8s.sh) | CI step that runs `noyavalidate --schema` over a directory of Kubernetes manifests. |
-| [`fix-quoted-numbers.sh`](examples/fix-quoted-numbers.sh) | Walkthrough of the `--fix` autofix flow: quoted scalar → schema-typed integer, with the surrounding comment preserved. |
-
-```bash
-chmod +x crates/noya-cli/examples/*.sh
-crates/noya-cli/examples/fix-quoted-numbers.sh
-```
+Run the scripts from a checkout after building or installing `noya-cli`.
 
 ---
 
-## Shell completions and man pages
+## When not to use noya-cli
 
-Tarball releases ship pre-built completions for bash, fish, zsh,
-and PowerShell, plus roff man pages. Distro packages drop them
-into the standard system locations
-(`/usr/share/bash-completion/completions/`,
-`/usr/share/man/man1/`, …).
+- Use `noyalib` directly when embedding formatting or validation in a Rust
+  application.
+- Use `noyalib-lsp` for per-keystroke editor diagnostics and incremental edits.
+- Choose a YAML 1.1-specific tool when the complete YAML 1.1 resolver contract is
+  required; these tools default to YAML 1.2.
 
-`make install` places all of them in the standard locations. If
-installing via `cargo install`, the pre-built copies live in this
-repository (`complete/`, `docs/*.1`) — or regenerate them from the
-clap definitions:
-
-```bash
-git clone https://github.com/sebastienrousseau/noya-cli
-cd noya-cli
-make assets    # regenerates complete/* and docs/*.1 via build.rs
-```
-
-CI enforces that the committed copies are bit-identical to what the
-clap definitions generate (`make check-assets`), so they cannot
-drift from `--help`.
+The [detailed README reference](docs/README-REFERENCE.md) retains the full flag,
+exit-code, verification, and integration discussion.
 
 ---
 
-## Verification
-
-Every release artefact (crate archive, SBOM) ships with a cosign
-keyless signature and a SLSA build-provenance attestation. Verify
-before trusting a download:
+## Development
 
 ```bash
-COSIGN_EXPERIMENTAL=1 cosign verify-blob \
-  --certificate-identity-regexp 'https://github.com/sebastienrousseau/noya-cli/' \
-  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
-  --bundle <artefact>.bundle \
-  <artefact>
-
-gh attestation verify --owner sebastienrousseau <artefact>
+make
+make test
+make clippy
+make fmt
+make assets
+make check-assets
 ```
 
-Full cookbook including the offline / FIPS-bound flow:
-[`pkg/VERIFY.md`](https://github.com/sebastienrousseau/noyalib/blob/main/pkg/VERIFY.md).
+CI runs the OS and toolchain matrix, coverage, fuzz regression, strict rustdoc,
+feature checks, README examples, packaging smoke tests, and generated-asset drift
+checks. See [`DEVELOPMENT.md`](DEVELOPMENT.md).
 
 ---
 
-## When not to use these tools
+## Security
 
-- **You need to format YAML faster than human-perceivable
-  latency.** `noyafmt` runs end-to-end on a 1 MiB document in
-  ~10 ms; for `<100 KB` documents that's already invisible.
-  But for a streaming editor pipeline that wants per-keystroke
-  formatting, the LSP server (`noyalib-lsp`) issues incremental
-  `TextEdit[]`s instead.
-- **You need YAML 1.1-only behaviour, top to bottom.**
-  `noyavalidate` follows YAML 1.2; the `legacy_booleans` opt-in
-  is exposed at the library level but not yet plumbed through
-  the CLI.
-- **You need to embed the formatter or validator in your own
-  Rust binary.** Use the [`noyalib`](https://crates.io/crates/noyalib)
-  library directly — every CLI feature flows through public
-  library APIs (`cst::format_with_config`,
-  `validate_against_schema`, `coerce_to_schema`).
+Report vulnerabilities privately according to [`SECURITY.md`](SECURITY.md).
+The Rust workspace forbids `unsafe` code, dependencies are reviewed and audited,
+and releases carry checksums, CycloneDX SBOMs, Sigstore signatures, and SLSA
+provenance. The formatter does not execute YAML tags.
 
 ---
 
 ## Documentation
 
-The four entry points, identical across every repo in the family:
-
-- **[User Manual](https://sebastienrousseau.github.io/noya-cli/manual/)** — this crate's rendered book: its guides, architecture, and release notes; the family manual for the core library is at [https://sebastienrousseau.github.io/noyalib/manual/](https://sebastienrousseau.github.io/noyalib/manual/)
-- **[API reference](https://docs.rs/noya-cli)** — rustdoc on docs.rs
-- **[Developer docs](DEVELOPMENT.md)** — this repo's dev entry point, pointing at the family guide
-- **[Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)** — the six crates, the lockstep model, the scorecard
-
-- **Engineering policies** (MSRV, SemVer, security, performance, concurrency, platform support, feature flags):
-  [`doc/POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/POLICIES.md)
-- **Security policy**:
-  [`SECURITY.md`](https://github.com/sebastienrousseau/noyalib/blob/main/SECURITY.md)
-- **CLI flag reference**:
-  [`docs/cli-reference.md`](docs/cli-reference.md)
-- **Recipes (CI gates, pre-commit, editor integration)**:
-  [`docs/recipes.md`](docs/recipes.md)
-- **Workspace README**:
-  <https://github.com/sebastienrousseau/noyalib#readme>
-- **Per-channel install + verify**:
-  [`pkg/VERIFY.md`](https://github.com/sebastienrousseau/noyalib/blob/main/pkg/VERIFY.md)
-- **Library API the binaries call into**:
-  <https://docs.rs/noyalib>
+- [User Manual](https://sebastienrousseau.github.io/noya-cli/manual/)
+- [API reference](https://docs.rs/noya-cli)
+- [Developer documentation](DEVELOPMENT.md)
+- [Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)
+- [CLI reference](docs/cli-reference.md)
+- [Recipes](docs/recipes.md)
+- [Engineering policies](docs/POLICIES.md)
+- [Compliance grade](docs/COMPLIANCE-GRADE.md)
+- [Detailed README reference](docs/README-REFERENCE.md)
 
 ---
 
-## Conformance
+## Stability guarantees
 
-Every push runs the official [yaml-test-suite](https://github.com/yaml/yaml-test-suite)
-through `noyavalidate`'s exit code, from the same vendored suite and the same
-core commit as the `noyalib` core: 406 of 406 (valid cases exit 0, invalid
-cases exit non-zero). A two-document configuration that uses most of YAML at
-once (`tests/fixtures/ultra-complex/`) validates, and `noyafmt`'s output
-parses to exactly the same JSON. Details and the family table:
-[noyalib.com/conformance](https://noyalib.com/conformance/).
+- During `0.0.x`, the patch component is the breaking-change axis.
+- Formatting output and exit-code changes are breaking behaviour changes.
+- The MSRV may rise only on the breaking axis with a changelog explanation.
+- Manpages and completions are generated from the live command definitions and
+  checked for drift in CI.
+
+---
 
 ## License
 
-Dual-licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-or [MIT](https://opensource.org/licenses/MIT), at your option.
+Licensed under either [Apache License 2.0](LICENSE-APACHE) or
+[MIT](LICENSE-MIT), at your option.

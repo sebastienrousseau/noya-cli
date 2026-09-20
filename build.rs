@@ -77,5 +77,12 @@ fn gen_manpage(out_dir: &Path, name: &str, cmd: clap::Command) {
     clap_mangen::Man::new(cmd)
         .render(&mut buffer)
         .expect("clap_mangen::Man::render must succeed in build.rs");
-    std::fs::write(&path, buffer).unwrap_or_else(|e| panic!("writing {}: {e}", path.display()));
+    let rendered = String::from_utf8(buffer).expect("clap_mangen output must be UTF-8");
+    let mut normalized = rendered
+        .lines()
+        .map(str::trim_end)
+        .collect::<Vec<_>>()
+        .join("\n");
+    normalized.push('\n');
+    std::fs::write(&path, normalized).unwrap_or_else(|e| panic!("writing {}: {e}", path.display()));
 }
