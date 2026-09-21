@@ -231,7 +231,7 @@ three hook ids; pass `--schema schema.json` through `args` to validate.
 ## Examples
 
 End-to-end runnable demos under
-[`examples/`](examples/):
+[`examples/`](../examples/):
 
 | Script | What it shows |
 |---|---|
