@@ -72,20 +72,24 @@ criteria = "safe-to-deploy"
 version = "0.6.9"
 criteria = "safe-to-deploy"
 
+[[exemptions.cc]]
+version = "1.2.61"
+criteria = "safe-to-run"
+
 [[exemptions.clap]]
-version = "4.6.6"
+version = "4.6.7"
 criteria = "safe-to-deploy"
 
 [[exemptions.clap_builder]]
-version = "4.6.6"
+version = "4.6.7"
 criteria = "safe-to-deploy"
 
 [[exemptions.clap_complete]]
-version = "4.6.9"
+version = "4.6.11"
 criteria = "safe-to-deploy"
 
 [[exemptions.clap_derive]]
-version = "4.6.4"
+version = "4.6.7"
 criteria = "safe-to-deploy"
 
 [[exemptions.clap_lex]]
@@ -93,11 +97,19 @@ version = "1.1.0"
 criteria = "safe-to-deploy"
 
 [[exemptions.clap_mangen]]
-version = "0.3.3"
+version = "0.3.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.criterion]]
 version = "0.8.2"
+criteria = "safe-to-run"
+
+[[exemptions.crossbeam-deque]]
+version = "0.8.8"
+criteria = "safe-to-run"
+
+[[exemptions.crossbeam-utils]]
+version = "0.8.23"
 criteria = "safe-to-run"
 
 [[exemptions.data-encoding]]
@@ -107,6 +119,10 @@ criteria = "safe-to-deploy"
 [[exemptions.dyn-clone]]
 version = "1.0.20"
 criteria = "safe-to-deploy"
+
+[[exemptions.either]]
+version = "1.18.0"
+criteria = "safe-to-run"
 
 [[exemptions.email_address]]
 version = "0.2.9"
@@ -128,6 +144,10 @@ criteria = "safe-to-deploy"
 version = "0.17.0"
 criteria = "safe-to-deploy"
 
+[[exemptions.futures-core]]
+version = "0.3.34"
+criteria = "safe-to-deploy"
+
 [[exemptions.futures-task]]
 version = "0.3.33"
 criteria = "safe-to-deploy"
@@ -138,6 +158,10 @@ criteria = "safe-to-deploy"
 
 [[exemptions.getrandom]]
 version = "0.3.4"
+criteria = "safe-to-deploy"
+
+[[exemptions.indexmap]]
+version = "2.14.2"
 criteria = "safe-to-deploy"
 
 [[exemptions.is_terminal_polyfill]]
@@ -185,7 +209,7 @@ version = "0.0.27"
 criteria = "safe-to-deploy"
 
 [[exemptions.noyalib]]
-version = "0.0.45"
+version = "0.0.47"
 criteria = "safe-to-deploy"
 
 [[exemptions.num-cmp]]
@@ -237,11 +261,11 @@ version = "0.5.18"
 criteria = "safe-to-deploy"
 
 [[exemptions.ref-cast]]
-version = "1.0.26"
+version = "1.0.27"
 criteria = "safe-to-deploy"
 
 [[exemptions.ref-cast-impl]]
-version = "1.0.26"
+version = "1.0.27"
 criteria = "safe-to-deploy"
 
 [[exemptions.regex]]
@@ -249,11 +273,23 @@ version = "1.13.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.regex-automata]]
-version = "0.4.16"
+version = "0.4.18"
 criteria = "safe-to-deploy"
 
 [[exemptions.roff]]
 version = "1.1.1"
+criteria = "safe-to-deploy"
+
+[[exemptions.rustc-demangle]]
+version = "0.1.27"
+criteria = "safe-to-deploy"
+
+[[exemptions.schemars]]
+version = "1.2.2"
+criteria = "safe-to-deploy"
+
+[[exemptions.schemars_derive]]
+version = "1.2.2"
 criteria = "safe-to-deploy"
 
 [[exemptions.scopeguard]]
@@ -261,11 +297,15 @@ version = "1.2.0"
 criteria = "safe-to-deploy"
 
 [[exemptions.serde_derive_internals]]
-version = "0.29.1"
+version = "0.30.0"
 criteria = "safe-to-deploy"
 
 [[exemptions.serde_json]]
 version = "1.0.151"
+criteria = "safe-to-deploy"
+
+[[exemptions.smallvec]]
+version = "1.16.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.supports-color]]
@@ -326,4 +366,12 @@ criteria = "safe-to-run"
 
 [[exemptions.windows-sys]]
 version = "0.61.2"
+criteria = "safe-to-deploy"
+
+[[exemptions.zerocopy]]
+version = "0.8.57"
+criteria = "safe-to-deploy"
+
+[[exemptions.zerocopy-derive]]
+version = "0.8.57"
 criteria = "safe-to-deploy"
