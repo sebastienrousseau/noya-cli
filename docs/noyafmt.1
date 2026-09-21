@@ -1,10 +1,10 @@
 .ie \n(.g .ds Aq \(aq
 .el .ds Aq '
-.TH noyafmt 1  "noyafmt 0.0.45" 
+.TH noyafmt 1  "noyafmt 0.0.46"
 .SH NAME
 noyafmt \- Format YAML files via the noyalib CST formatter
 .SH SYNOPSIS
-\fBnoyafmt\fR [\fB\-\-check\fR] [\fB\-\-write\fR] [\fB\-\-stdin\fR] [\fB\-\-indent\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] [\fIFILE\fR] 
+\fBnoyafmt\fR [\fB\-\-check\fR] [\fB\-\-write\fR] [\fB\-\-stdin\fR] [\fB\-\-indent\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] [\fIFILE\fR]
 .SH DESCRIPTION
 noyafmt — auto\-format YAML via the noyalib CST.
 .PP
@@ -42,4 +42,4 @@ EXAMPLES:
   noyafmt \-\-check ci/*.yaml         # CI gate
   cat foo.yaml | noyafmt \-\-stdin
 .SH VERSION
-v0.0.45
+v0.0.46
