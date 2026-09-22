@@ -11,6 +11,13 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
+## [v0.0.48] - 2026-09-22
+
+### Changed
+
+- Tracks `noyalib` 0.0.48 under the exact lockstep pin.
+- Corrected the Nix flake package version so it follows repository releases.
+
 ## [v0.0.47] - 2026-09-21
 
 ### Changed
