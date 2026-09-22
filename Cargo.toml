@@ -98,8 +98,3 @@ assets = [
     { source = "complete/noyafmt.fish", dest = "/usr/share/fish/vendor_completions.d/noyafmt.fish", mode = "0644" },
     { source = "complete/noyavalidate.fish", dest = "/usr/share/fish/vendor_completions.d/noyavalidate.fish", mode = "0644" },
 ]
-
-# Pre-release resolution for the exact lockstep core pin. Remove this
-# section after noyalib 0.0.49 is published and before tagging this crate.
-[patch.crates-io]
-noyalib = { git = "https://github.com/sebastienrousseau/noyalib", branch = "feat/v0.0.49" }
