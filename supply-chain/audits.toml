@@ -136,6 +136,12 @@ who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
 criteria = "safe-to-deploy"
 delta = "0.8.1 -> 0.8.2"
 
+[[audits.noyalib]]
+who = "OpenAI Codex"
+criteria = "safe-to-deploy"
+delta = "0.0.47 -> 0.0.48"
+notes = "Reviewed typed query-path API delta; full CI, Miri, fuzz, clippy, strict docs, and reproducible release passed."
+
 [[audits.num]]
 who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
 criteria = "safe-to-deploy"
