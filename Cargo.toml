@@ -77,11 +77,6 @@ assets = [
     { source = "LICENSE-APACHE", dest = "/usr/share/licenses/noya-cli/LICENSE-APACHE", mode = "0644", doc = true },
 ]
 
-# Pre-release resolution for the exact lockstep core pin. Remove this
-# section after noyalib 0.0.50 is published and before tagging this crate.
-[patch.crates-io]
-noyalib = { git = "https://github.com/sebastienrousseau/noyalib", branch = "feat/v0.0.50" }
-
 # Package layout for `cargo deb` (deb/rpm job in release.yml). The
 # same staged-binary convention as generate-rpm above; manpages and
 # completions install to the Debian standard paths.
