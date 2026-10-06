@@ -24,7 +24,6 @@ path = "fuzz_targets/fuzz_argv.rs"
 test = false
 doc = false
 bench = false
-
 [[bin]]
 name = "fuzz_derive_parse"
 path = "fuzz_targets/fuzz_derive_parse.rs"

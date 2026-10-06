@@ -89,6 +89,10 @@ audited_as = "0.0.47"
 version = "0.0.51"
 audited_as = "0.0.50"
 
+[[unpublished.noya-cli]]
+version = "0.0.52"
+audited_as = "0.0.51"
+
 [[publisher.bumpalo]]
 version = "3.20.3"
 when = "2026-05-22"
