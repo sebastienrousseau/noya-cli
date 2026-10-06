@@ -186,6 +186,7 @@ See [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) for methodology and full results.
 | `noyavalidate --schema PATH` | Apply a YAML or JSON schema |
 | `noyavalidate --fix` | Coerce repairable values before validation |
 | `noyavalidate --quiet` | Suppress successful output |
+| `noyavalidate --strict` | Parse under the strict YAML 1.2 profile (duplicate keys and odd indentation are errors, tighter limits) |
 
 The generated [`CLI reference`](docs/cli-reference.md) is authoritative for the
 complete option surface.

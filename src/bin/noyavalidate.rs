@@ -103,7 +103,7 @@ fn run_fix(path: Option<&Path>, source: &str) -> io::Result<()> {
             let mut stdout = io::stdout().lock();
             stdout.write_all(formatted.as_bytes())?;
         }
-        Some(p) => fs::write(p, formatted.as_bytes())?,
+        Some(p) => noya_cli::write_atomic(p, formatted.as_bytes())?,
     }
     Ok(())
 }
@@ -214,12 +214,24 @@ fn run_fix_with_schema(
             let mut stdout = io::stdout().lock();
             stdout.write_all(final_output.as_bytes())?;
         }
-        Some(p) => fs::write(p, final_output.as_bytes())?,
+        Some(p) => noya_cli::write_atomic(p, final_output.as_bytes())?,
     }
     Ok(FixOutcome {
         applied,
         wrote: true,
     })
+}
+
+/// Parse every document of `source`. With `strict`, the YAML 1.2 strict
+/// profile applies: duplicate keys are an error, only `true`/`false`
+/// are booleans, indentation must be even, and the tighter resource
+/// limits for untrusted input are in force.
+fn load_documents(source: &str, strict: bool) -> Result<Vec<noyalib::Value>, noyalib::Error> {
+    if strict {
+        noyalib::load_all_with_config(source, &noyalib::ParserConfig::strict())?.collect()
+    } else {
+        noyalib::load_all_as::<noyalib::Value>(source)
+    }
 }
 
 fn run() -> ExitCode {
@@ -244,7 +256,7 @@ fn run() -> ExitCode {
     // Phase 1: syntax check. The CST-aware --fix path takes the
     // source string directly so it can preserve comments — these
     // parsed `Value`s are used only for validation reporting.
-    let docs = match noyalib::load_all_as::<noyalib::Value>(&source) {
+    let docs = match load_documents(&source, args.strict) {
         Ok(d) => d,
         Err(e) => {
             let report = Report::new(e).with_source_code(NamedSource::new(name, source.clone()));

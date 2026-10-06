@@ -466,3 +466,30 @@ fn fix_skipped_when_schema_violates() {
         "fix must not run if schema rejected the input"
     );
 }
+
+// ── --strict ───────────────────────────────────────────────────────
+#[test]
+fn default_profile_accepts_a_duplicate_key_last_wins() {
+    let (code, _, _) = run_with_stdin("a: 1\na: 2\n", &[]);
+    assert_eq!(code, 0);
+}
+
+#[test]
+fn strict_rejects_a_duplicate_key() {
+    let (code, _, stderr) = run_with_stdin("a: 1\na: 2\n", &["--strict"]);
+    assert_eq!(code, 1, "stderr: {stderr}");
+    assert!(
+        stderr.to_lowercase().contains("duplicate"),
+        "the error should name the duplicate key; got {stderr:?}"
+    );
+}
+
+#[test]
+fn strict_accepts_a_clean_document() {
+    let (code, stdout, stderr) = run_with_stdin("a: 1\nb: true\n", &["--strict"]);
+    assert_eq!(code, 0, "stderr: {stderr}");
+    assert!(
+        stdout.contains("valid") || stdout.contains("document"),
+        "{stdout:?}"
+    );
+}

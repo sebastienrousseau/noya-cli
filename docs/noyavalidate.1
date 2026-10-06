@@ -4,7 +4,7 @@
 .SH NAME
 noyavalidate \- Validate YAML syntax and (optionally) a JSON Schema
 .SH SYNOPSIS
-\fBnoyavalidate\fR [\fB\-s\fR|\fB\-\-schema\fR] [\fB\-\-fix\fR] [\fB\-q\fR|\fB\-\-quiet\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] [\fIFILE\fR]
+\fBnoyavalidate\fR [\fB\-s\fR|\fB\-\-schema\fR] [\fB\-\-fix\fR] [\fB\-q\fR|\fB\-\-quiet\fR] [\fB\-\-strict\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] [\fIFILE\fR]
 .SH DESCRIPTION
 noyavalidate — check YAML syntax (and optional JSON Schema).
 .PP
@@ -28,6 +28,9 @@ Rewrite FILE in place via the CST formatter (lossless: byte\-faithful for everyt
 .TP
 \fB\-q\fR, \fB\-\-quiet\fR
 Suppress success output
+.TP
+\fB\-\-strict\fR
+Parse under the strict YAML 1.2 profile: duplicate keys are an error, only `true` and `false` are booleans, indentation must be even, and the tighter resource limits meant for untrusted input apply
 .TP
 \fB\-h\fR, \fB\-\-help\fR
 Print help (see a summary with \*(Aq\-h\*(Aq)

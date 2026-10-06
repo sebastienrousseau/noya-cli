@@ -13,9 +13,20 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ## [v0.0.54] - Unreleased
 
+### Added
+
+- `noyavalidate --strict` parses under noyalib's strict YAML 1.2
+  profile: duplicate keys are an error, only `true` and `false` are
+  booleans, indentation must be even, and the tighter resource limits
+  meant for untrusted input apply.
+
 ### Changed
 
 - Tracks `noyalib` 0.0.54 under the exact lockstep pin.
+- `noyafmt --write` and `noyavalidate --fix` write through a temporary
+  file in the same directory and rename it over the target, keeping the
+  target's permissions. An interrupted run leaves the old file or the
+  new one, never a truncated one.
 
 ## [v0.0.53] - 2026-10-06
 
