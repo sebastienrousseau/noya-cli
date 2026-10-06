@@ -2,7 +2,7 @@
 # noyalib-bin: pre-built noyafmt + noyavalidate from the signed,
 # SLSA-attested GitHub Release (musl static — no runtime deps).
 pkgname=noyalib-bin
-pkgver=0.0.53
+pkgver=0.0.54
 pkgrel=1
 pkgdesc="YAML formatter (noyafmt) and JSON-Schema validator (noyavalidate) built on the noyalib library"
 arch=('x86_64' 'aarch64')

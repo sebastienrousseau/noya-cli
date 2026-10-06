@@ -7,20 +7,20 @@ class NoyaCli < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.53/noya-cli-0.0.53-aarch64-apple-darwin.tar.gz"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.54/noya-cli-0.0.54-aarch64-apple-darwin.tar.gz"
       sha256 "bf032c31221a154b0c577273b45082e760d7f6ceea34229881293137ead6598f"
     else
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.53/noya-cli-0.0.53-x86_64-apple-darwin.tar.gz"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.54/noya-cli-0.0.54-x86_64-apple-darwin.tar.gz"
       sha256 "44fdf1636a751717c64ec3ccf2a1c8ac2e1e92eec1a1e5ae261a2dabb8d34671"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.53/noya-cli-0.0.53-aarch64-unknown-linux-musl.tar.gz"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.54/noya-cli-0.0.54-aarch64-unknown-linux-musl.tar.gz"
       sha256 "02d6cf3a73e7bcd7c8b9e1cdae1c59065ab2b8ab49d72bdd4ecaa37c38a81823"
     else
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.53/noya-cli-0.0.53-x86_64-unknown-linux-musl.tar.gz"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.54/noya-cli-0.0.54-x86_64-unknown-linux-musl.tar.gz"
       sha256 "2c12fc1b799c555fa2c15960855b11ae4b4ce0a476c03cf90e21ca6d75f9bfcf"
     end
   end
