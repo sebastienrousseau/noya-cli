@@ -90,7 +90,7 @@ version = "0.0.51"
 audited_as = "0.0.50"
 
 [[unpublished.noya-cli]]
-version = "0.0.52"
+version = "0.0.53"
 audited_as = "0.0.51"
 
 [[publisher.bumpalo]]
@@ -101,8 +101,8 @@ user-login = "fitzgen"
 user-name = "Nick Fitzgerald"
 
 [[publisher.jsonschema]]
-version = "0.56.0"
-when = "2026-09-10"
+version = "0.58.5"
+when = "2026-10-02"
 user-id = 82692
 user-login = "Stranger6667"
 user-name = "Dmitry Dygalo"
@@ -114,8 +114,8 @@ user-id = 55123
 user-login = "rust-lang-owner"
 
 [[publisher.referencing]]
-version = "0.56.0"
-when = "2026-09-10"
+version = "0.58.5"
+when = "2026-10-02"
 user-id = 82692
 user-login = "Stranger6667"
 user-name = "Dmitry Dygalo"

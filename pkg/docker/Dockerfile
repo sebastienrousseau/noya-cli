@@ -12,7 +12,7 @@
 #   docker run --rm -v "$PWD:/work" -w /work ghcr.io/sebastienrousseau/noya-cli:latest config.yaml
 #   docker run --rm -v "$PWD:/work" -w /work --entrypoint noyafmt ghcr.io/sebastienrousseau/noya-cli:latest --check config.yaml
 
-FROM rust:1.98-bookworm@sha256:82150a52ec202c1b14d7817e14516c392bb7f5cfebd88f1ed531cb37ebd39922 AS build
+FROM rust:1.99-bookworm@sha256:59037199c44290f2befcdd58dcc540164763fc296950255aaefeef096a1866b0 AS build
 WORKDIR /src
 COPY . .
 # Reproducible-build hygiene: no absolute paths in the binaries, a fixed

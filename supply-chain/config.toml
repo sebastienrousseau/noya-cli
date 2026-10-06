@@ -97,7 +97,7 @@ version = "1.1.0"
 criteria = "safe-to-deploy"
 
 [[exemptions.clap_mangen]]
-version = "0.3.1"
+version = "0.3.3"
 criteria = "safe-to-deploy"
 
 [[exemptions.criterion]]
@@ -173,11 +173,11 @@ version = "0.3.103"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema-regex]]
-version = "0.56.0"
+version = "0.58.5"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema-value]]
-version = "0.56.0"
+version = "0.58.5"
 criteria = "safe-to-deploy"
 
 [[exemptions.libc]]
@@ -209,7 +209,7 @@ version = "0.0.27"
 criteria = "safe-to-deploy"
 
 [[exemptions.noyalib]]
-version = "0.0.52"
+version = "0.0.53"
 criteria = "safe-to-deploy"
 
 [[exemptions.num-cmp]]
