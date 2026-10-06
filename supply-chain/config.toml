@@ -173,11 +173,11 @@ version = "0.3.103"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema-regex]]
-version = "0.56.0"
+version = "0.58.5"
 criteria = "safe-to-deploy"
 
 [[exemptions.jsonschema-value]]
-version = "0.56.0"
+version = "0.58.5"
 criteria = "safe-to-deploy"
 
 [[exemptions.libc]]
