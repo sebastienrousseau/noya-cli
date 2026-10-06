@@ -1,6 +1,6 @@
 pkgbase = noyalib-bin
 	pkgdesc = YAML formatter (noyafmt) and JSON-Schema validator (noyavalidate) built on the noyalib library
-	pkgver = 0.0.33
+	pkgver = 0.0.53
 	pkgrel = 1
 	url = https://github.com/sebastienrousseau/noya-cli
 	arch = x86_64
@@ -9,9 +9,9 @@ pkgbase = noyalib-bin
 	provides = noyafmt
 	provides = noyavalidate
 	conflicts = noyalib
-	source_x86_64 = https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.33/noya-cli-0.0.33-x86_64-unknown-linux-musl.tar.gz
-	sha256sums_x86_64 = dc2b915614e6ad1cbec46fc35eaa4ad828f1ee8987014f62743f3d3c5dbae614
-	source_aarch64 = https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.33/noya-cli-0.0.33-aarch64-unknown-linux-musl.tar.gz
-	sha256sums_aarch64 = e66f40ec8114b1599fa228ec930239c8780d0a2f91df56b16f94838a9f10b3ef
+	source_x86_64 = https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.53/noya-cli-0.0.53-x86_64-unknown-linux-musl.tar.gz
+	sha256sums_x86_64 = 2c12fc1b799c555fa2c15960855b11ae4b4ce0a476c03cf90e21ca6d75f9bfcf
+	source_aarch64 = https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.53/noya-cli-0.0.53-aarch64-unknown-linux-musl.tar.gz
+	sha256sums_aarch64 = 02d6cf3a73e7bcd7c8b9e1cdae1c59065ab2b8ab49d72bdd4ecaa37c38a81823
 
 pkgname = noyalib-bin
