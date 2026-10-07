@@ -202,7 +202,7 @@ struct FixOutcome {
 ///    string scalars whose schema-declared type is integer / number / boolean
 ///    are coerced; everything else is preserved.
 /// 3. Re-validate each coerced document against the compiled schema. If any
-///    violation remains, return without writing — the caller surfaces the
+///    violation remains, return without writing; the caller surfaces the
 ///    residue and exits 1 with the user's original source intact.
 /// 4. If validation passes, write the concatenated CST sources back to `path`
 ///    (or stdout). Comments and formatting survive byte-faithfully.
@@ -227,7 +227,7 @@ fn run_fix_with_schema(
     // Transactional gate: validate each coerced document. We have
     // to re-parse each CST back to a Value because validation
     // operates on the `noyalib::Value` shape; this also surfaces
-    // residue (e.g. `port: "abc"` against `type: integer` — not
+    // residue (e.g. `port: "abc"` against `type: integer`, not
     // coercible by parse).
     let still_invalid =
         docs.iter().any(
