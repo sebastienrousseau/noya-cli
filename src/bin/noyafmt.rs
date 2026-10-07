@@ -106,7 +106,7 @@ fn run_file(
     }
     if write {
         if changed {
-            fs::write(file, formatted.as_bytes())?;
+            noya_cli::write_atomic(file, formatted.as_bytes())?;
         }
         return Ok(changed);
     }

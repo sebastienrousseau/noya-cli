@@ -26,6 +26,7 @@ Register-ArgumentCompleter -Native -CommandName 'noyavalidate' -ScriptBlock {
             [CompletionResult]::new('--fix', '--fix', [CompletionResultType]::ParameterName, 'Rewrite FILE in place via the CST formatter (lossless: byte-faithful for everything except normalised whitespace and line endings). With stdin input, the formatted bytes go to stdout')
             [CompletionResult]::new('-q', '-q', [CompletionResultType]::ParameterName, 'Suppress success output')
             [CompletionResult]::new('--quiet', '--quiet', [CompletionResultType]::ParameterName, 'Suppress success output')
+            [CompletionResult]::new('--strict', '--strict', [CompletionResultType]::ParameterName, 'Parse under the strict YAML 1.2 profile: duplicate keys are an error, only `true` and `false` are booleans, indentation must be even, and the tighter resource limits meant for untrusted input apply')
             [CompletionResult]::new('-h', '-h', [CompletionResultType]::ParameterName, 'Print help (see more with ''--help'')')
             [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help (see more with ''--help'')')
             [CompletionResult]::new('-V', '-V ', [CompletionResultType]::ParameterName, 'Print version')

@@ -20,6 +20,7 @@ _noyavalidate() {
 '--fix[Rewrite FILE in place via the CST formatter (lossless\: byte-faithful for everything except normalised whitespace and line endings). With stdin input, the formatted bytes go to stdout]' \
 '-q[Suppress success output]' \
 '--quiet[Suppress success output]' \
+'--strict[Parse under the strict YAML 1.2 profile\: duplicate keys are an error, only \`true\` and \`false\` are booleans, indentation must be even, and the tighter resource limits meant for untrusted input apply]' \
 '-h[Print help (see more with '\''--help'\'')]' \
 '--help[Print help (see more with '\''--help'\'')]' \
 '-V[Print version]' \

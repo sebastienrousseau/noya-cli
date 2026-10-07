@@ -59,7 +59,7 @@
 
 ```toml
 [dependencies]
-noya-cli = "0.0.53"
+noya-cli = "0.0.54"
 ```
 
 Most users install the binaries directly:
@@ -82,7 +82,7 @@ provenance. Linux releases include GNU and static musl builds.
 
 - Rust **1.86.0 or newer** when building from source.
 - Linux, macOS, and Windows are tested on stable, beta, and nightly Rust.
-- The crate pins `noyalib` at exactly `=0.0.53` under the lockstep release
+- The crate pins `noyalib` at exactly `=0.0.54` under the lockstep release
   contract.
 
 | Surface | Minimum toolchain | Enforcement |
@@ -186,6 +186,7 @@ See [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) for methodology and full results.
 | `noyavalidate --schema PATH` | Apply a YAML or JSON schema |
 | `noyavalidate --fix` | Coerce repairable values before validation |
 | `noyavalidate --quiet` | Suppress successful output |
+| `noyavalidate --strict` | Parse under the strict YAML 1.2 profile (duplicate keys and odd indentation are errors, tighter limits) |
 
 The generated [`CLI reference`](docs/cli-reference.md) is authoritative for the
 complete option surface.
