@@ -493,3 +493,68 @@ fn strict_accepts_a_clean_document() {
         "{stdout:?}"
     );
 }
+
+// ── Schema: empty streams and uncompilable schemas ───────────────────────
+
+fn run_schema(schema: &str, data: &str, name: &str) -> (i32, String, String) {
+    let schema = tmp(&format!("{name}_schema"), schema);
+    let yaml = tmp(&format!("{name}_data"), data);
+    let output = bin()
+        .arg("--schema")
+        .arg(&schema)
+        .arg(&yaml)
+        .output()
+        .unwrap();
+    (
+        output.status.code().unwrap_or(-1),
+        String::from_utf8(output.stdout).unwrap(),
+        String::from_utf8(output.stderr).unwrap(),
+    )
+}
+
+#[test]
+fn schema_rejects_an_empty_file_as_a_null_document() {
+    let (code, _, stderr) = run_schema("type: object\nrequired: [name]\n", "", "empty_null");
+    assert_eq!(
+        code, 1,
+        "an empty file must not pass `type: object`: {stderr}"
+    );
+}
+
+#[test]
+fn schema_rejects_a_comment_only_file_as_a_null_document() {
+    let (code, _, stderr) = run_schema("type: object\n", "# only a comment\n", "comment_null");
+    assert_eq!(code, 1, "{stderr}");
+}
+
+#[test]
+fn schema_accepts_an_empty_file_when_null_is_allowed() {
+    let (code, _, stderr) = run_schema("type: [object, \"null\"]\n", "", "empty_ok");
+    assert_eq!(code, 0, "{stderr}");
+}
+
+#[test]
+fn uncompilable_schema_fails_even_for_an_empty_file() {
+    let (code, _, stderr) = run_schema("type: wibble\n", "", "bad_schema_empty");
+    assert_eq!(code, 1, "{stderr}");
+    assert!(stderr.contains("schema"), "{stderr}");
+}
+
+#[test]
+fn uncompilable_schema_fails_before_any_document_is_checked() {
+    let (code, _, stderr) = run_schema("type: wibble\n", "name: x\n", "bad_schema_doc");
+    assert_eq!(code, 1, "{stderr}");
+}
+
+#[test]
+fn schema_fix_does_not_pass_an_empty_file_that_violates() {
+    let schema = tmp("fix_empty_schema", "type: object\n");
+    let yaml = tmp("fix_empty_data", "");
+    let output = bin()
+        .args(["--fix", "--schema"])
+        .arg(&schema)
+        .arg(&yaml)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code().unwrap(), 1);
+}

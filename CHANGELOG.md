@@ -23,6 +23,10 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
   created exclusively under an unpredictable name with the target's mode
   before any contents are written. It was briefly readable with the
   default mode and could follow a symlink planted at its predictable name.
+- `noyavalidate --schema` compiles the schema once before reading any
+  input and exits 1 when it does not compile, and checks an empty or
+  comment-only file as one null document. Both cases used to pass any
+  schema, even one that could not compile.
 
 ## [v0.0.54] - 2026-10-07
 
