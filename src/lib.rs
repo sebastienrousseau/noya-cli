@@ -185,12 +185,12 @@ pub struct NoyafmtCli {
     name = "noyavalidate",
     about = "Validate YAML syntax and (optionally) a JSON Schema",
     long_about = "noyavalidate — check YAML syntax (and optional JSON Schema).\n\n\
-                  Reads one or more YAML documents from a file (or stdin),\n\
+                  Reads the YAML documents in each FILE (or stdin),\n\
                   reports syntax errors via the miette fancy renderer, and —\n\
                   when --schema PATH is given — validates each parsed\n\
                   document against a JSON Schema 2020-12 contract (the\n\
                   schema may itself be written in YAML or JSON).\n\n\
-                  --fix rewrites the input in-place through the lossless\n\
+                  --fix rewrites each input in place through the lossless\n\
                   CST formatter, normalising whitespace and quoting without\n\
                   changing semantics. When the input is stdin, the\n\
                   formatted output is written to stdout instead.",
@@ -199,7 +199,9 @@ pub struct NoyafmtCli {
                   0    All documents valid (and fixed if --fix)\n  \
                   1    Parse error or schema violation\n  \
                   2    Usage error\n  \
-                  3    I/O error",
+                  3    I/O error\n\n\
+                  With several files, every file is checked and the exit\n\
+                  code is the highest any file produced.",
 )]
 pub struct NoyavalidateCli {
     /// Validate each document against the JSON Schema 2020-12 at
@@ -225,9 +227,9 @@ pub struct NoyavalidateCli {
     #[arg(long)]
     pub strict: bool,
 
-    /// YAML file to validate. Use `-` or omit for stdin.
+    /// YAML files to validate. Use `-` (alone) or omit for stdin.
     #[arg(value_name = "FILE")]
-    pub file: Option<PathBuf>,
+    pub files: Vec<PathBuf>,
 }
 
 #[allow(
@@ -360,7 +362,7 @@ mod tests {
         let cli =
             NoyavalidateCli::try_parse_from(["noyavalidate", "-s", "s.json", "in.yaml"]).unwrap();
         assert_eq!(cli.schema.unwrap().to_string_lossy(), "s.json");
-        assert_eq!(cli.file.unwrap().to_string_lossy(), "in.yaml");
+        assert_eq!(cli.files[0].to_string_lossy(), "in.yaml");
     }
 
     #[test]
@@ -382,7 +384,7 @@ mod tests {
     #[test]
     fn noyavalidate_no_args_means_stdin() {
         let cli = NoyavalidateCli::try_parse_from(["noyavalidate"]).unwrap();
-        assert!(cli.file.is_none());
+        assert!(cli.files.is_empty());
     }
 
     // ── Command introspection (used by build.rs / xtask) ──────────

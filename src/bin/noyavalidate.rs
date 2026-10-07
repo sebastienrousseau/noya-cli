@@ -372,16 +372,28 @@ fn report_ok(input: &Input<'_>, count: usize, suffix: &str, opts: &Options<'_>) 
     println!("ok: {count} {plural} valid ({}){suffix}", input.name);
 }
 
+/// Turn the FILE arguments into the inputs to check: `None` is stdin.
+/// No argument, or a lone `-`, reads stdin; `-` next to other files is
+/// a usage error (exit 2), since stdin can only be read once.
+fn resolve_inputs(files: &[PathBuf]) -> Vec<Option<&Path>> {
+    let is_dash = |p: &PathBuf| p.as_os_str() == "-";
+    if files.is_empty() || (files.len() == 1 && is_dash(&files[0])) {
+        return vec![None];
+    }
+    if files.iter().any(is_dash) {
+        noya_cli::noyavalidate_command()
+            .error(
+                clap::error::ErrorKind::ArgumentConflict,
+                "'-' (stdin) cannot be combined with other FILE arguments",
+            )
+            .exit();
+    }
+    files.iter().map(|p| Some(p.as_path())).collect()
+}
+
 fn run() -> ExitCode {
     let args = NoyavalidateCli::parse();
-
-    // `-` as the positional means "explicitly read from stdin" — clap
-    // accepts it as a valid PathBuf, so normalise it back to None
-    // (the read path's None branch reads stdin).
-    let path: Option<PathBuf> = match args.file {
-        Some(ref p) if p.as_os_str() == "-" => None,
-        other => other,
-    };
+    let inputs = resolve_inputs(&args.files);
 
     let schema = match args.schema.as_deref().map(load_schema).transpose() {
         Ok(s) => s,
@@ -393,7 +405,15 @@ fn run() -> ExitCode {
         quiet: args.quiet,
         strict: args.strict,
     };
-    ExitCode::from(check_input(path.as_deref(), &opts))
+    // Every input is checked even after a failure, so one run reports
+    // every bad file; the exit code is the most severe one seen
+    // (3 for I/O over 1 for a parse or schema failure).
+    let worst = inputs
+        .into_iter()
+        .map(|path| check_input(path, &opts))
+        .max()
+        .unwrap_or(0);
+    ExitCode::from(worst)
 }
 
 fn main() -> ExitCode {

@@ -186,24 +186,62 @@ fn unknown_flag_exits_2() {
 }
 
 #[test]
-fn too_many_files_exits_2() {
-    let output = bin().args(["a.yaml", "b.yaml"]).output().unwrap();
-    assert_eq!(output.status.code().unwrap(), 2);
+fn every_file_given_is_validated() {
+    // pre-commit and shell globs pass many files at once; each is
+    // checked, and one bad file fails the run.
+    let good = tmp("multi_good", "a: 1\n");
+    let bad = tmp("multi_bad", "a: [\n");
+    let output = bin().arg(&good).arg(&bad).output().unwrap();
+    assert_eq!(output.status.code().unwrap(), 1);
+    let stdout = String::from_utf8(output.stdout).unwrap();
     let stderr = String::from_utf8(output.stderr).unwrap();
-    // clap rejects extras as "unexpected argument 'b.yaml' found".
-    assert!(stderr.contains("unexpected argument"));
+    assert!(stdout.contains("multi_good"), "stdout: {stdout}");
+    assert!(stderr.contains("multi_bad"), "stderr: {stderr}");
+}
+
+#[test]
+fn several_valid_files_exit_0() {
+    let a = tmp("multi_a", "a: 1\n");
+    let b = tmp("multi_b", "b: 2\n");
+    let output = bin().arg(&a).arg(&b).output().unwrap();
+    assert_eq!(output.status.code().unwrap(), 0);
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    assert_eq!(stdout.lines().count(), 2, "one ok line per file: {stdout}");
+}
+
+#[test]
+fn an_unreadable_file_among_many_exits_3() {
+    let a = tmp("multi_io", "a: 1\n");
+    let output = bin()
+        .arg(&a)
+        .arg("/tmp/__noyavalidate_definitely_not_a_real_file__.yaml")
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code().unwrap(), 3);
+}
+
+#[test]
+fn schema_applies_to_every_file() {
+    let schema = tmp("multi_schema", "type: object\nrequired: [name]\n");
+    let ok = tmp("multi_schema_ok", "name: x\n");
+    let bad = tmp("multi_schema_bad", "other: x\n");
+    let output = bin()
+        .arg("--schema")
+        .arg(&schema)
+        .arg(&ok)
+        .arg(&bad)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code().unwrap(), 1);
 }
 
 #[test]
 fn stdin_combined_with_file_exits_2() {
-    // clap accepts `-` as the positional, so the second argument
-    // collides as an unexpected positional. The old hand-rolled
-    // parser rejected the combination explicitly; clap does it via
-    // its standard "unexpected argument" path.
+    // `-` (stdin) only makes sense as the sole input.
     let output = bin().args(["-", "a.yaml"]).output().unwrap();
     assert_eq!(output.status.code().unwrap(), 2);
     let stderr = String::from_utf8(output.stderr).unwrap();
-    assert!(stderr.contains("unexpected argument"));
+    assert!(stderr.contains("'-'"), "stderr: {stderr}");
 }
 
 // ── I/O errors ───────────────────────────────────────────────────────────

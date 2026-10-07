@@ -214,8 +214,14 @@ repos:
       - id: noyavalidate
 ```
 
-`noyafmt` (format in place), `noyafmt-check` and `noyavalidate` are the
-three hook ids; pass `--schema schema.json` through `args` to validate.
+`noyafmt` (runs `noyafmt --write`, so the hook fails when it reformatted a
+file), `noyafmt-check` and `noyavalidate` (checks every staged file) are
+the three hook ids; pass `--schema schema.json` through `args` to validate.
+pre-commit builds the hooks with `cargo install` without `--locked`, so
+dependencies resolve to their newest compatible versions rather than this
+repository's `Cargo.lock`. For a locked build, run
+`cargo install noya-cli --locked` and point a `repo: local` hook with
+`language: system` at the installed binaries.
 
 ## Exit codes
 

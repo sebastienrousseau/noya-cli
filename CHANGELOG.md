@@ -16,6 +16,9 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 ### Changed
 
 - Tracks `noyalib` 0.0.55 under the exact lockstep pin.
+- **Breaking (Rust API):** `NoyavalidateCli::file: Option<PathBuf>` is
+  now `NoyavalidateCli::files: Vec<PathBuf>`. The command line stays
+  compatible: one file, `-` and no argument behave as before.
 
 ### Fixed
 
@@ -27,6 +30,11 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
   input and exits 1 when it does not compile, and checks an empty or
   comment-only file as one null document. Both cases used to pass any
   schema, even one that could not compile.
+- `noyavalidate` accepts several files, checks every one and exits with
+  the most severe code any file produced, so the hosted pre-commit hook
+  works when more than one YAML file is staged. The `noyafmt` hook runs
+  `noyafmt --write`, so it fails when it reformatted a file; it used to
+  print to stdout and always pass.
 
 ## [v0.0.54] - 2026-10-07
 

@@ -74,11 +74,11 @@ noyafmt --write services/*.yaml deployments/*.yaml
 ## `noyavalidate`
 
 ```
-noyavalidate [OPTIONS] [FILE]
+noyavalidate [OPTIONS] [FILE]...
 ```
 
-Check YAML syntax (and optional JSON Schema). Reads one or more
-YAML documents from FILE (or stdin), reports syntax errors via
+Check YAML syntax (and optional JSON Schema). Reads the YAML
+documents in each FILE (or stdin), reports syntax errors via
 the miette fancy renderer, and — when `--schema PATH` is given —
 validates each parsed document against a JSON Schema 2020-12
 contract (the schema may itself be written in YAML or JSON).
@@ -102,7 +102,7 @@ written to stdout instead.
 
 | Argument | Required | Description |
 |---|---|---|
-| `FILE` | optional | YAML file to validate. Use `-` or omit for stdin. |
+| `FILE` | optional | YAML files to validate. Use `-` (alone) or omit for stdin. Every file is checked; the exit code is the highest any file produced. |
 
 ### Examples
 
