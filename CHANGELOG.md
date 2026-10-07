@@ -43,6 +43,9 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 - `noyavalidate --schema` renders at most 50 reports per file and counts
   the rest, and shares one copy of the source across them; a 31 MB stream
   with 1,000 failing documents took 16.5 s to report and now takes 1.0 s.
+- `noyafmt --indent` accepts 1 to 16 and rejects anything else as a usage
+  error; a huge width allocated hundreds of megabytes and `usize::MAX`
+  hung the formatter.
 
 ## [v0.0.54] - 2026-10-07
 

@@ -140,7 +140,7 @@ byte-for-byte; only whitespace and quoting are normalised.
 | `--check` | Verify each FILE is formatted; print files that need formatting; exit 1 if any do. Non-destructive. |
 | `--write` | Rewrite each FILE in place. Default is to print to stdout. Mutually exclusive with `--check`. |
 | `--stdin` | Read from stdin, write to stdout. Mutually exclusive with FILE arguments. |
-| `--indent N` | Indentation width in spaces (default: 2). |
+| `--indent N` | Indentation width in spaces, 1 to 16 (default: 2). |
 
 ---
 

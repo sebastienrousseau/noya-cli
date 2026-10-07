@@ -165,8 +165,13 @@ pub struct NoyafmtCli {
     #[arg(long, conflicts_with = "files")]
     pub stdin: bool,
 
-    /// Indentation width in spaces.
-    #[arg(long, value_name = "N", default_value_t = 2)]
+    /// Indentation width in spaces, from 1 to 16.
+    #[arg(
+        long,
+        value_name = "N",
+        default_value_t = 2,
+        value_parser = clap::builder::RangedU64ValueParser::<usize>::new().range(1..=16)
+    )]
     pub indent: usize,
 
     /// YAML files to format. Pass `--stdin` to read from stdin
@@ -335,6 +340,18 @@ mod tests {
     fn noyafmt_indent_non_numeric_errors() {
         let r = NoyafmtCli::try_parse_from(["noyafmt", "--indent", "abc", "--stdin"]);
         assert!(r.is_err());
+    }
+
+    #[test]
+    fn noyafmt_indent_outside_1_to_16_is_rejected() {
+        for bad in ["0", "17", "100000000", "18446744073709551615"] {
+            let r = NoyafmtCli::try_parse_from(["noyafmt", "--indent", bad, "--stdin"]);
+            assert!(r.is_err(), "--indent {bad} was accepted");
+        }
+        for ok in ["1", "16"] {
+            let cli = NoyafmtCli::try_parse_from(["noyafmt", "--indent", ok, "--stdin"]).unwrap();
+            assert_eq!(cli.indent.to_string(), ok);
+        }
     }
 
     #[test]

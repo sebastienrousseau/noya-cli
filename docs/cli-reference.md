@@ -30,7 +30,7 @@ and quoting are normalised.
 | `--check` | bool | off | Verify each FILE is formatted; print the list of files that need formatting and exit 1 if any do. Non-destructive. Suitable as a pre-commit / CI gate. Conflicts with `--write`. |
 | `--write` | bool | off | Rewrite each FILE in place. Default is to print the formatted source to stdout. Conflicts with `--check`. |
 | `--stdin` | bool | off | Read from stdin, write to stdout. Mutually exclusive with FILE arguments. |
-| `--indent N` | unsigned int | `2` | Indentation width in spaces. |
+| `--indent N` | 1 to 16 | `2` | Indentation width in spaces; a value outside 1 to 16 is a usage error (exit 2). |
 | `-h`, `--help` | — | — | Print help (long form on `--help`). |
 | `-V`, `--version` | — | — | Print the version. |
 
