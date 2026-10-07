@@ -140,7 +140,7 @@ byte-for-byte; only whitespace and quoting are normalised.
 | `--check` | Verify each FILE is formatted; print files that need formatting; exit 1 if any do. Non-destructive. |
 | `--write` | Rewrite each FILE in place. Default is to print to stdout. Mutually exclusive with `--check`. |
 | `--stdin` | Read from stdin, write to stdout. Mutually exclusive with FILE arguments. |
-| `--indent N` | Indentation width in spaces (default: 2). |
+| `--indent N` | Indentation width in spaces, 1 to 16 (default: 2). |
 
 ---
 
@@ -199,9 +199,15 @@ One step in CI, no toolchain on the runner:
     schema: schema.json   # optional
 ```
 
-The action downloads the signed release binaries for the runner's
-platform, verifies the published SHA-256, then runs `noyafmt --check` and
-`noyavalidate` (with the schema when given). Either failure fails the step.
+The action downloads the release binaries for the runner's platform and
+verifies their build provenance attestation with `gh attestation verify`
+(built by this repository's release workflow at the requested tag); where
+the gh CLI or a token is missing it checks only the SHA-256 published in
+the same release and says so with a warning. It then runs
+`noyafmt --check` and `noyavalidate` (with the schema when given) over the
+YAML under `paths`; directories are searched for `*.yaml` and `*.yml`.
+Either failure fails the step, and tool output cannot issue workflow
+commands. `version` must be `X.Y.Z`.
 
 The same checks as hosted pre-commit hooks:
 
@@ -214,8 +220,14 @@ repos:
       - id: noyavalidate
 ```
 
-`noyafmt` (format in place), `noyafmt-check` and `noyavalidate` are the
-three hook ids; pass `--schema schema.json` through `args` to validate.
+`noyafmt` (runs `noyafmt --write`, so the hook fails when it reformatted a
+file), `noyafmt-check` and `noyavalidate` (checks every staged file) are
+the three hook ids; pass `--schema schema.json` through `args` to validate.
+pre-commit builds the hooks with `cargo install` without `--locked`, so
+dependencies resolve to their newest compatible versions rather than this
+repository's `Cargo.lock`. For a locked build, run
+`cargo install noya-cli --locked` and point a `repo: local` hook with
+`language: system` at the installed binaries.
 
 ## Exit codes
 

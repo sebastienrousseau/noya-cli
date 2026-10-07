@@ -21,7 +21,7 @@ Register-ArgumentCompleter -Native -CommandName 'noyafmt' -ScriptBlock {
 
     $completions = @(switch ($command) {
         'noyafmt' {
-            [CompletionResult]::new('--indent', '--indent', [CompletionResultType]::ParameterName, 'Indentation width in spaces')
+            [CompletionResult]::new('--indent', '--indent', [CompletionResultType]::ParameterName, 'Indentation width in spaces, from 1 to 16')
             [CompletionResult]::new('--check', '--check', [CompletionResultType]::ParameterName, 'Verify each FILE is formatted; print the list of files that need formatting and exit 1 if any do. Non-destructive. Suitable as a pre-commit / CI gate')
             [CompletionResult]::new('--write', '--write', [CompletionResultType]::ParameterName, 'Rewrite each FILE in place. Default is to print the formatted source to stdout')
             [CompletionResult]::new('--stdin', '--stdin', [CompletionResultType]::ParameterName, 'Read from stdin, write to stdout. Mutually exclusive with FILE arguments')

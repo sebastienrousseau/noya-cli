@@ -1,4 +1,4 @@
-complete -c noyafmt -l indent -d 'Indentation width in spaces' -r
+complete -c noyafmt -l indent -d 'Indentation width in spaces, from 1 to 16' -r
 complete -c noyafmt -l check -d 'Verify each FILE is formatted; print the list of files that need formatting and exit 1 if any do. Non-destructive. Suitable as a pre-commit / CI gate'
 complete -c noyafmt -l write -d 'Rewrite each FILE in place. Default is to print the formatted source to stdout'
 complete -c noyafmt -l stdin -d 'Read from stdin, write to stdout. Mutually exclusive with FILE arguments'

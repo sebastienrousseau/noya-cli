@@ -16,6 +16,43 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 ### Changed
 
 - Tracks `noyalib` 0.0.55 under the exact lockstep pin.
+- **Breaking (Rust API):** `NoyavalidateCli::file: Option<PathBuf>` is
+  now `NoyavalidateCli::files: Vec<PathBuf>`. The command line stays
+  compatible: one file, `-` and no argument behave as before.
+
+### Fixed
+
+- The temporary file behind `noyafmt --write` and `noyavalidate --fix` is
+  created exclusively under an unpredictable name with the target's mode
+  before any contents are written. It was briefly readable with the
+  default mode and could follow a symlink planted at its predictable name.
+- `noyavalidate --schema` compiles the schema once before reading any
+  input and exits 1 when it does not compile, and checks an empty or
+  comment-only file as one null document. Both cases used to pass any
+  schema, even one that could not compile.
+- `noyavalidate` accepts several files, checks every one and exits with
+  the most severe code any file produced, so the hosted pre-commit hook
+  works when more than one YAML file is staged. The `noyafmt` hook runs
+  `noyafmt --write`, so it fails when it reformatted a file; it used to
+  print to stdout and always pass.
+- `noyavalidate` and `noyafmt` print control characters from file contents
+  and file names (ANSI and OSC escape sequences, bell) as U+FFFD, in
+  diagnostics, schema messages and the `noyafmt --check` file list, so a
+  crafted file can no longer drive the terminal or forge CI log lines.
+  Diagnostic carets still point at the same text.
+- `noyavalidate --schema` renders at most 50 reports per file and counts
+  the rest, and shares one copy of the source across them; a 31 MB stream
+  with 1,000 failing documents took 16.5 s to report and now takes 1.0 s.
+- `noyafmt --indent` accepts 1 to 16 and rejects anything else as a usage
+  error; a huge width allocated hundreds of megabytes and `usize::MAX`
+  hung the formatter.
+- The GitHub Action validates every YAML file under `paths`, including
+  names such as `[x].yaml` that the shell used to expand as a pattern
+  (an invalid file could be skipped), format-checks directories, keeps
+  tool output from issuing workflow commands, refuses a `version` that is
+  not `X.Y.Z`, and verifies the build provenance attestation with
+  `gh attestation verify` when gh is available. The steps live in
+  `scripts/noya-action.sh`, tested by `scripts/test-action.sh`.
 
 ## [v0.0.54] - 2026-10-07
 
