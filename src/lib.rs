@@ -245,6 +245,13 @@ mod atomic;
 )]
 pub use atomic::write_atomic;
 
+#[allow(
+    dead_code,
+    reason = "build.rs includes this file as a private module to render the \
+              clap commands; only the binaries print untrusted text"
+)]
+pub mod text;
+
 /// Build the [`clap::Command`] for `noyafmt`.
 ///
 /// Used by the build script and `cargo xtask` to drive

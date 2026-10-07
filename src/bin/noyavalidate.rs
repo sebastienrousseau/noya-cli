@@ -33,8 +33,13 @@ use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::Parser;
-use miette::{NamedSource, Report};
+// Kept beside the binary rather than as `src/bin/report.rs`, which
+// Cargo would build as a binary of its own.
+#[path = "noyavalidate/report.rs"]
+mod report;
+
 use noya_cli::NoyavalidateCli;
+use noya_cli::text::{escape_controls, escape_path};
 use noyalib::{CompiledSchema, Value};
 
 fn read_input(path: Option<&Path>) -> io::Result<(String, String)> {
@@ -46,7 +51,7 @@ fn read_input(path: Option<&Path>) -> io::Result<(String, String)> {
         }
         Some(p) => {
             let source = fs::read_to_string(p)?;
-            Ok((p.display().to_string(), source))
+            Ok((escape_path(p), source))
         }
     }
 }
@@ -65,47 +70,65 @@ struct Schema {
 /// On failure the diagnostic is printed and the exit code returned.
 fn load_schema(path: &Path) -> Result<Schema, u8> {
     let text = fs::read_to_string(path).map_err(|e| {
-        eprintln!("error: reading schema {}: {e}", path.display());
+        eprintln!("error: reading schema {}: {e}", escape_path(path));
         3
     })?;
     let value: Value = noyalib::from_str(&text).map_err(|e| {
-        let report = Report::new(e)
-            .with_source_code(NamedSource::new(path.display().to_string(), text.clone()));
+        let shown = report::SharedSource::new(&path.display().to_string(), &text);
         eprintln!("error: parsing schema:");
-        eprintln!("{report:?}");
+        eprintln!("{}", report::render(&e, Some(&shown)));
         1
     })?;
     let compiled = CompiledSchema::compile(&value).map_err(|e| {
-        eprintln!("error: compiling schema {}: {e}", path.display());
+        let msg = e.to_string();
+        eprintln!(
+            "error: compiling schema {}: {}",
+            escape_path(path),
+            escape_controls(&msg)
+        );
         1
     })?;
     Ok(Schema { value, compiled })
 }
 
+/// At most this many schema reports are rendered per input; the rest
+/// are counted. Each report renders a source snippet, so an input
+/// with thousands of failing documents would otherwise flood the
+/// terminal and take seconds to print.
+const MAX_REPORTS: usize = 50;
+
 /// Run schema validation across every parsed document. Returns the
 /// number of violations found (0 = success). Emits one miette report
-/// per failing document so the user sees all issues in one pass.
-fn run_schema_validation(
-    docs: &[Value],
-    schema: &CompiledSchema,
-    source_label: &str,
-    full_source: &str,
-) -> usize {
+/// per failing document, up to [`MAX_REPORTS`], so the user sees the
+/// issues in one pass.
+fn run_schema_validation(docs: &[Value], schema: &CompiledSchema, input: &Input<'_>) -> usize {
+    let mut shown: Option<report::SharedSource> = None;
     let mut violations = 0;
     for (i, doc) in docs.iter().enumerate() {
-        if let Err(e) = schema.validate(doc) {
-            violations += 1;
-            // For multi-document streams, prefix every diagnostic
-            // with the doc number so the user knows which document
-            // failed. miette's source-pointer label is empty for
-            // span-less errors, so we surface this explicitly.
-            if docs.len() > 1 {
-                eprintln!("[document {}]", i + 1);
-            }
-            let report = Report::new(e)
-                .with_source_code(NamedSource::new(source_label, full_source.to_owned()));
-            eprintln!("{report:?}");
+        let Err(e) = schema.validate(doc) else {
+            continue;
+        };
+        violations += 1;
+        if violations > MAX_REPORTS {
+            continue;
         }
+        // For multi-document streams, prefix every diagnostic
+        // with the doc number so the user knows which document
+        // failed. miette's source-pointer label is empty for
+        // span-less errors, so we surface this explicitly.
+        if docs.len() > 1 {
+            eprintln!("[document {}]", i + 1);
+        }
+        let src =
+            shown.get_or_insert_with(|| report::SharedSource::new(&input.name, &input.source));
+        eprintln!("{}", report::render(&e, Some(src)));
+    }
+    if violations > MAX_REPORTS {
+        eprintln!(
+            "... and {} more documents failed the schema ({})",
+            violations - MAX_REPORTS,
+            input.name
+        );
     }
     violations
 }
@@ -140,7 +163,8 @@ fn write_output(path: Option<&Path>, text: &str) -> io::Result<()> {
 /// Print a `--fix` failure and map it to the exit code: 1 when the
 /// input was refused, 3 for an I/O error.
 fn fix_failure(e: &io::Error) -> u8 {
-    eprintln!("error: applying --fix: {e}");
+    let msg = e.to_string();
+    eprintln!("error: applying --fix: {}", escape_controls(&msg));
     if e.kind() == io::ErrorKind::InvalidData {
         1
     } else {
@@ -292,7 +316,7 @@ fn schema_phase(
         docs.push(Value::Null);
     }
     if !fix || empty {
-        if run_schema_validation(&docs, &schema.compiled, &input.name, &input.source) > 0 {
+        if run_schema_validation(&docs, &schema.compiled, input) > 0 {
             return Err(1);
         }
         if fix {
@@ -308,7 +332,7 @@ fn schema_phase(
     let outcome =
         run_fix_with_schema(input.path, &input.source, schema).map_err(|e| fix_failure(&e))?;
     if !outcome.wrote {
-        let _ = run_schema_validation(&docs, &schema.compiled, &input.name, &input.source);
+        let _ = run_schema_validation(&docs, &schema.compiled, input);
         return Err(1);
     }
     Ok(match outcome.applied {
@@ -322,7 +346,8 @@ fn check_input(path: Option<&Path>, opts: &Options<'_>) -> u8 {
     let (name, source) = match read_input(path) {
         Ok(pair) => pair,
         Err(e) => {
-            eprintln!("error: reading input: {e}");
+            let shown = path.map_or_else(|| "<stdin>".to_string(), escape_path);
+            eprintln!("error: reading input {shown}: {e}");
             return 3;
         }
     };
@@ -334,9 +359,8 @@ fn check_input(path: Option<&Path>, opts: &Options<'_>) -> u8 {
     let docs = match load_documents(&input.source, opts.strict) {
         Ok(d) => d,
         Err(e) => {
-            let report = Report::new(e)
-                .with_source_code(NamedSource::new(&input.name, input.source.clone()));
-            eprintln!("{report:?}");
+            let shown = report::SharedSource::new(&input.name, &input.source);
+            eprintln!("{}", report::render(&e, Some(&shown)));
             return 1;
         }
     };

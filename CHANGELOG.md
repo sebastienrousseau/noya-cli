@@ -35,6 +35,14 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
   works when more than one YAML file is staged. The `noyafmt` hook runs
   `noyafmt --write`, so it fails when it reformatted a file; it used to
   print to stdout and always pass.
+- `noyavalidate` and `noyafmt` print control characters from file contents
+  and file names (ANSI and OSC escape sequences, bell) as U+FFFD, in
+  diagnostics, schema messages and the `noyafmt --check` file list, so a
+  crafted file can no longer drive the terminal or forge CI log lines.
+  Diagnostic carets still point at the same text.
+- `noyavalidate --schema` renders at most 50 reports per file and counts
+  the rest, and shares one copy of the source across them; a 31 MB stream
+  with 1,000 failing documents took 16.5 s to report and now takes 1.0 s.
 
 ## [v0.0.54] - 2026-10-07
 
