@@ -46,6 +46,13 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 - `noyafmt --indent` accepts 1 to 16 and rejects anything else as a usage
   error; a huge width allocated hundreds of megabytes and `usize::MAX`
   hung the formatter.
+- The GitHub Action validates every YAML file under `paths`, including
+  names such as `[x].yaml` that the shell used to expand as a pattern
+  (an invalid file could be skipped), format-checks directories, keeps
+  tool output from issuing workflow commands, refuses a `version` that is
+  not `X.Y.Z`, and verifies the build provenance attestation with
+  `gh attestation verify` when gh is available. The steps live in
+  `scripts/noya-action.sh`, tested by `scripts/test-action.sh`.
 
 ## [v0.0.54] - 2026-10-07
 

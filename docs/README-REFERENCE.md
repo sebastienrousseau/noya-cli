@@ -199,9 +199,15 @@ One step in CI, no toolchain on the runner:
     schema: schema.json   # optional
 ```
 
-The action downloads the signed release binaries for the runner's
-platform, verifies the published SHA-256, then runs `noyafmt --check` and
-`noyavalidate` (with the schema when given). Either failure fails the step.
+The action downloads the release binaries for the runner's platform and
+verifies their build provenance attestation with `gh attestation verify`
+(built by this repository's release workflow at the requested tag); where
+the gh CLI or a token is missing it checks only the SHA-256 published in
+the same release and says so with a warning. It then runs
+`noyafmt --check` and `noyavalidate` (with the schema when given) over the
+YAML under `paths`; directories are searched for `*.yaml` and `*.yml`.
+Either failure fails the step, and tool output cannot issue workflow
+commands. `version` must be `X.Y.Z`.
 
 The same checks as hosted pre-commit hooks:
 
