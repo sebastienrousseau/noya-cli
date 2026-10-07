@@ -122,7 +122,7 @@
 // lint rather than for doc-comment density, because a lint is enforced on
 // every build while a count can be satisfied by writing `/// The name.`
 
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use clap::{CommandFactory, Parser};
 
@@ -230,54 +230,18 @@ pub struct NoyavalidateCli {
     pub file: Option<PathBuf>,
 }
 
-/// Write `bytes` to `path` without a window in which the file is
-/// truncated or half-written.
-///
-/// The bytes go to a temporary file in the same directory, are synced,
-/// take over the target's permissions when it exists, and are renamed
-/// over it; rename is atomic on every platform the binaries ship for.
-/// An interrupted `noyafmt --write` or `noyavalidate --fix` therefore
-/// leaves either the old file or the new one, never a torn file, and
-/// the temporary is removed on any failure.
-///
-/// # Errors
-///
-/// Any I/O error from creating, writing, syncing or renaming the
-/// temporary file, in which case `path` is untouched.
 #[allow(
     dead_code,
     reason = "build.rs includes this file as a private module to render the \
               clap commands; only the binaries call the writer"
 )]
-pub fn write_atomic(path: &Path, bytes: &[u8]) -> std::io::Result<()> {
-    use std::io::Write;
-    let parent = match path.parent() {
-        Some(p) if !p.as_os_str().is_empty() => p.to_path_buf(),
-        _ => PathBuf::from("."),
-    };
-    let stem = path
-        .file_name()
-        .and_then(|s| s.to_str())
-        .unwrap_or("noya-cli");
-    let nanos = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map_or(0, |d| d.as_nanos());
-    let tmp = parent.join(format!(".{stem}.{}.{nanos}.tmp", std::process::id()));
-    let result = (|| {
-        let mut f = std::fs::File::create(&tmp)?;
-        f.write_all(bytes)?;
-        f.sync_all()?;
-        if let Ok(meta) = std::fs::metadata(path) {
-            f.set_permissions(meta.permissions())?;
-        }
-        drop(f);
-        std::fs::rename(&tmp, path)
-    })();
-    if result.is_err() {
-        let _ = std::fs::remove_file(&tmp);
-    }
-    result
-}
+mod atomic;
+
+#[allow(
+    unused_imports,
+    reason = "re-exported for the binaries; unused when build.rs includes this file"
+)]
+pub use atomic::write_atomic;
 
 /// Build the [`clap::Command`] for `noyafmt`.
 ///

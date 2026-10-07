@@ -17,6 +17,13 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 - Tracks `noyalib` 0.0.55 under the exact lockstep pin.
 
+### Fixed
+
+- The temporary file behind `noyafmt --write` and `noyavalidate --fix` is
+  created exclusively under an unpredictable name with the target's mode
+  before any contents are written. It was briefly readable with the
+  default mode and could follow a symlink planted at its predictable name.
+
 ## [v0.0.54] - 2026-10-07
 
 ### Added
