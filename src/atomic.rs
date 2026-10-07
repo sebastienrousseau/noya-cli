@@ -50,18 +50,21 @@ pub fn write_atomic(path: &Path, bytes: &[u8]) -> io::Result<()> {
 const TEMP_ATTEMPTS: u32 = 16;
 
 /// Create a new temporary file next to the target under an
-/// unpredictable name, retrying on a name collision.
+/// unpredictable name, retrying on a name collision. After
+/// [`TEMP_ATTEMPTS`] collisions the last `AlreadyExists` error is
+/// returned.
 fn create_temp(dir: &Path, stem: &str, perms: Option<&Permissions>) -> io::Result<(PathBuf, File)> {
-    let mut last = None;
-    for _ in 0..TEMP_ATTEMPTS {
+    let mut attempt = 1;
+    loop {
         let tmp = dir.join(format!(".{stem}.{}.tmp", random_suffix()));
         match open_temp(&tmp, perms) {
             Ok(f) => return Ok((tmp, f)),
-            Err(e) if e.kind() == io::ErrorKind::AlreadyExists => last = Some(e),
+            Err(e) if e.kind() == io::ErrorKind::AlreadyExists && attempt < TEMP_ATTEMPTS => {
+                attempt += 1;
+            }
             Err(e) => return Err(e),
         }
     }
-    Err(last.unwrap_or_else(|| io::Error::other("no temporary file name available")))
 }
 
 /// 128 bits from the standard library's randomly keyed hasher, so the
@@ -141,8 +144,10 @@ mod tests {
         std::fs::write(&victim, "original").unwrap();
         let tmp = dir.join(".t.tmp");
         std::os::unix::fs::symlink(&victim, &tmp).unwrap();
-        let res = open_temp(&tmp, None).and_then(|mut f| f.write_all(b"planted"));
-        assert!(res.is_err(), "open followed the planted symlink");
+        assert!(
+            open_temp(&tmp, None).is_err(),
+            "open followed the planted symlink"
+        );
         assert_eq!(std::fs::read_to_string(&victim).unwrap(), "original");
     }
 
