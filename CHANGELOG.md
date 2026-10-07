@@ -11,7 +11,7 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
-## [v0.0.54] - Unreleased
+## [v0.0.54] - 2026-10-07
 
 ### Added
 
@@ -27,6 +27,10 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
   file in the same directory and rename it over the target, keeping the
   target's permissions. An interrupted run leaves the old file or the
   new one, never a truncated one.
+- The release gate refuses a tag while `deny.toml` allows any git source,
+  next to its refusal of the pre-release `[patch]`, so cargo-deny can
+  allow the core's branch during the iteration without that allowance
+  reaching a release.
 
 ## [v0.0.53] - 2026-10-06
 
