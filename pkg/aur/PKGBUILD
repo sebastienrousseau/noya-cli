@@ -2,7 +2,7 @@
 # noyalib-bin: pre-built noyafmt + noyavalidate from the signed,
 # SLSA-attested GitHub Release (musl static — no runtime deps).
 pkgname=noyalib-bin
-pkgver=0.0.53
+pkgver=0.0.54
 pkgrel=1
 pkgdesc="YAML formatter (noyafmt) and JSON-Schema validator (noyavalidate) built on the noyalib library"
 arch=('x86_64' 'aarch64')
@@ -12,8 +12,8 @@ provides=('noyafmt' 'noyavalidate')
 conflicts=('noyalib')
 source_x86_64=("$url/releases/download/v$pkgver/noya-cli-$pkgver-x86_64-unknown-linux-musl.tar.gz")
 source_aarch64=("$url/releases/download/v$pkgver/noya-cli-$pkgver-aarch64-unknown-linux-musl.tar.gz")
-sha256sums_x86_64=('2c12fc1b799c555fa2c15960855b11ae4b4ce0a476c03cf90e21ca6d75f9bfcf')
-sha256sums_aarch64=('02d6cf3a73e7bcd7c8b9e1cdae1c59065ab2b8ab49d72bdd4ecaa37c38a81823')
+sha256sums_x86_64=('24b047c7a1f0ec3cd5976519fa395f31c1b370a73137f110b97aee9840edee1f')
+sha256sums_aarch64=('cd7a048d6f5cd26d2596d771633c8a0549325a6b52fe246135e06500ef5b4742')
 
 package() {
   cd "noya-cli-$pkgver-$CARCH-unknown-linux-musl"
