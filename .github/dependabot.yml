@@ -17,6 +17,8 @@ updates:
       # noyalib bumps coordinated with parent release, not Dependabot
       # (ADR-0005 strict lockstep).
       - dependency-name: "noyalib"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -31,6 +33,8 @@ updates:
       github-actions:
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
 
   # ── Container image (pkg/docker/Dockerfile) ───────────────────────
   - package-ecosystem: docker
@@ -41,3 +45,5 @@ updates:
       day: monday
       time: "06:00"
       timezone: UTC
+    cooldown:
+      default-days: 7

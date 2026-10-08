@@ -60,10 +60,42 @@ Each release ships with:
 1. SLSA Level 3 build provenance via
    `actions/attest-build-provenance`.
 2. Keyless sigstore signatures (Fulcio + Rekor) on every
-   published `.crate` and pre-built binary.
-3. Multi-arch binaries (`noyafmt-<version>-<triple>.tar.gz` +
-   `.zip`) attached to each GitHub Release with cosign bundles.
+   published `.crate` and the SBOM.
+3. Multi-arch binaries (`noya-cli-<version>-<triple>.tar.gz` /
+   `.zip`) and `.deb` / `.rpm` packages attached to each GitHub
+   Release, each with a SHA-256 file and a provenance attestation.
 4. SBOM attached to each GitHub Release.
+
+### Verifying a release
+
+Pin the workflow and the tag, not just the repository: an attestation
+or signature from any other workflow, or from a branch, must not pass.
+
+```sh
+# SLSA provenance (any release asset)
+gh attestation verify <artefact> \
+  --repo sebastienrousseau/noya-cli \
+  --signer-workflow sebastienrousseau/noya-cli/.github/workflows/release.yml \
+  --source-ref refs/tags/vX.Y.Z \
+  --deny-self-hosted-runners
+
+# Keyless sigstore signature (.crate and SBOM, with its .bundle)
+cosign verify-blob \
+  --certificate-identity-regexp '^https://github\.com/sebastienrousseau/noya-cli/\.github/workflows/release\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  --bundle <artefact>.bundle <artefact>
+```
+
+Binary archives (`.tar.gz`, `.zip`) and the `.deb` / `.rpm` packages
+carry SLSA provenance only (the `gh attestation verify` line above);
+they have no cosign bundle. The container image:
+
+```sh
+gh attestation verify oci://ghcr.io/sebastienrousseau/noya-cli:X.Y.Z \
+  --repo sebastienrousseau/noya-cli \
+  --signer-workflow sebastienrousseau/noya-cli/.github/workflows/release.yml \
+  --source-ref refs/tags/vX.Y.Z
+```
 
 ### Detached GPG signatures
 

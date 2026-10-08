@@ -291,12 +291,12 @@ before trusting a download:
 
 ```bash
 COSIGN_EXPERIMENTAL=1 cosign verify-blob \
-  --certificate-identity-regexp 'https://github.com/sebastienrousseau/noya-cli/' \
+  --certificate-identity-regexp '^https://github\.com/sebastienrousseau/noya-cli/\.github/workflows/release\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' \
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
   --bundle <artefact>.bundle \
   <artefact>
 
-gh attestation verify --owner sebastienrousseau <artefact>
+gh attestation verify <artefact> --repo sebastienrousseau/noya-cli --signer-workflow sebastienrousseau/noya-cli/.github/workflows/release.yml
 ```
 
 Full cookbook including the offline / FIPS-bound flow:
