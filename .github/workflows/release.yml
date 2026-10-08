@@ -21,21 +21,31 @@ env:
   CARGO_INCREMENTAL: '0'
 
 jobs:
+  # ── Release tag: annotated, signed, by the release key ─────────────
+  # Shared with every crate in the family (shared-tag-signature.yml):
+  # the tag must be annotated, verified by GitHub, made by the release
+  # identity on the commit being built, and signed by a pinned key.
+  # Passes without checking on a workflow_dispatch dry run.
+  tag-signature:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-tag-signature.yml@139a826ba273b8f9feffff54795711f4df321928
+
   validate:
     name: Validate
+    needs: tag-signature
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067
         with:
           toolchain: stable
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16 # v2
-        with:
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with: # zizmor: ignore[cache-poisoning] test-only job: nothing it builds ships, and the key is written only by tag runs of this workflow
           workspaces: ". -> target-release-validate"
           key: release-validate
       - name: Quality checks
@@ -67,18 +77,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
-      attestations: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16 # v2
-        with:
-          # target/package is rebuilt every run; caching it only produces
-          # ENOENT annotations when the post-step walks a tree that is gone.
-          cache-targets: false
+      # No build cache here: this job produces what ships. A restored
+      # ~/.cargo/registry/src or target/ is not re-verified against
+      # Cargo.lock, so a poisoned cache entry would flow into the
+      # release (zizmor cache-poisoning). Release builds start clean.
+
       # Everything else that carries the version. Added after v0.0.28,
       # where noyalib-mcp's registry manifests were missed and the
       # mismatch surfaced only after the tag was pushed. Runnable
@@ -98,7 +108,7 @@ jobs:
           # ingest — `cargo tree > txt` is not an SBOM format.
           # Mirrors the core repo's release pipeline; `--all-features`
           # records the superset dependency graph.
-          cargo install --locked cargo-cyclonedx
+          cargo install --locked cargo-cyclonedx --version 0.5.9
           cargo cyclonedx --format json --all-features --describe crate --spec-version 1.5
           mv ./*.cdx.json SBOM.cdx.json
           python3 -c "import json; d=json.load(open('SBOM.cdx.json')); print('CycloneDX', d['specVersion'], '-', d['metadata']['component']['name'], d['metadata']['component']['version'], '-', len(d.get('components', [])), 'components')"
@@ -112,6 +122,67 @@ jobs:
             sha256sum "$f" >> SHA256SUMS.txt
             sha512sum "$f" >> SHA512SUMS.txt
           done
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-artifacts
+          path: |
+            target/package/*.crate
+            target/package/SHA256SUMS.txt
+            target/package/SHA512SUMS.txt
+            SBOM.txt
+            SBOM.cdx.json
+          retention-days: 5
+
+  # ── Sign release artefacts (isolated from the build) ───────────────
+  # Attestation, keyless signing and the detached GPG signatures run in
+  # their own job, which downloads the finished artefacts and executes
+  # nothing from the source tree or its dependency graph. Until v0.0.55
+  # they ran in `artifacts`, after `cargo package` and `cargo install`
+  # had executed every build script in the graph; a build script can
+  # append to $GITHUB_ENV and read later steps' environment, including
+  # GPG_PRIVATE_KEY and the OIDC signing identity.
+  #
+  # GPG_PRIVATE_KEY and GPG_PASSPHRASE belong to the `release-signing`
+  # environment, which only `v*` tags may deploy to. Tag runs only: a
+  # workflow_dispatch dry run builds and verifies but signs nothing.
+  sign:
+    name: Sign release artefacts
+    needs: [artifacts, binaries, linux-packages]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: release-signing
+    permissions:
+      contents: read
+      # `id-token: write`: Fulcio keyless signing and the SLSA
+      #   provenance attestation exchange the job's OIDC token.
+      # `attestations: write`: provenance lands in the attestation store.
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download the unsigned release artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-artifacts
+
+      - name: Download the binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: binaries-*
+          merge-multiple: true
+          path: binaries
+
+      # Every archive and every deb/rpm: until v0.0.55 the archives
+      # were attested inside the build job and the deb/rpm not at all.
+      - name: Attest binary provenance (SLSA L3)
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            binaries/*.tar.gz
+            binaries/*.zip
+            binaries/*.deb
+            binaries/*.rpm
+
       - name: Attest build provenance (SLSA L3)
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
@@ -142,11 +213,13 @@ jobs:
       # which is what package maintainers and air-gapped consumers ask
       # for.
       #
-      # Deliberately a STEP in this job rather than a separate job. The
-      # `.asc` files are produced before the same `upload-artifact` that
-      # carries the crate and the bundles, so they cannot lose a race
-      # with the release job. static-site-generator learned this the
-      # hard way: its signing job ran concurrently with publishing, so
+      # A step in the separate `sign` job since v0.0.55 (it used to be a
+      # step in `artifacts`, next to the build). It still cannot lose a
+      # race with the release: `github-release` needs this job and
+      # attaches only what it uploads as `release-signed`, so the `.asc`
+      # files exist before the artifact the release reads.
+      # static-site-generator learned the hard way what happens
+      # otherwise: its signing job ran concurrently with publishing, so
       # the signatures were generated, stored, and dropped before the
       # release was assembled (sebastienrousseau/static-site-generator#678).
       #
@@ -218,10 +291,10 @@ jobs:
           gpgconf --kill all || true
           rm -rf "$GNUPGHOME"
 
-      - name: Upload release artifacts
+      - name: Upload signed release artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: release-artifacts
+          name: release-signed
           path: |
             target/package/*.crate
             target/package/*.bundle
@@ -236,6 +309,15 @@ jobs:
             SBOM.cdx.json.asc
           retention-days: 5
 
+  # ── Independent reproducibility gate ───────────────────────────────
+  # Rebuilds every .crate from a fresh checkout and requires the bytes
+  # the `artifacts` job produced (shared-reproducible-package.yml).
+  reproducible:
+    needs: artifacts
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-reproducible-package.yml@139a826ba273b8f9feffff54795711f4df321928
+    with:
+      package-args: --all-features --allow-dirty
+
   binaries:
     # Phase 4 of the repository plan: pre-built binaries for every
     # release across the practical target matrix. Built with
@@ -243,13 +325,13 @@ jobs:
     # binary (`cargo audit bin`), packaged with the generated
     # manpages, completions, and licenses, and provenance-attested.
     # Runs on tags and on workflow_dispatch so the dry-run exercises
-    # the whole matrix before a real cut.
+    # the whole matrix before a real cut. Provenance for each archive
+    # is attested by the `sign` job, not here: this job runs every
+    # build script in the graph and holds no signing identity.
     name: binaries (${{ matrix.target }})
     needs: validate
     permissions:
       contents: read
-      id-token: write
-      attestations: write
     strategy:
       fail-fast: false
       matrix:
@@ -265,7 +347,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # master
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067
         with:
           toolchain: stable
           targets: ${{ matrix.target }}
@@ -273,9 +357,11 @@ jobs:
         if: runner.os == 'Linux'
         with:
           target: ${{ matrix.target }}
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
-        with:
-          key: binaries-${{ matrix.target }}
+      # No build cache here: this job produces what ships. A restored
+      # ~/.cargo/registry/src or target/ is not re-verified against
+      # Cargo.lock, so a poisoned cache entry would flow into the
+      # release (zizmor cache-poisoning). Release builds start clean.
+
       - uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0 # v2.87.22
         with:
           tool: cargo-auditable
@@ -286,11 +372,16 @@ jobs:
         # adapted from zfb's node-free smoke. Only the natively
         # executable leg can prove it in-place.
         if: matrix.target == 'x86_64-unknown-linux-musl'
+        env:
+          # alpine:3.24.2, pinned by index digest (docker.io, 2026-10-07).
+          # Dependabot's docker ecosystem does not read workflow files;
+          # bump this line by hand.
+          SMOKE_IMAGE: alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
         run: |
           set -euo pipefail
-          docker run --rm -v "$PWD/target/${{ matrix.target }}/release:/b:ro" alpine:3 \
+          docker run --rm -v "$PWD/target/${{ matrix.target }}/release:/b:ro" "${SMOKE_IMAGE}" \
             /b/noyafmt --version
-          printf 'a: 1\n' | docker run --rm -i -v "$PWD/target/${{ matrix.target }}/release:/b:ro" alpine:3 \
+          printf 'a: 1\n' | docker run --rm -i -v "$PWD/target/${{ matrix.target }}/release:/b:ro" "${SMOKE_IMAGE}" \
             /b/noyafmt --stdin
       - name: Package
         shell: bash
@@ -319,11 +410,6 @@ jobs:
           shasum -a 256 "${OUT}" > "${OUT}.sha256" 2>/dev/null || sha256sum "${OUT}" > "${OUT}.sha256"
           rm -rf "${NAME}"
           echo "OUT=${OUT}" >> "${GITHUB_ENV}"
-      - name: Attest build provenance
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
-        with:
-          subject-path: dist/${{ env.OUT }}
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: binaries-${{ matrix.target }}
@@ -341,12 +427,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # master
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
-        with:
-          key: linux-packages
+      # No build cache here: this job produces what ships. A restored
+      # ~/.cargo/registry/src or target/ is not re-verified against
+      # Cargo.lock, so a poisoned cache entry would flow into the
+      # release (zizmor cache-poisoning). Release builds start clean.
+
       - uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0 # v2.87.22
         with:
           tool: cargo-auditable,cargo-deb,cargo-generate-rpm
@@ -381,18 +471,20 @@ jobs:
       CARGO_TARGET_DIR: ${{ github.workspace }}/target-release-verify-${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16 # v2
-        with:
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with: # zizmor: ignore[cache-poisoning] test-only job: nothing it builds ships, and the key is written only by tag runs of this workflow
           workspaces: ". -> target-release-verify-${{ matrix.os }}"
           key: release-verify-${{ matrix.os }}
       - run: cargo test --all-features --locked
 
   github-release:
     name: GitHub Release
-    needs: [artifacts, cross-verify, binaries, linux-packages]
+    needs: [sign, reproducible, cross-verify]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -400,11 +492,12 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Download artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: release-artifacts
+          name: release-signed
           path: artifacts
       - name: Download binaries
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -507,6 +600,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067
         with:
           toolchain: stable
@@ -523,7 +618,12 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
         run: |
           set -uxo pipefail
-          out=$(cargo publish --all-features --locked 2>&1) && rc=0 || rc=$?
+          # --no-verify: `cargo package` in `artifacts` already compiled
+          # the packaged sources, and `reproducible` proved this tag
+          # packages to the same bytes. Verifying again here would run
+          # every dependency's build script in the one job that holds
+          # the crates.io publish token.
+          out=$(cargo publish --all-features --locked --no-verify 2>&1) && rc=0 || rc=$?
           echo "$out"
           if [ "$rc" -ne 0 ]; then
             echo "$out" | grep -qE "already (exists|uploaded)" \
@@ -548,11 +648,15 @@ jobs:
       attestations: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Compute version and push decision
         id: meta
+        env:
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
-          if [[ "${GITHUB_REF}" == refs/tags/v* && "${{ github.event.inputs.dry_run }}" != 'true' ]]; then
+          if [[ "${GITHUB_REF}" == refs/tags/v* && "${DRY_RUN}" != 'true' ]]; then
             {
               echo "VERSION=${GITHUB_REF_NAME#v}"
               echo "PUSH=true"
@@ -566,7 +670,7 @@ jobs:
             } >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.0.0
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
       - name: Log in to GHCR

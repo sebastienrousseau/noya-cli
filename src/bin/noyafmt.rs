@@ -17,6 +17,7 @@ use std::process::ExitCode;
 
 use clap::Parser;
 use noya_cli::NoyafmtCli;
+use noya_cli::text::{escape_controls, escape_path};
 use noyalib::cst::{FormatConfig, format_with_config};
 
 fn main() -> ExitCode {
@@ -41,7 +42,8 @@ fn main() -> ExitCode {
         match run_file(file, &cfg, args.check, args.write) {
             Ok(changed) => any_changed |= changed,
             Err(e) => {
-                eprintln!("{}: {}", file.display(), e);
+                let msg = e.to_string();
+                eprintln!("{}: {}", escape_path(file), escape_controls(&msg));
                 had_error = true;
             }
         }
@@ -71,7 +73,8 @@ fn run_stdin(cfg: &FormatConfig) -> ExitCode {
             ExitCode::SUCCESS
         }
         Err(e) => {
-            eprintln!("error: {e}");
+            let msg = e.to_string();
+            eprintln!("error: {}", escape_controls(&msg));
             ExitCode::from(1)
         }
     }
@@ -99,8 +102,9 @@ fn run_file(
     if check {
         if changed {
             // rustfmt convention: print the path of each unformatted file
-            // to stdout so `xargs` / shell pipelines can act on them.
-            println!("{}", file.display());
+            // to stdout so `xargs` / shell pipelines can act on them. A
+            // name with control characters is printed escaped.
+            println!("{}", escape_path(file));
         }
         return Ok(changed);
     }

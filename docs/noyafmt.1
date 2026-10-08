@@ -1,6 +1,6 @@
 .ie \n(.g .ds Aq \(aq
 .el .ds Aq '
-.TH noyafmt 1  "noyafmt 0.0.54"
+.TH noyafmt 1  "noyafmt 0.0.55"
 .SH NAME
 noyafmt \- Format YAML files via the noyalib CST formatter
 .SH SYNOPSIS
@@ -25,7 +25,7 @@ Rewrite each FILE in place. Default is to print the formatted source to stdout
 Read from stdin, write to stdout. Mutually exclusive with FILE arguments
 .TP
 \fB\-\-indent\fR \fI<N>\fR [default: 2]
-Indentation width in spaces
+Indentation width in spaces, from 1 to 16
 .TP
 \fB\-h\fR, \fB\-\-help\fR
 Print help (see a summary with \*(Aq\-h\*(Aq)
@@ -42,4 +42,4 @@ EXAMPLES:
   noyafmt \-\-check ci/*.yaml         # CI gate
   cat foo.yaml | noyafmt \-\-stdin
 .SH VERSION
-v0.0.54
+v0.0.55

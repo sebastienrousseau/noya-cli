@@ -122,7 +122,7 @@
 // lint rather than for doc-comment density, because a lint is enforced on
 // every build while a count can be satisfied by writing `/// The name.`
 
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use clap::{CommandFactory, Parser};
 
@@ -165,8 +165,13 @@ pub struct NoyafmtCli {
     #[arg(long, conflicts_with = "files")]
     pub stdin: bool,
 
-    /// Indentation width in spaces.
-    #[arg(long, value_name = "N", default_value_t = 2)]
+    /// Indentation width in spaces, from 1 to 16.
+    #[arg(
+        long,
+        value_name = "N",
+        default_value_t = 2,
+        value_parser = clap::builder::RangedU64ValueParser::<usize>::new().range(1..=16)
+    )]
     pub indent: usize,
 
     /// YAML files to format. Pass `--stdin` to read from stdin
@@ -185,12 +190,12 @@ pub struct NoyafmtCli {
     name = "noyavalidate",
     about = "Validate YAML syntax and (optionally) a JSON Schema",
     long_about = "noyavalidate — check YAML syntax (and optional JSON Schema).\n\n\
-                  Reads one or more YAML documents from a file (or stdin),\n\
+                  Reads the YAML documents in each FILE (or stdin),\n\
                   reports syntax errors via the miette fancy renderer, and —\n\
                   when --schema PATH is given — validates each parsed\n\
                   document against a JSON Schema 2020-12 contract (the\n\
                   schema may itself be written in YAML or JSON).\n\n\
-                  --fix rewrites the input in-place through the lossless\n\
+                  --fix rewrites each input in place through the lossless\n\
                   CST formatter, normalising whitespace and quoting without\n\
                   changing semantics. When the input is stdin, the\n\
                   formatted output is written to stdout instead.",
@@ -199,7 +204,9 @@ pub struct NoyafmtCli {
                   0    All documents valid (and fixed if --fix)\n  \
                   1    Parse error or schema violation\n  \
                   2    Usage error\n  \
-                  3    I/O error",
+                  3    I/O error\n\n\
+                  With several files, every file is checked and the exit\n\
+                  code is the highest any file produced.",
 )]
 pub struct NoyavalidateCli {
     /// Validate each document against the JSON Schema 2020-12 at
@@ -225,59 +232,30 @@ pub struct NoyavalidateCli {
     #[arg(long)]
     pub strict: bool,
 
-    /// YAML file to validate. Use `-` or omit for stdin.
+    /// YAML files to validate. Use `-` (alone) or omit for stdin.
     #[arg(value_name = "FILE")]
-    pub file: Option<PathBuf>,
+    pub files: Vec<PathBuf>,
 }
 
-/// Write `bytes` to `path` without a window in which the file is
-/// truncated or half-written.
-///
-/// The bytes go to a temporary file in the same directory, are synced,
-/// take over the target's permissions when it exists, and are renamed
-/// over it; rename is atomic on every platform the binaries ship for.
-/// An interrupted `noyafmt --write` or `noyavalidate --fix` therefore
-/// leaves either the old file or the new one, never a torn file, and
-/// the temporary is removed on any failure.
-///
-/// # Errors
-///
-/// Any I/O error from creating, writing, syncing or renaming the
-/// temporary file, in which case `path` is untouched.
 #[allow(
     dead_code,
     reason = "build.rs includes this file as a private module to render the \
               clap commands; only the binaries call the writer"
 )]
-pub fn write_atomic(path: &Path, bytes: &[u8]) -> std::io::Result<()> {
-    use std::io::Write;
-    let parent = match path.parent() {
-        Some(p) if !p.as_os_str().is_empty() => p.to_path_buf(),
-        _ => PathBuf::from("."),
-    };
-    let stem = path
-        .file_name()
-        .and_then(|s| s.to_str())
-        .unwrap_or("noya-cli");
-    let nanos = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map_or(0, |d| d.as_nanos());
-    let tmp = parent.join(format!(".{stem}.{}.{nanos}.tmp", std::process::id()));
-    let result = (|| {
-        let mut f = std::fs::File::create(&tmp)?;
-        f.write_all(bytes)?;
-        f.sync_all()?;
-        if let Ok(meta) = std::fs::metadata(path) {
-            f.set_permissions(meta.permissions())?;
-        }
-        drop(f);
-        std::fs::rename(&tmp, path)
-    })();
-    if result.is_err() {
-        let _ = std::fs::remove_file(&tmp);
-    }
-    result
-}
+mod atomic;
+
+#[allow(
+    unused_imports,
+    reason = "re-exported for the binaries; unused when build.rs includes this file"
+)]
+pub use atomic::write_atomic;
+
+#[allow(
+    dead_code,
+    reason = "build.rs includes this file as a private module to render the \
+              clap commands; only the binaries print untrusted text"
+)]
+pub mod text;
 
 /// Build the [`clap::Command`] for `noyafmt`.
 ///
@@ -365,6 +343,18 @@ mod tests {
     }
 
     #[test]
+    fn noyafmt_indent_outside_1_to_16_is_rejected() {
+        for bad in ["0", "17", "100000000", "18446744073709551615"] {
+            let r = NoyafmtCli::try_parse_from(["noyafmt", "--indent", bad, "--stdin"]);
+            assert!(r.is_err(), "--indent {bad} was accepted");
+        }
+        for ok in ["1", "16"] {
+            let cli = NoyafmtCli::try_parse_from(["noyafmt", "--indent", ok, "--stdin"]).unwrap();
+            assert_eq!(cli.indent.to_string(), ok);
+        }
+    }
+
+    #[test]
     fn noyafmt_unknown_option_errors() {
         let r = NoyafmtCli::try_parse_from(["noyafmt", "--frobnicate"]);
         assert!(r.is_err());
@@ -396,7 +386,7 @@ mod tests {
         let cli =
             NoyavalidateCli::try_parse_from(["noyavalidate", "-s", "s.json", "in.yaml"]).unwrap();
         assert_eq!(cli.schema.unwrap().to_string_lossy(), "s.json");
-        assert_eq!(cli.file.unwrap().to_string_lossy(), "in.yaml");
+        assert_eq!(cli.files[0].to_string_lossy(), "in.yaml");
     }
 
     #[test]
@@ -418,7 +408,7 @@ mod tests {
     #[test]
     fn noyavalidate_no_args_means_stdin() {
         let cli = NoyavalidateCli::try_parse_from(["noyavalidate"]).unwrap();
-        assert!(cli.file.is_none());
+        assert!(cli.files.is_empty());
     }
 
     // ── Command introspection (used by build.rs / xtask) ──────────

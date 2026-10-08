@@ -186,24 +186,62 @@ fn unknown_flag_exits_2() {
 }
 
 #[test]
-fn too_many_files_exits_2() {
-    let output = bin().args(["a.yaml", "b.yaml"]).output().unwrap();
-    assert_eq!(output.status.code().unwrap(), 2);
+fn every_file_given_is_validated() {
+    // pre-commit and shell globs pass many files at once; each is
+    // checked, and one bad file fails the run.
+    let good = tmp("multi_good", "a: 1\n");
+    let bad = tmp("multi_bad", "a: [\n");
+    let output = bin().arg(&good).arg(&bad).output().unwrap();
+    assert_eq!(output.status.code().unwrap(), 1);
+    let stdout = String::from_utf8(output.stdout).unwrap();
     let stderr = String::from_utf8(output.stderr).unwrap();
-    // clap rejects extras as "unexpected argument 'b.yaml' found".
-    assert!(stderr.contains("unexpected argument"));
+    assert!(stdout.contains("multi_good"), "stdout: {stdout}");
+    assert!(stderr.contains("multi_bad"), "stderr: {stderr}");
+}
+
+#[test]
+fn several_valid_files_exit_0() {
+    let a = tmp("multi_a", "a: 1\n");
+    let b = tmp("multi_b", "b: 2\n");
+    let output = bin().arg(&a).arg(&b).output().unwrap();
+    assert_eq!(output.status.code().unwrap(), 0);
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    assert_eq!(stdout.lines().count(), 2, "one ok line per file: {stdout}");
+}
+
+#[test]
+fn an_unreadable_file_among_many_exits_3() {
+    let a = tmp("multi_io", "a: 1\n");
+    let output = bin()
+        .arg(&a)
+        .arg("/tmp/__noyavalidate_definitely_not_a_real_file__.yaml")
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code().unwrap(), 3);
+}
+
+#[test]
+fn schema_applies_to_every_file() {
+    let schema = tmp("multi_schema", "type: object\nrequired: [name]\n");
+    let ok = tmp("multi_schema_ok", "name: x\n");
+    let bad = tmp("multi_schema_bad", "other: x\n");
+    let output = bin()
+        .arg("--schema")
+        .arg(&schema)
+        .arg(&ok)
+        .arg(&bad)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code().unwrap(), 1);
 }
 
 #[test]
 fn stdin_combined_with_file_exits_2() {
-    // clap accepts `-` as the positional, so the second argument
-    // collides as an unexpected positional. The old hand-rolled
-    // parser rejected the combination explicitly; clap does it via
-    // its standard "unexpected argument" path.
+    // `-` (stdin) only makes sense as the sole input.
     let output = bin().args(["-", "a.yaml"]).output().unwrap();
     assert_eq!(output.status.code().unwrap(), 2);
     let stderr = String::from_utf8(output.stderr).unwrap();
-    assert!(stderr.contains("unexpected argument"));
+    assert!(stderr.contains("'-'"), "stderr: {stderr}");
 }
 
 // ── I/O errors ───────────────────────────────────────────────────────────
@@ -492,4 +530,69 @@ fn strict_accepts_a_clean_document() {
         stdout.contains("valid") || stdout.contains("document"),
         "{stdout:?}"
     );
+}
+
+// ── Schema: empty streams and uncompilable schemas ───────────────────────
+
+fn run_schema(schema: &str, data: &str, name: &str) -> (i32, String, String) {
+    let schema = tmp(&format!("{name}_schema"), schema);
+    let yaml = tmp(&format!("{name}_data"), data);
+    let output = bin()
+        .arg("--schema")
+        .arg(&schema)
+        .arg(&yaml)
+        .output()
+        .unwrap();
+    (
+        output.status.code().unwrap_or(-1),
+        String::from_utf8(output.stdout).unwrap(),
+        String::from_utf8(output.stderr).unwrap(),
+    )
+}
+
+#[test]
+fn schema_rejects_an_empty_file_as_a_null_document() {
+    let (code, _, stderr) = run_schema("type: object\nrequired: [name]\n", "", "empty_null");
+    assert_eq!(
+        code, 1,
+        "an empty file must not pass `type: object`: {stderr}"
+    );
+}
+
+#[test]
+fn schema_rejects_a_comment_only_file_as_a_null_document() {
+    let (code, _, stderr) = run_schema("type: object\n", "# only a comment\n", "comment_null");
+    assert_eq!(code, 1, "{stderr}");
+}
+
+#[test]
+fn schema_accepts_an_empty_file_when_null_is_allowed() {
+    let (code, _, stderr) = run_schema("type: [object, \"null\"]\n", "", "empty_ok");
+    assert_eq!(code, 0, "{stderr}");
+}
+
+#[test]
+fn uncompilable_schema_fails_even_for_an_empty_file() {
+    let (code, _, stderr) = run_schema("type: wibble\n", "", "bad_schema_empty");
+    assert_eq!(code, 1, "{stderr}");
+    assert!(stderr.contains("schema"), "{stderr}");
+}
+
+#[test]
+fn uncompilable_schema_fails_before_any_document_is_checked() {
+    let (code, _, stderr) = run_schema("type: wibble\n", "name: x\n", "bad_schema_doc");
+    assert_eq!(code, 1, "{stderr}");
+}
+
+#[test]
+fn schema_fix_does_not_pass_an_empty_file_that_violates() {
+    let schema = tmp("fix_empty_schema", "type: object\n");
+    let yaml = tmp("fix_empty_data", "");
+    let output = bin()
+        .args(["--fix", "--schema"])
+        .arg(&schema)
+        .arg(&yaml)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code().unwrap(), 1);
 }

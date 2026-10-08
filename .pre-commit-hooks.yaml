@@ -5,17 +5,22 @@
 #
 #   repos:
 #     - repo: https://github.com/sebastienrousseau/noya-cli
-#       rev: v0.0.54
+#       rev: v0.0.55
 #       hooks:
 #         - id: noyafmt
 #         - id: noyavalidate
 #
-# Both hooks build the binaries with cargo on first use (pre-commit's
+# The hooks build the binaries with cargo on first use (pre-commit's
 # Rust language support), then run on the staged YAML files.
+# pre-commit runs `cargo install` without `--locked`, so dependencies
+# resolve to their newest compatible versions rather than this
+# repository's Cargo.lock; for a locked build, install with
+# `cargo install noya-cli --locked` and use a `repo: local` hook with
+# `language: system` instead.
 - id: noyafmt
   name: noyafmt (format YAML)
-  description: Format YAML files in place with noyafmt.
-  entry: noyafmt
+  description: Format YAML files in place with noyafmt; the hook fails when it changed a file.
+  entry: noyafmt --write
   language: rust
   types: [yaml]
   minimum_pre_commit_version: "2.9.2"
@@ -28,7 +33,7 @@
   minimum_pre_commit_version: "2.9.2"
 - id: noyavalidate
   name: noyavalidate (parse YAML)
-  description: Fail on any YAML file the parser refuses; pass --schema in args to validate against a JSON Schema.
+  description: Fail on any YAML file the parser refuses (every staged file is checked); pass --schema in args to validate against a JSON Schema.
   entry: noyavalidate
   language: rust
   types: [yaml]

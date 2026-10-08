@@ -25,7 +25,7 @@ _noyavalidate() {
 '--help[Print help (see more with '\''--help'\'')]' \
 '-V[Print version]' \
 '--version[Print version]' \
-'::file -- YAML file to validate. Use `-` or omit for stdin:_files' \
+'*::files -- YAML files to validate. Use `-` (alone) or omit for stdin:_files' \
 && ret=0
 }
 
