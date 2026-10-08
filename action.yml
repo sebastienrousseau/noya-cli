@@ -3,7 +3,7 @@
 #
 # noyalib YAML check: format and schema-validate YAML in one step.
 #
-#   - uses: sebastienrousseau/noya-cli@v0.0.55
+#   - uses: sebastienrousseau/noya-cli@v0.0.56
 #     with:
 #       paths: config/ deploy.yaml
 #       schema: schema.json          # optional
@@ -39,7 +39,7 @@ inputs:
   version:
     description: The noya-cli release to use, as X.Y.Z. Defaults to the version this action was tagged with.
     required: false
-    default: "0.0.55"
+    default: "0.0.56"
   format:
     description: Run noyafmt --check (true or false).
     required: false
