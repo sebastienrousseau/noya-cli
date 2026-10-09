@@ -108,7 +108,7 @@ MODE=validate expect 0 "noyavalidate takes --help.yaml as a file" run PATHS=--he
 mkdir fakebin
 printf '#!/bin/sh\ntouch "%s/curl-called"\nexit 1\n' "$work" >fakebin/curl
 chmod +x fakebin/curl
-for v in '0.0.56; touch pwned' '../../x' $'0.0.56\nx' 'latest' ''; do
+for v in '0.0.57; touch pwned' '../../x' $'0.0.57\nx' 'latest' ''; do
   rm -f curl-called
   MODE=install expect nonzero "version $(printf %q "$v") is refused" \
     run "VERSION=$v" "GITHUB_PATH=$work/gh-path" "PATH=$work/fakebin:$PATH"
