@@ -77,9 +77,9 @@ bundles, plus the pre-built binary archives and Linux packages
 above, each with SHA-256 and a SLSA build-provenance attestation —
 see [Verification](#verification).
 
-**MSRV: Rust 1.86.0** — the lowest toolchain this crate can be
-**built and tested** on, matching the noyalib core floor.
-`criterion 0.8` (the benchmark dev-dependency) declares
+**MSRV: Rust 1.89.0**, the floor shared across the noyalib family and the
+maintainer's other Rust crates (noyalib ADR-0014). The
+toolchain-driven floor is lower: `criterion 0.8` (the benchmark dev-dependency) declares
 `rust-version = 1.86`, so `cargo check --all-targets` and the
 bench suite fail on 1.85 (`criterion@0.8.2 requires rustc 1.86`),
 though `cargo check --lib` still builds. `clap_builder 4.6` in the
@@ -89,7 +89,7 @@ CLI dep tree is edition-2024. We publish the number we verify.
 
 ## Requirements
 
-- **Rust 1.86.0 or newer** to build from source: `rust-version` in
+- **Rust 1.89.0 or newer** to build from source: `rust-version` in
   the manifest, enforced by the `msrv-core` CI job on every push.
 - **Any tier-1 platform.** CI runs the tests on Linux, macOS, and
   Windows with the stable, beta, and nightly toolchains; stable is the

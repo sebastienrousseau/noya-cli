@@ -10,7 +10,7 @@ iteration increments exactly 0.0.1.
 
 ## Minimum Rust version
 
-The minimum supported Rust version is 1.86.0. The manifest declares the floor
+The minimum supported Rust version is 1.89.0. The manifest declares the floor
 and CI verifies it. A change to the floor is a breaking-axis change and requires
 a changelog entry.
 

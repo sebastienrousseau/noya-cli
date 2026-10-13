@@ -31,12 +31,11 @@
 //!
 //! # MSRV
 //!
-//! **Rust 1.85.0** stable. The `clap_builder` 4.6 dep pulls
-//! edition-2024 helpers and floors the MSRV at 1.85; the core
-//! `noyalib` library still builds on **1.75**. CI verifies both
-//! floors via the `Per-crate MSRV` workflow job. The bump
-//! policy is documented in the workspace
-//! [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/POLICIES.md#1-msrv-minimum-supported-rust-version).
+//! **Rust 1.89.0** stable, the floor shared across the noyalib
+//! family and the maintainer's other Rust crates (noyalib
+//! ADR-0014). The manifest's `rust-version` is the contract and
+//! the `msrv-core` CI job verifies it. The bump policy is in
+//! [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/POLICIES.md#1-msrv-minimum-supported-rust-version).
 //!
 //! # Panics
 //!

@@ -16,7 +16,7 @@
   <a href="https://docs.rs/noya-cli"><img src="https://img.shields.io/badge/docs.rs-noya--cli-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs" /></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noya-cli"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noya-cli?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
   <a href="LICENSE-APACHE"><img src="https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg?style=for-the-badge" alt="License: Apache-2.0 OR MIT" /></a>
-  <a href="https://github.com/sebastienrousseau/noya-cli/blob/main/docs/POLICIES.md"><img src="https://img.shields.io/badge/MSRV-1.86.0-93450a.svg?style=for-the-badge&logo=rust" alt="MSRV 1.86.0" /></a>
+  <a href="https://github.com/sebastienrousseau/noya-cli/blob/main/docs/POLICIES.md"><img src="https://img.shields.io/badge/MSRV-1.89.0-93450a.svg?style=for-the-badge&logo=rust" alt="MSRV 1.89.0" /></a>
 </p>
 
 ---
@@ -80,15 +80,15 @@ provenance. Linux releases include GNU and static musl builds.
 
 ## Requirements
 
-- Rust **1.86.0 or newer** when building from source.
+- Rust **1.89.0 or newer** when building from source.
 - Linux, macOS, and Windows are tested on stable, beta, and nightly Rust.
 - The crate pins `noyalib` at exactly `=0.0.57` under the lockstep release
   contract.
 
 | Surface | Minimum toolchain | Enforcement |
 | :--- | :---: | :--- |
-| Binaries and library | Rust 1.86.0 | manifest and MSRV CI |
-| Complete test and benchmark surface | Rust 1.86.0 | all-target CI |
+| Binaries and library | Rust 1.89.0 | manifest and MSRV CI |
+| Complete test and benchmark surface | Rust 1.89.0 | all-target CI |
 
 ---
 
