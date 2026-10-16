@@ -103,12 +103,12 @@ fn open_temp(tmp: &Path, perms: Option<&Permissions>) -> io::Result<File> {
         }
     }
     let f = opts.open(tmp)?;
-    if let Some(p) = perms {
-        if let Err(e) = f.set_permissions(p.clone()) {
-            drop(f);
-            let _ = std::fs::remove_file(tmp);
-            return Err(e);
-        }
+    if let Some(p) = perms
+        && let Err(e) = f.set_permissions(p.clone())
+    {
+        drop(f);
+        let _ = std::fs::remove_file(tmp);
+        return Err(e);
     }
     Ok(f)
 }

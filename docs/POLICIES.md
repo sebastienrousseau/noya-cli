@@ -4,13 +4,13 @@
 
 ## Version and dependency policy
 
-`noya-cli` releases in strict lockstep with `noyalib`. Version 0.0.57 must pin
-the core at exactly `=0.0.57`. Release work uses `feat/v0.0.57`; each subsequent
+`noya-cli` releases in strict lockstep with `noyalib`. Version 0.0.58 must pin
+the core at exactly `=0.0.58`. Release work uses `feat/v0.0.58`; each subsequent
 iteration increments exactly 0.0.1.
 
 ## Minimum Rust version
 
-The minimum supported Rust version is 1.86.0. The manifest declares the floor
+The minimum supported Rust version is 1.89.0. The manifest declares the floor
 and CI verifies it. A change to the floor is a breaking-axis change and requires
 a changelog entry.
 
