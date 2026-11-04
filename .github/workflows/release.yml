@@ -27,7 +27,7 @@ jobs:
   # identity on the commit being built, and signed by a pinned key.
   # Passes without checking on a workflow_dispatch dry run.
   tag-signature:
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-tag-signature.yml@139a826ba273b8f9feffff54795711f4df321928
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-tag-signature.yml@7529f1b3557ec62be0ae6c3a1cd968863a0fbe28
 
   validate:
     name: Validate
@@ -40,11 +40,11 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with: # zizmor: ignore[cache-poisoning] test-only job: nothing it builds ships, and the key is written only by tag runs of this workflow
           workspaces: ". -> target-release-validate"
           key: release-validate
@@ -81,7 +81,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
       # No build cache here: this job produces what ships. A restored
@@ -123,7 +123,7 @@ jobs:
             sha512sum "$f" >> SHA512SUMS.txt
           done
       - name: Upload release artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-artifacts
           path: |
@@ -161,12 +161,12 @@ jobs:
       attestations: write
     steps:
       - name: Download the unsigned release artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-artifacts
 
       - name: Download the binaries
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: binaries-*
           merge-multiple: true
@@ -292,7 +292,7 @@ jobs:
           rm -rf "$GNUPGHOME"
 
       - name: Upload signed release artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-signed
           path: |
@@ -314,7 +314,7 @@ jobs:
   # the `artifacts` job produced (shared-reproducible-package.yml).
   reproducible:
     needs: artifacts
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-reproducible-package.yml@139a826ba273b8f9feffff54795711f4df321928
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-reproducible-package.yml@7529f1b3557ec62be0ae6c3a1cd968863a0fbe28
     with:
       package-args: --all-features --allow-dirty
 
@@ -349,7 +349,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
           targets: ${{ matrix.target }}
@@ -362,7 +362,7 @@ jobs:
       # Cargo.lock, so a poisoned cache entry would flow into the
       # release (zizmor cache-poisoning). Release builds start clean.
 
-      - uses: taiki-e/install-action@183e4297cca2404691e9380e1307288dced5c82a # v2.87.25
+      - uses: taiki-e/install-action@5488ac5a951645ce95062214902ac4b6bc1a1037 # v2.87.32
         with:
           tool: cargo-auditable
       - name: Build (auditable)
@@ -410,7 +410,7 @@ jobs:
           shasum -a 256 "${OUT}" > "${OUT}.sha256" 2>/dev/null || sha256sum "${OUT}" > "${OUT}.sha256"
           rm -rf "${NAME}"
           echo "OUT=${OUT}" >> "${GITHUB_ENV}"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: binaries-${{ matrix.target }}
           path: dist/
@@ -429,7 +429,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
       # No build cache here: this job produces what ships. A restored
@@ -437,7 +437,7 @@ jobs:
       # Cargo.lock, so a poisoned cache entry would flow into the
       # release (zizmor cache-poisoning). Release builds start clean.
 
-      - uses: taiki-e/install-action@183e4297cca2404691e9380e1307288dced5c82a # v2.87.25
+      - uses: taiki-e/install-action@5488ac5a951645ce95062214902ac4b6bc1a1037 # v2.87.32
         with:
           tool: cargo-auditable,cargo-deb,cargo-generate-rpm
       - name: Build (auditable)
@@ -451,7 +451,7 @@ jobs:
             sha256sum "$f" > "$f.sha256"
           done
           ls -l dist/
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: binaries-linux-packages
           path: dist/
@@ -473,10 +473,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with: # zizmor: ignore[cache-poisoning] test-only job: nothing it builds ships, and the key is written only by tag runs of this workflow
           workspaces: ". -> target-release-verify-${{ matrix.os }}"
           key: release-verify-${{ matrix.os }}
@@ -495,12 +495,12 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - name: Download artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-signed
           path: artifacts
       - name: Download binaries
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: binaries-*
           merge-multiple: true
@@ -602,7 +602,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
       # Trusted publishing: swaps this job's GitHub OIDC identity for a
@@ -611,7 +611,7 @@ jobs:
       # for this crate (repo + release.yml + environment crates-io).
       - name: Authenticate with crates.io
         id: auth
-        uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
+        uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
 
       - name: Publish
         env:
@@ -675,7 +675,7 @@ jobs:
 
       - name: Log in to GHCR
         if: steps.meta.outputs.PUSH == 'true'
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
