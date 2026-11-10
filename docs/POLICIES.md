@@ -4,8 +4,8 @@
 
 ## Version and dependency policy
 
-`noya-cli` releases in strict lockstep with `noyalib`. Version 0.0.59 must pin
-the core at exactly `=0.0.59`. Release work uses `feat/v0.0.59`; each subsequent
+`noya-cli` releases in strict lockstep with `noyalib`. Version 0.0.60 must pin
+the core at exactly `=0.0.60`. Release work uses `feat/v0.0.60`; each subsequent
 iteration increments exactly 0.0.1.
 
 ## Minimum Rust version
