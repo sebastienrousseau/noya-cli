@@ -121,21 +121,15 @@ user-login = "fitzgen"
 user-name = "Nick Fitzgerald"
 
 [[publisher.jsonschema]]
-version = "0.58.5"
-when = "2026-10-02"
+version = "0.60.2"
+when = "2026-10-26"
 user-id = 82692
 user-login = "Stranger6667"
 user-name = "Dmitry Dygalo"
 
-[[publisher.libm]]
-version = "0.2.16"
-when = "2026-01-24"
-user-id = 55123
-user-login = "rust-lang-owner"
-
 [[publisher.referencing]]
-version = "0.58.5"
-when = "2026-10-02"
+version = "0.60.2"
+when = "2026-10-26"
 user-id = 82692
 user-login = "Stranger6667"
 user-name = "Dmitry Dygalo"
