@@ -14,5 +14,5 @@ and full command with any reported result. Compare measurements from the same
 machine and power profile. CI compiles and smoke-runs benchmark targets, but does
 not reject a change using noisy shared-runner wall-clock thresholds.
 
-The headline format measurement in the README is descriptive project data, not
-a cross-machine performance guarantee.
+Publish a result only with its raw samples, source commit and environment.
+The presence of this harness does not establish a latency guarantee.

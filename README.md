@@ -53,13 +53,19 @@
 
 ---
 
+## Development version
+
+This branch prepares unreleased v0.0.61. Versioned Cargo examples describe
+that upcoming release; use a published version for registry installation
+until it ships. Local verification uses the sibling core source explicitly.
+
 ## Install
 
 ### As a Rust library
 
 ```toml
 [dependencies]
-noya-cli = "0.0.60"
+noya-cli = "0.0.61"
 ```
 
 Most users install the binaries directly:
@@ -158,7 +164,7 @@ hardware. CI smoke-runs the harnesses without asserting noisy wall-clock values.
 | Scenario | Result | Environment |
 | :--- | ---: | :--- |
 | CLI dispatch | Measured by `cli_dispatch` | Criterion release build |
-| Format 1 MiB YAML | Approximately 10 ms | Published project reference machine |
+| Format and validation workloads | Run the checked-in harness | Record host, source and corpus with results |
 | Benchmark compilation | Per push | CI smoke gate |
 
 See [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) for methodology and full results.

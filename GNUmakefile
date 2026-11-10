@@ -33,7 +33,7 @@ zshcompdir  = $(PREFIX)/share/zsh/site-functions
 fishcompdir = $(PREFIX)/share/fish/vendor_completions.d
 
 BINS = noyafmt noyavalidate
-RELEASE_DIR = target/release
+RELEASE_DIR = $(if $(CARGO_TARGET_DIR),$(CARGO_TARGET_DIR),target)/release
 
 .PHONY: all build test assets check-assets install uninstall clean
 
@@ -52,8 +52,10 @@ test:
 # truth (the clap Command definitions).
 assets:
 	NOYA_GEN_ASSETS=1 $(CARGO) build --release
-	@out=$$(ls -td target/release/build/noya-cli-*/out 2>/dev/null | head -1); \
-	test -n "$$out" || { echo "generated assets not found under target/release/build" >&2; exit 1; }; \
+	@set -e; \
+	out=$$(ls -td "$(RELEASE_DIR)"/build/noya-cli-*/out/noyafmt.1 2>/dev/null | head -1); \
+	test -n "$$out" || { echo "generated assets not found under $(RELEASE_DIR)/build" >&2; exit 1; }; \
+	out=$$(dirname "$$out"); \
 	for b in $(BINS); do \
 	  cp "$$out/$$b.1" docs/; \
 	  cp "$$out/$$b.bash" "$$out/$$b.fish" "$$out/_$$b" "$$out/_$$b.ps1" complete/; \
@@ -67,7 +69,7 @@ check-assets: assets
 install: build
 	install -d "$(DESTDIR)$(bindir)" "$(DESTDIR)$(mandir)" \
 	  "$(DESTDIR)$(bashcompdir)" "$(DESTDIR)$(zshcompdir)" "$(DESTDIR)$(fishcompdir)"
-	for b in $(BINS); do \
+	set -e; for b in $(BINS); do \
 	  install -m 0755 "$(RELEASE_DIR)/$$b" "$(DESTDIR)$(bindir)/$$b"; \
 	  install -m 0644 "docs/$$b.1" "$(DESTDIR)$(mandir)/$$b.1"; \
 	  install -m 0644 "complete/$$b.bash" "$(DESTDIR)$(bashcompdir)/$$b"; \

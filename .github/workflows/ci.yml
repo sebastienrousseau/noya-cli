@@ -54,6 +54,8 @@ jobs:
           leftover=$(find stage -type f | wc -l)
           test "$leftover" = 0 || { find stage -type f; exit 1; }
       - name: Tracked assets match the clap definitions
+        env:
+          CARGO_TARGET_DIR: ${{ runner.temp }}/noya-cli-assets
         run: make check-assets
   docs-lint:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-docs-lint.yml@7529f1b3557ec62be0ae6c3a1cd968863a0fbe28

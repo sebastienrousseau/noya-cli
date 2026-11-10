@@ -11,6 +11,16 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
+## [v0.0.61] - Unreleased
+
+### Changed
+
+- Prepare the next lockstep version for the ecosystem assurance work.
+  Release dates and completed changes are recorded after verification.
+
+- Reconcile performance documentation with reproducible benchmark evidence.
+- Audit fuzz locks and enforce dependency and source analysis gates.
+
 ## [v0.0.60] - 2026-11-10
 
 ### Changed
