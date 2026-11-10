@@ -12,11 +12,12 @@ use std::path::{Path, PathBuf};
 /// truncated or half-written.
 ///
 /// The bytes go to a temporary file in the same directory, are synced,
-/// take over the target's permissions when it exists, and are renamed
-/// over it; rename is atomic on every platform the binaries ship for.
-/// An interrupted `noyafmt --write` or `noyavalidate --fix` therefore
-/// leaves either the old file or the new one, never a torn file, and
-/// the temporary is removed on any failure.
+/// and the sibling is renamed over the target. The original is never
+/// opened for writing. Replacement preserves the existing permissions
+/// exposed by `std::fs::Permissions`; it does not copy other metadata.
+/// An I/O error triggers best-effort cleanup of the temporary file.
+/// This does not sync the parent directory or guarantee durability
+/// across a power loss.
 ///
 /// # Errors
 ///
@@ -176,6 +177,20 @@ mod tests {
         }
         // Only the targets remain: no temporary is left behind.
         assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 3);
+    }
+
+    #[test]
+    fn failed_replacement_preserves_the_destination_and_removes_the_temporary() {
+        let dir = scratch("rename-refused");
+        let target = dir.join("target.yaml");
+        std::fs::create_dir(&target).unwrap();
+        let original = target.join("original.yaml");
+        std::fs::write(&original, b"a: 1\n").unwrap();
+
+        assert!(write_atomic(&target, b"a: 2\n").is_err());
+        assert_eq!(std::fs::read(&original).unwrap(), b"a: 1\n");
+        assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 1);
+        std::fs::remove_dir_all(dir).unwrap();
     }
 
     #[test]
