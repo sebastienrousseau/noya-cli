@@ -59,7 +59,7 @@
 
 ```toml
 [dependencies]
-noya-cli = "0.0.58"
+noya-cli = "0.0.59"
 ```
 
 Most users install the binaries directly:
@@ -82,7 +82,7 @@ provenance. Linux releases include GNU and static musl builds.
 
 - Rust **1.89.0 or newer** when building from source.
 - Linux, macOS, and Windows are tested on stable, beta, and nightly Rust.
-- The crate pins `noyalib` at exactly `=0.0.58` under the lockstep release
+- The crate pins `noyalib` at exactly `=0.0.59` under the lockstep release
   contract.
 
 | Surface | Minimum toolchain | Enforcement |
