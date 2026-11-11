@@ -15,6 +15,8 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ### Changed
 
+- Update install-action to 2.90.0 and CodeQL to 4.39.2 with verified
+  upstream SHA pins, contributed by Dependabot in #131.
 - Preserve unsigned radix string keys during serialization. Escalate CST
   root shape changes to a full parse to preserve UTF-8 token boundaries.
 - Core parsing now preserves anchor declaration order and clips only a
