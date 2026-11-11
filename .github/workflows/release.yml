@@ -149,7 +149,7 @@ jobs:
   sign:
     name: Sign release artefacts
     needs: [artifacts, binaries, linux-packages]
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') && github.event.inputs.dry_run != 'true'
     runs-on: ubuntu-latest
     environment: release-signing
     permissions:
@@ -485,7 +485,7 @@ jobs:
   github-release:
     name: GitHub Release
     needs: [sign, reproducible, cross-verify]
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') && github.event.inputs.dry_run != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
