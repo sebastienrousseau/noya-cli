@@ -43,10 +43,9 @@ fn run(args: &[&str]) -> (i32, String, String) {
     )
 }
 
-/// A block scalar whose last line is whitespace with no final newline
-/// (yaml-test-suite L24T): it parses, but the formatter cannot re-lay
-/// it out without changing its value, so it refuses.
-const UNFORMATTABLE: &str = "foo: |\n  x\n   ";
+/// Flow continuation lines would move left of their re-indented key
+/// (the refusal retained by YAML suite 6HB6).
+const UNFORMATTABLE: &str = "parent:\n child: [one,\n  two]\n";
 
 #[test]
 fn fix_refused_by_the_formatter_exits_1_and_keeps_the_file() {
