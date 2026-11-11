@@ -15,6 +15,8 @@ see that repository's `CHANGELOG.md` for the release-wide notes.
 
 ### Changed
 
+- Upgrade rustix to 1.1.6 in both Cargo locks for RUSTSEC-2026-0486,
+  with a source delta audit and no advisory suppression.
 - Update install-action to 2.90.0 and CodeQL to 4.39.2 with verified
   upstream SHA pins, contributed by Dependabot in #131.
 - Preserve unsigned radix string keys during serialization. Escalate CST

@@ -284,6 +284,12 @@ who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
 criteria = "safe-to-deploy"
 delta = "0.37.13 -> 1.1.4"
 
+[[audits.rustix]]
+who = "OpenAI Codex"
+criteria = "safe-to-deploy"
+delta = "1.1.4 -> 1.1.6"
+notes = "Reviewed zero-length xattr initialization and separate size-query functions for RUSTSEC-2026-0486, MaybeUninit padding, ancillary buffer bounds, syscall selections and timeout rounding. Build script only removes its own OUT_DIR probe. Dependency MSRV 1.65 remains below project floor 1.89. Registry SHA-256 e5e76742e5294153d4dde1207dbec5bdd81eef6fabdc0d2118babadabfd858aa. See supply-chain/reviews/rustix-1.1.6.md."
+
 [[audits.rustversion]]
 who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
 criteria = "safe-to-deploy"
