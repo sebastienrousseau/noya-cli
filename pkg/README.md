@@ -16,6 +16,13 @@ versions, archive URLs, hashes, Windows extraction paths and the Action
 default. This source check does not establish installation through the
 downstream package managers.
 
+`python3 scripts/check-distribution-consumer.py --provenance --output PATH`
+downloads the recorded native archive for the host into a new private
+directory. It verifies the digest and GitHub build provenance, exercises
+both binaries, refuses missing and corrupt cached archives, restores from
+the verified cache without downloading again, and removes the staged
+installations. The directory retains its receipt and provenance result.
+
 | Channel | Source here | Downstream |
 | :--- | :--- | :--- |
 | Homebrew | `brew/noya-cli.rb` | [sebastienrousseau/homebrew-tap](https://github.com/sebastienrousseau/homebrew-tap) `Formula/` |

@@ -162,6 +162,7 @@ jobs:
         run: |
           python3 scripts/check-distribution-recipes.py
           python3 scripts/tests/test_distribution_recipes.py
+          python3 scripts/tests/test_distribution_consumer.py
 
   # ── Workflow gates shared with the core (v0.0.55) ───────────────────
   # actionlint: workflow files are well-formed (shellcheck included).
