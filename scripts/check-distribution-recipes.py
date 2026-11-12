@@ -8,6 +8,7 @@ import argparse
 import json
 from pathlib import Path
 import re
+import shlex
 
 
 def check(root):
@@ -41,6 +42,10 @@ def check(root):
 
     aur = (root / 'pkg/aur/PKGBUILD').read_text()
     require(f'pkgver={version}\n' in aur, 'AUR version drifted')
+    declarations = re.findall(r'^options=\(([^\n)]*)\)\s*$', aur, re.MULTILINE)
+    options = set(shlex.split(declarations[0])) if len(declarations) == 1 else set()
+    require({'!strip', '!debug'} <= options and not {'strip', 'debug'} & options,
+            'AUR must preserve release binaries without stripping or debug splitting')
     for arch in ['x86_64', 'aarch64']:
         artifact = archive(f'{arch}-unknown-linux-musl')
         require(f"sha256sums_{arch}=('{artifact['sha256']}')" in aur, f'AUR {arch} digest drifted')

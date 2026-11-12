@@ -10,6 +10,7 @@ url="https://github.com/sebastienrousseau/noya-cli"
 license=('MIT OR Apache-2.0')
 provides=('noyafmt' 'noyavalidate')
 conflicts=('noyalib')
+options=('!strip' '!debug')
 source_x86_64=("$url/releases/download/v$pkgver/noya-cli-$pkgver-x86_64-unknown-linux-musl.tar.gz")
 source_aarch64=("$url/releases/download/v$pkgver/noya-cli-$pkgver-aarch64-unknown-linux-musl.tar.gz")
 sha256sums_x86_64=('67c38e35f12d5e2512b1dab886c8db8da65e52963f80c5f6fc19000398d9e96f')

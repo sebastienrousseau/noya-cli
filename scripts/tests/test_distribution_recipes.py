@@ -7,6 +7,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import re
 import shutil
 import tempfile
 import unittest
@@ -51,6 +52,17 @@ class DistributionRecipes(unittest.TestCase):
         data['architecture']['arm64']['extract_dir'] += '-missing'
         path.write_text(json.dumps(data))
         self.assertIn('Scoop arm64 extraction directory drifted', RECIPES.check(self.root))
+
+    def test_aur_refuses_stripping_or_debug_splitting_release_binaries(self):
+        path = self.root / 'pkg/aur/PKGBUILD'
+        original = re.sub(r'^options=.*\n', '', path.read_text(), flags=re.MULTILINE)
+        message = 'AUR must preserve release binaries without stripping or debug splitting'
+        path.write_text(original + "\noptions=('!strip' '!debug')\n")
+        self.assertEqual(RECIPES.check(self.root), [])
+        for options in ["('!strip')", "('!debug')", "('strip' '!strip' '!debug')", '()']:
+            with self.subTest(options=options):
+                path.write_text(original + '\noptions=' + options + '\n')
+                self.assertIn(message, RECIPES.check(self.root))
 
 
 if __name__ == '__main__':
