@@ -7,21 +7,21 @@ class NoyaCli < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.54/noya-cli-0.0.54-aarch64-apple-darwin.tar.gz"
-      sha256 "ba2edfc9fad9f991f55a7379106546342a5396b5b5c303264dd64619c97c7433"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-aarch64-apple-darwin.tar.gz"
+      sha256 "9f3729fdf112a05569f512b980a73a1e2ad5fb4e3e7ede7c992213a31614eb89"
     else
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.54/noya-cli-0.0.54-x86_64-apple-darwin.tar.gz"
-      sha256 "0e9a8b71e0b6fba438c9a35ef5f89f0a517f443e8544a28bc74f2096eb2f8367"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-x86_64-apple-darwin.tar.gz"
+      sha256 "c04801ce82e044bb9bc04a3fb55bbb250d18634ae53ea44ae3190e35d98b5388"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.54/noya-cli-0.0.54-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "cd7a048d6f5cd26d2596d771633c8a0549325a6b52fe246135e06500ef5b4742"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "e271d9ade16db1712c6c0e994b20431da032fc20e81857e97ce484203d381a68"
     else
-      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.54/noya-cli-0.0.54-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "24b047c7a1f0ec3cd5976519fa395f31c1b370a73137f110b97aee9840edee1f"
+      url "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "67c38e35f12d5e2512b1dab886c8db8da65e52963f80c5f6fc19000398d9e96f"
     end
   end
 

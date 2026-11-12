@@ -1,0 +1,45 @@
+{
+  "version": "0.0.60",
+  "source": "9fdd09a177b6bf29084f0897db0d3e6823a27e96",
+  "release": "https://github.com/sebastienrousseau/noya-cli/releases/tag/v0.0.60",
+  "verified_utc": "2026-11-12T09:58:09.069317+00:00",
+  "verification": "All six downloaded archive digests match release checksum files. GitHub attestation verification passes for each archive with the release workflow signer and refs/tags/v0.0.60 source ref. Archive member listings contain both binaries. This does not establish package-manager installation.",
+  "artifacts": {
+    "aarch64-apple-darwin": {
+      "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-aarch64-apple-darwin.tar.gz",
+      "sha256": "9f3729fdf112a05569f512b980a73a1e2ad5fb4e3e7ede7c992213a31614eb89",
+      "directory": "noya-cli-0.0.60-aarch64-apple-darwin",
+      "bytes": 3581960
+    },
+    "aarch64-pc-windows-msvc": {
+      "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-aarch64-pc-windows-msvc.zip",
+      "sha256": "341eb94f58c122ab539c3b8bacbf0ecc60c33f5f263d70cdfeab0ab423fac9c4",
+      "directory": "noya-cli-0.0.60-aarch64-pc-windows-msvc",
+      "bytes": 3101863
+    },
+    "aarch64-unknown-linux-musl": {
+      "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-aarch64-unknown-linux-musl.tar.gz",
+      "sha256": "e271d9ade16db1712c6c0e994b20431da032fc20e81857e97ce484203d381a68",
+      "directory": "noya-cli-0.0.60-aarch64-unknown-linux-musl",
+      "bytes": 3966760
+    },
+    "x86_64-apple-darwin": {
+      "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-x86_64-apple-darwin.tar.gz",
+      "sha256": "c04801ce82e044bb9bc04a3fb55bbb250d18634ae53ea44ae3190e35d98b5388",
+      "directory": "noya-cli-0.0.60-x86_64-apple-darwin",
+      "bytes": 3822769
+    },
+    "x86_64-pc-windows-msvc": {
+      "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-x86_64-pc-windows-msvc.zip",
+      "sha256": "0883562cda108841f5bc9780d7686d9b5c18f7f944e3a7e6e280ebd746a8d0f0",
+      "directory": "noya-cli-0.0.60-x86_64-pc-windows-msvc",
+      "bytes": 3376406
+    },
+    "x86_64-unknown-linux-musl": {
+      "url": "https://github.com/sebastienrousseau/noya-cli/releases/download/v0.0.60/noya-cli-0.0.60-x86_64-unknown-linux-musl.tar.gz",
+      "sha256": "67c38e35f12d5e2512b1dab886c8db8da65e52963f80c5f6fc19000398d9e96f",
+      "directory": "noya-cli-0.0.60-x86_64-unknown-linux-musl",
+      "bytes": 4246916
+    }
+  }
+}
