@@ -11,6 +11,19 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
+## [v0.0.62] - Unreleased
+
+### Changed
+
+- **Breaking:** the core refuses a byte order mark (U+FEFF) inside plain
+  and block scalars and comments, as YAML 1.2.2 requires; quoted scalars
+  and a document prefix keep it. `noyafmt` and `noyavalidate` report
+  such a file as a parse error.
+- **Breaking:** error paths bracket sequence indices (`items[0].name`,
+  was `items.0.name`).
+- The exact core pin and the manpages advance to 0.0.62. `make assets`
+  finds generated assets under cargo 1.100's build layout.
+
 ## [v0.0.61] - Unreleased
 
 ### Changed
