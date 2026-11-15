@@ -49,11 +49,14 @@ test:
 # copy the freshest generated set into the tracked locations. The
 # tracked copies exist because distro packagers prefer pre-built
 # artefacts; check-assets keeps them bit-identical to the source of
-# truth (the clap Command definitions).
+# truth (the clap Command definitions). Cargo before 1.100 writes
+# build-script output to build/noya-cli-<hash>/out; 1.100 and later
+# to build/noya-cli/<hash>/out. Either layout is accepted.
 assets:
 	NOYA_GEN_ASSETS=1 $(CARGO) build --release
 	@set -e; \
-	out=$$(ls -td "$(RELEASE_DIR)"/build/noya-cli-*/out/noyafmt.1 2>/dev/null | head -1); \
+	out=$$(ls -td "$(RELEASE_DIR)"/build/noya-cli-*/out/noyafmt.1 \
+	  "$(RELEASE_DIR)"/build/noya-cli/*/out/noyafmt.1 2>/dev/null | head -1); \
 	test -n "$$out" || { echo "generated assets not found under $(RELEASE_DIR)/build" >&2; exit 1; }; \
 	out=$$(dirname "$$out"); \
 	for b in $(BINS); do \
