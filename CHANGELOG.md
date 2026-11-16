@@ -11,7 +11,7 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
-## [v0.0.62] - Unreleased
+## [v0.0.62] - 2026-11-16
 
 v0.0.61 was never published: on 2026-11-15 the maintainer folded it into
 this release, in lockstep with the core, so the registry goes from
@@ -27,6 +27,11 @@ v0.0.60 to v0.0.62. Every v0.0.61 change below ships here.
   was `items.0.name`).
 - The exact core pin and the manpages advance to 0.0.62. `make assets`
   finds generated assets under cargo 1.100's build layout.
+
+### Dependencies
+
+- GitHub Actions: cosign-installer 4.1.3, install-action 2.90.3,
+  docker/login-action 4.8.0 and codeql-action 4.39.3 (#133).
 
 ## [v0.0.61] - Not published
 
