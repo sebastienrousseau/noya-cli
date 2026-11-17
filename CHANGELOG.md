@@ -11,6 +11,52 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
+## [v0.0.62] - 2026-11-17
+
+v0.0.61 was never published: on 2026-11-15 the maintainer folded it into
+this release, in lockstep with the core, so the registry goes from
+v0.0.60 to v0.0.62. Every v0.0.61 change below ships here.
+
+### Changed
+
+- **Breaking:** the core refuses a byte order mark (U+FEFF) inside plain
+  and block scalars and comments, as YAML 1.2.2 requires; quoted scalars
+  and a document prefix keep it. `noyafmt` and `noyavalidate` report
+  such a file as a parse error.
+- **Breaking:** error paths bracket sequence indices (`items[0].name`,
+  was `items.0.name`).
+- The exact core pin and the manpages advance to 0.0.62. `make assets`
+  finds generated assets under cargo 1.100's build layout.
+
+### Dependencies
+
+- GitHub Actions: cosign-installer 4.1.3, install-action 2.90.3,
+  docker/login-action 4.8.0 and codeql-action 4.39.3 (#133).
+
+## [v0.0.61] - Not published
+
+Folded into v0.0.62 (2026-11-15); there is no v0.0.61 tag or registry
+release.
+
+### Changed
+
+- Upgrade rustix to 1.1.6 in both Cargo locks for RUSTSEC-2026-0486,
+  with a source delta audit and no advisory suppression.
+- Update install-action to 2.90.0 and CodeQL to 4.39.2 with verified
+  upstream SHA pins, contributed by Dependabot in #131.
+- Preserve unsigned radix string keys during serialization. Escalate CST
+  root shape changes to a full parse to preserve UTF-8 token boundaries.
+- Core parsing now preserves anchor declaration order and clips only a
+  final line break present in the input. These are breaking parse behavior
+  corrections under the family's patch-version policy.
+- Release dry runs guard signing and GitHub release creation. Version
+  checks include every tracked Cargo lock.
+- Prepare the next lockstep version for the ecosystem assurance work.
+  Release dates and completed changes are recorded after verification.
+
+- Reconcile performance documentation with reproducible benchmark evidence.
+- Audit fuzz locks and enforce dependency and source analysis gates.
+
 ## [v0.0.60] - 2026-11-10
 
 ### Changed

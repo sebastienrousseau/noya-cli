@@ -91,30 +91,11 @@
 //! `ParserConfig::strict()` preset. Full posture:
 //! [`SECURITY.md`](https://github.com/sebastienrousseau/noyalib/blob/main/SECURITY.md).
 //!
-//! # API stability and SemVer
+//! # API stability and versioning
 //!
-//! Pre-1.0 (`0.0.x`): the argv contract (long flags, exit
-//! codes, stdin/stdout shape) is **stable** within a 0.0.x
-//! line — bug fixes only. Adding a new flag is allowed within
-//! a 0.0.x bump; removing or renaming a flag, or repurposing
-//! an exit code, is held to a 0.x bump (e.g. 0.0.x → 0.1.0).
-//! The Rust library surface (`NoyafmtCli`, `NoyavalidateCli`,
-//! `noyafmt_command`, `noyavalidate_command`) is also covered by
-//! the workspace SemVer policy in
-//! [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/POLICIES.md#2-semver--api-stability).
-//! `cargo-semver-checks` runs in CI on every PR and blocks
-//! accidental SemVer-incompatible changes.
-//!
-//! # Documentation
-//!
-//! - **Engineering policies** — workspace [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/POLICIES.md)
-//!   covers MSRV, SemVer, security, performance, concurrency, platform support,
-//!   feature flags.
-//! - **CLI flag reference**: [`doc/cli-reference.md`](https://github.com/sebastienrousseau/noyalib/blob/main/crates/noya-cli/doc/cli-reference.md).
-//! - **Recipes** (pre-commit, CI gate, schema validation, k8s,
-//!   Helm, Compose, GitHub Actions): the
-//!   [`examples/`](https://github.com/sebastienrousseau/noyalib/tree/main/crates/noya-cli/examples)
-//!   directory.
+//! The family increments strictly by +0.0.1 in lockstep. Changes to
+//! parsing behavior, wire/output shapes or exported interfaces are breaking
+//! changes on that axis and must be documented under the family policy.
 
 #![deny(missing_docs)]
 // Every public item carries documentation. The scorecard probes for this

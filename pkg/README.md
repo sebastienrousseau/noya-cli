@@ -8,6 +8,21 @@ released version's signed artefacts (hashes from the release's
 `.sha256` assets). At each release, update version + hashes here and
 in the downstream channel:
 
+The recorded inputs in `release-artifacts.json` name the published native
+archives and their verified digests. These remain at the last published
+version while a future branch is under development. Run
+`python3 scripts/check-distribution-recipes.py` to detect drift in recipe
+versions, archive URLs, hashes, Windows extraction paths and the Action
+default. This source check does not establish installation through the
+downstream package managers.
+
+`python3 scripts/check-distribution-consumer.py --provenance --output PATH`
+downloads the recorded native archive for the host into a new private
+directory. It verifies the digest and GitHub build provenance, exercises
+both binaries, refuses missing and corrupt cached archives, restores from
+the verified cache without downloading again, and removes the staged
+installations. The directory retains its receipt and provenance result.
+
 | Channel | Source here | Downstream |
 | :--- | :--- | :--- |
 | Homebrew | `brew/noya-cli.rb` | [sebastienrousseau/homebrew-tap](https://github.com/sebastienrousseau/homebrew-tap) `Formula/` |

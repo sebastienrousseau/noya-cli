@@ -132,11 +132,23 @@ criteria = "safe-to-deploy"
 delta = "0.58.5 -> 0.60.2"
 notes = "Reviewed complete ECMA character-class and whitespace translation delta: bounded UTF-8 character offsets, linear safe-Rust scans and fixed whitespace ranges; no new unsafe code or ambient capabilities. Archive SHA-256 107aeb6ff14b8deb5610096a8ce5c554ec89806b521147eaeb3cae05b07edb7a. See supply-chain/reviews/v0.0.59.md."
 
+[[audits.jsonschema-regex]]
+who = "Claude Code (claude-opus-5-5)"
+criteria = "safe-to-deploy"
+delta = "0.60.2 -> 0.61.2"
+notes = "Reviewed the packaged source delta: two new modules (repetition.rs, sequence.rs) rewrite ECMA-262 patterns into cheaper regex-syntax forms with fixed size budgets, and the translator runs in one pass. No unsafe code, IO, environment, process or network access; unwrap and expect appear only in tests. No dependency changes. Publisher remains Dmitry Dygalo (crates.io user 82692)."
+
 [[audits.jsonschema-value]]
 who = "OpenAI Codex"
 criteria = "safe-to-deploy"
 delta = "0.58.5 -> 0.60.2"
 notes = "Reviewed complete decimal-budget and object-comparison delta: checked/saturating exponent handling, bounded materialization and safe-Rust modular arithmetic. Build script unchanged; optional foreign bindings remain disabled in these consumers. Archive SHA-256 e281d6b177bb4834f2ffd6f92aa0443cffe29c996b251c8d94eb6f456186feba. See supply-chain/reviews/v0.0.59.md."
+
+[[audits.jsonschema-value]]
+who = "Claude Code (claude-opus-5-5)"
+criteria = "safe-to-deploy"
+delta = "0.60.2 -> 0.61.2"
+notes = "Reviewed the packaged source delta: an exact i64 fast path in number comparison, name-node iteration over members, and a string-length bound helper. New unsafe blocks are confined to the Ruby (magnus) and Python (pyo3) bindings, which are behind features noyalib does not enable (it uses default, serde_json); the jsonb thread-local buffer is behind the jsonb feature. No IO or network access. Publisher remains Dmitry Dygalo (crates.io user 82692)."
 
 [[audits.linux-raw-sys]]
 who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
@@ -172,6 +184,18 @@ criteria = "safe-to-deploy"
 delta = "0.0.59 -> 0.0.60"
 notes = "Reviewed the actual 0.0.59 to 0.0.60 metadata/source delta. Runtime Rust and ambient capabilities are unchanged, apart from the adapter crate-level version example. Core registry SHA-256 c4f58e0d7f94aac1ff656e07a05512093b0a0f866f5778f94e84909f50fc3157. See supply-chain/reviews/v0.0.60.md."
 
+[[audits.noya-cli]]
+who = "OpenAI Codex"
+criteria = "safe-to-deploy"
+delta = "0.0.60 -> 0.0.61"
+notes = "Reviewed the v0.0.60 to v0.0.61 source delta. See supply-chain/reviews/v0.0.61.md for the scope and pre-publication registry checks."
+
+[[audits.noya-cli]]
+who = "Claude Code (claude-opus-5-5)"
+criteria = "safe-to-deploy"
+delta = "0.0.61 -> 0.0.62"
+notes = "Lockstep release metadata (crate version, exact core pin, regenerated manpages) plus a GNUmakefile glob for cargo 1.100's build layout; no Rust source changes. Behaviour changes come from the core and are reviewed with it."
+
 [[audits.noyalib]]
 who = "OpenAI Codex"
 criteria = "safe-to-deploy"
@@ -201,6 +225,18 @@ who = "OpenAI Codex"
 criteria = "safe-to-deploy"
 delta = "0.0.59 -> 0.0.60"
 notes = "Reviewed the actual 0.0.59 to 0.0.60 metadata/source delta. Runtime Rust and ambient capabilities are unchanged, apart from the adapter crate-level version example. Core registry SHA-256 c4f58e0d7f94aac1ff656e07a05512093b0a0f866f5778f94e84909f50fc3157. See supply-chain/reviews/v0.0.60.md."
+
+[[audits.noyalib]]
+who = "OpenAI Codex"
+criteria = "safe-to-deploy"
+delta = "0.0.60 -> 0.0.61"
+notes = "Reviewed core a57b7198669e41fe3034db4e44f2e274baf96388 against signed v0.0.60: iterative first-match queries and failed-state memoization, binary and unsigned radix-string quoting, EOF clip behavior, declaration-ordered anchors and sentinel-safe CST repair and terminal block-scalar formatting without inventing a line break, plus typed anchored empty-key restoration on AST fallback. Regressions cover typed, value, CST and alloc-only paths. The optional std filesystem dependency requires patched rustix 1.1.6; the resolved core graph already used it. Collection anchor registration was extracted without changing the declaration-span guard, clone timing or alias costs; std and alloc characterization suites pass. No feature, target or MSRV changes. See supply-chain/reviews/v0.0.61.md; Typed explicit-key fallback now excludes trailing separation from its text slice while preserving canonical Value keys and diagnostic spans; eight focused tests and the original sanitizer replay pass. Plain-scalar continuation now checks required spaces before a tab; formatter reindentation preserves valid tab continuations. Complete std, alloc and portable batteries pass 6748, 6726 and 7067 tests. Canonical-duplicate typed-key policy remains an open contract decision. registry identity and independent review remain separate."
+
+[[audits.noyalib]]
+who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
+criteria = "safe-to-deploy"
+delta = "0.0.61 -> 0.0.62"
+notes = "Author self-review, not independent: recorded at the maintainer's direction for a delta prepared with Claude Code (claude-opus-5-5). Core 11ac547 to 8279884: byte order mark refusal in nb-char text behind the new ParserConfig::byte_order_marks_in_text, bracketed error-path indices and the serde_yaml root-index spelling, and removal of the bench-only compare-saphyr feature and serde-saphyr dependency. No unsafe code, new dependency or ambient capability. v0.0.61 is never published. See supply-chain/reviews/v0.0.62.md."
 
 [[audits.num]]
 who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
@@ -271,6 +307,12 @@ delta = "2.1.1 -> 2.1.3"
 who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
 criteria = "safe-to-deploy"
 delta = "0.37.13 -> 1.1.4"
+
+[[audits.rustix]]
+who = "OpenAI Codex"
+criteria = "safe-to-deploy"
+delta = "1.1.4 -> 1.1.6"
+notes = "Reviewed zero-length xattr initialization and separate size-query functions for RUSTSEC-2026-0486, MaybeUninit padding, ancillary buffer bounds, syscall selections and timeout rounding. Build script only removes its own OUT_DIR probe. Dependency MSRV 1.65 remains below project floor 1.89. Registry SHA-256 e5e76742e5294153d4dde1207dbec5bdd81eef6fabdc0d2118babadabfd858aa. See supply-chain/reviews/rustix-1.1.6.md."
 
 [[audits.rustversion]]
 who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
@@ -411,6 +453,12 @@ delta = "0.11.2 -> 0.11.3"
 who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
 criteria = "safe-to-deploy"
 delta = "1.0.20 -> 1.0.23"
+
+[[trusted.fancy-regex]]
+criteria = "safe-to-deploy"
+user-id = 308963 # Keith Hall (keith-hall)
+start = "2025-08-01"
+end = "2027-05-09"
 
 [[trusted.jsonschema]]
 criteria = "safe-to-deploy"
