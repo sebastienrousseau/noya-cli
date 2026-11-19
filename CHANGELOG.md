@@ -11,6 +11,22 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
+## [v0.0.63] - Unreleased
+
+### Changed
+
+- The exact core pin and the manpages advance to 0.0.63. The core's
+  `cst::Document::insert_entry_value` now double-quotes a multi-line
+  string holding a C1 control other than NEL, U+FFFE, U+FFFF or a byte
+  order mark, instead of writing a `|` block that v0.0.62 refuses
+  (noyalib#533). `noyafmt` and `noyavalidate` do not call it directly,
+  so their output is unchanged.
+
+### Dependencies
+
+- GitHub Actions: install-action 2.90.3 and the core's shared workflows
+  at 0.0.60 (#135).
+
 ## [v0.0.62] - 2026-11-17
 
 v0.0.61 was never published: on 2026-11-15 the maintainer folded it into

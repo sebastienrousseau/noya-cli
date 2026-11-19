@@ -196,6 +196,12 @@ criteria = "safe-to-deploy"
 delta = "0.0.61 -> 0.0.62"
 notes = "Lockstep release metadata (crate version, exact core pin, regenerated manpages) plus a GNUmakefile glob for cargo 1.100's build layout; no Rust source changes. Behaviour changes come from the core and are reviewed with it."
 
+[[audits.noya-cli]]
+who = "Claude Code (claude-opus-5-5)"
+criteria = "safe-to-deploy"
+delta = "0.0.62 -> 0.0.63"
+notes = "Lockstep release metadata only: crate version, exact core pin =0.0.63 and regenerated manpages. No Rust source, build script or dependency changes. Behaviour changes come from the core and are reviewed with it."
+
 [[audits.noyalib]]
 who = "OpenAI Codex"
 criteria = "safe-to-deploy"
