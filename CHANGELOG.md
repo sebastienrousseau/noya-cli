@@ -11,6 +11,21 @@ and versions in lockstep with the
 [`noyalib`](https://github.com/sebastienrousseau/noyalib) core crate —
 see that repository's `CHANGELOG.md` for the release-wide notes.
 
+## [v0.0.64] - Unreleased
+
+### Changed
+
+- The exact core pin and the manpages advance to 0.0.64. The core's
+  change is a faster scanner path for printable-ASCII plain and block
+  scalars; it accepts and refuses exactly what v0.0.63 did, so the
+  output of `noyafmt` and `noyavalidate` is unchanged.
+
+### Dependencies
+
+- GitHub Actions: `taiki-e/install-action` 2.90.5 (#137).
+- Container build image: `rust:1.100-bookworm` (#138). The crate's
+  minimum Rust version is unchanged.
+
 ## [v0.0.63] - 2026-11-20
 
 ### Changed
