@@ -55,7 +55,7 @@
 
 ## Development version
 
-This branch prepares unreleased v0.0.63. Versioned Cargo examples describe
+This branch prepares unreleased v0.0.64. Versioned Cargo examples describe
 that upcoming release; use a published version for registry installation
 until it ships. Local verification uses the sibling core source explicitly.
 
@@ -65,7 +65,7 @@ until it ships. Local verification uses the sibling core source explicitly.
 
 ```toml
 [dependencies]
-noya-cli = "0.0.63"
+noya-cli = "0.0.64"
 ```
 
 Most users install the binaries directly:

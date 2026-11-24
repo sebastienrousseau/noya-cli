@@ -128,10 +128,6 @@ criteria = "safe-to-run"
 version = "0.2.9"
 criteria = "safe-to-deploy"
 
-[[exemptions.fancy-regex]]
-version = "0.19.0"
-criteria = "safe-to-deploy"
-
 [[exemptions.find-msvc-tools]]
 version = "0.1.9"
 criteria = "safe-to-run"
@@ -202,10 +198,6 @@ criteria = "safe-to-deploy"
 
 [[exemptions.noya-cli]]
 version = "0.0.27"
-criteria = "safe-to-deploy"
-
-[[exemptions.noyalib]]
-version = "0.0.58"
 criteria = "safe-to-deploy"
 
 [[exemptions.num-cmp]]
