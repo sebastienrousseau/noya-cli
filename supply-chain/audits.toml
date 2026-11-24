@@ -484,6 +484,13 @@ user-id = 55123
 start = "2024-10-26"
 end = "2027-05-09"
 
+[[trusted.noyalib]]
+criteria = "safe-to-deploy"
+trusted-publisher = "github:sebastienrousseau/noyalib"
+start = "2026-09-01"
+end = "2027-11-24"
+notes = "Maintainer's own crate, published by GitHub trusted publishing from sebastienrousseau/noyalib (as in metadata-gen)."
+
 [[trusted.referencing]]
 criteria = "safe-to-deploy"
 user-id = 82692 # Dmitry Dygalo (Stranger6667)
